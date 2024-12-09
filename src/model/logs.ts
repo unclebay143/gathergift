@@ -1,11 +1,5 @@
-import mongoose, { Document, models, Schema } from "mongoose";
+import mongoose, { models, Schema } from "mongoose";
 
-interface ILog extends Document { 
-    user_id: mongoose.Schema.Types.ObjectId; 
-    key: string; 
-    action: string; 
-    details: string; 
-}
 const LogSchema: Schema = new Schema(
     {
         user_id: {
@@ -30,6 +24,6 @@ const LogSchema: Schema = new Schema(
     }
 );
 
-const Logs = models.Log || mongoose.model<ILog>("Log", LogSchema)
+const Logs = models.Log || mongoose.model("Log", LogSchema)
 
 export { Logs };
