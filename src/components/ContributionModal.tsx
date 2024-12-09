@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,6 +14,7 @@ interface ContributionModalProps {
     progress: number;
   }>;
   onContribute: (contributions: Record<string, number>) => void;
+  initialContributions: Record<string, number>;
 }
 
 export function ContributionModal({
@@ -21,14 +22,49 @@ export function ContributionModal({
   onClose,
   selectedItems,
   onContribute,
+  initialContributions,
 }: ContributionModalProps) {
   const [contributions, setContributions] = useState<Record<string, number>>(
     Object.fromEntries(selectedItems.map((item) => [item.id, 0]))
   );
 
+  useEffect(() => {
+    if (isOpen) {
+      setContributions(() => {
+        const newContributions = { ...initialContributions };
+        selectedItems.forEach((item) => {
+          if (!(item.id in newContributions)) {
+            newContributions[item.id] = 0;
+          }
+        });
+        // Remove contributions for items that are no longer selected
+        Object.keys(newContributions).forEach((id) => {
+          if (!selectedItems.some((item) => item.id === id)) {
+            delete newContributions[id];
+          }
+        });
+        return newContributions;
+      });
+    }
+  }, [isOpen, selectedItems, initialContributions]);
+
   const handleContribute = () => {
-    onContribute(contributions);
+    const nonZeroContributions = Object.entries(contributions).reduce(
+      (acc, [id, amount]) => {
+        if (amount > 0) {
+          acc[id] = amount;
+        }
+        return acc;
+      },
+      {} as Record<string, number>
+    );
+    onContribute(nonZeroContributions);
     onClose();
+  };
+
+  const handleInputChange = (id: string, value: string) => {
+    const numValue = value === "" ? 0 : parseFloat(value);
+    setContributions((prev) => ({ ...prev, [id]: numValue }));
   };
 
   if (!isOpen) return null;
@@ -53,17 +89,13 @@ export function ContributionModal({
             <Input
               type='number'
               id={`contribution-${item.id}`}
-              min='0'
-              max={item.amount}
-              step='0.01'
-              value={contributions[item.id]}
-              onChange={(e) =>
-                setContributions((prev) => ({
-                  ...prev,
-                  [item.id]: parseFloat(e.target.value) || 0,
-                }))
+              // max={1000} // we can have a settings for this "Receive payment when full percentage reached"
+              value={
+                contributions[item.id] === 0
+                  ? ""
+                  : contributions[item.id]?.toString() || ""
               }
-              className='w-full'
+              onChange={(e) => handleInputChange(item.id, e.target.value)}
             />
             <div className='text-sm text-gray-500 mt-1'>
               {((contributions[item.id] / item.amount) * 100).toFixed(2)}% of

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { X } from "lucide-react";
 
-interface WishDetailModalProps {
+interface WishItemDetailModalProps {
   isOpen: boolean;
   onClose: () => void;
   name: string;
@@ -11,7 +11,7 @@ interface WishDetailModalProps {
   progress: number;
 }
 
-export function WishDetailModal({
+export function WishItemDetailModal({
   isOpen,
   onClose,
   name,
@@ -19,7 +19,7 @@ export function WishDetailModal({
   image,
   amount,
   progress,
-}: WishDetailModalProps) {
+}: WishItemDetailModalProps) {
   const [isVisible, setIsVisible] = useState(isOpen);
 
   useEffect(() => {

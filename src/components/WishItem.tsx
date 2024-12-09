@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ChevronDown, ChevronUp, Info } from "lucide-react";
-import { WishDetailModal } from "./WishDetailModal";
-import { Checkbox } from "./Checkbox";
+import { Checkbox } from "./ui/Checkbox";
+import { WishItemDetailModal } from "./WishItemDetailModal";
 
 interface WishItemProps {
   id: string;
@@ -12,10 +12,8 @@ interface WishItemProps {
   progress: number;
   isSelected: boolean;
   isExpanded: boolean;
-  isFirstItem: boolean;
   onSelect: () => void;
   onExpand: () => void;
-  toggleExpanded: (id: string) => void;
 }
 
 export function WishItem({
@@ -28,20 +26,12 @@ export function WishItem({
   amount,
   progress,
   onSelect,
-  isFirstItem,
   onExpand,
-  toggleExpanded,
 }: WishItemProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  useEffect(() => {
-    if (isFirstItem) {
-      toggleExpanded(id);
-    }
-  }, [isFirstItem, id]);
-
   return (
-    <div className='border rounded-md p-4 mb-4'>
+    <div className='border rounded-md p-4 mb-4 bg-zinc-50'>
       <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between'>
         <div className='flex items-center mb-2 sm:mb-0'>
           <Checkbox
@@ -94,7 +84,7 @@ export function WishItem({
           <p className='text-gray-700 text-sm'>{description}</p>
         </div>
       )}
-      <WishDetailModal
+      <WishItemDetailModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         name={name}

@@ -1,23 +1,25 @@
 import { featuredWishlists } from "@/components/public/FeaturedWishlists";
-import { WishGroup } from "@/components/WishGroup";
+import { WishItemGroup } from "@/components/WishItemGroup";
+import { DEFAULT_FEMALE_AVATAR, DEFAULT_MALE_AVATAR } from "@/utils";
+import Image from "next/image";
 
 export default function ChristmasWishlist() {
   return (
     <div className='relative overflow-hidden'>
-      <div className='min-h-screen bg-gradient-to-b from-red-50 to-green-50 text-gray-800'>
+      <div className='min-h-screen px-4 bg-gradient-to-b from-red-50 to-green-50 text-gray-800'>
         <div className='max-w-4xl mx-auto py-8 space-y-12'>
           <header className='text-center space-y-4'>
             <div className='relative inline-block'>
-              <img
-                alt='User Avatar'
-                loading='lazy'
-                width={100}
-                height={100}
-                decoding='async'
-                className='rounded-full border-4 border-gold-300 shadow-lg'
-                src='https://api.dicebear.com/9.x/micah/svg?seed=Rykerr'
-                style={{ color: "transparent" }}
-              />
+              <div className='size-[100px]'>
+                <img
+                  alt='User Avatar'
+                  width={100}
+                  height={100}
+                  className='rounded-full aspect-square border-4 border-amber-300 shadow-lg'
+                  src={"https://avatars.githubusercontent.com/u/58919619?v=4"}
+                />
+              </div>
+
               <svg
                 xmlns='http://www.w3.org/2000/svg'
                 width={24}
@@ -56,7 +58,7 @@ export default function ChristmasWishlist() {
               </svg> */}
             </div>
             <h1 className='text-4xl font-bold text-red-700'>
-              John&apos;s Christmas Wishes
+              Unclebigbay&apos;s Christmas Wishes
             </h1>
             <p className='text-xl text-green-700 italic'>
               Help make this Christmas magical!
@@ -66,8 +68,8 @@ export default function ChristmasWishlist() {
             <h2 className='text-2xl font-semibold text-center text-green-800'>
               Gift Wishes
             </h2>
-            <div className='space-y-3'>
-              <WishGroup items={featuredWishlists} />
+            <div className='space-y-3' id='selections'>
+              <WishItemGroup items={featuredWishlists} />
             </div>
           </section>
           <section className='bg-white rounded-lg shadow-md p-6 space-y-4 max-w-4xl mx-auto'>
@@ -96,16 +98,14 @@ export default function ChristmasWishlist() {
             <p className='text-center text-sm text-gray-600'>
               30.0% of goal reached
             </p>
-            <button
-              className='inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 h-10 px-4 py-2 w-full bg-gold-500 hover:bg-gold-600 text-white'
-              type='button'
-              aria-haspopup='dialog'
-              aria-expanded='false'
-              aria-controls='radix-:r0:'
-              data-state='closed'
-            >
-              Add Your Support
-            </button>
+            <div className='text-center'>
+              <a
+                href='#selections'
+                className='text-xs rounded-md text-zinc-800 px-2 py-1.5 w-full'
+              >
+                Add Your Support
+              </a>
+            </div>
           </section>
           <section className='space-y-4 max-w-4xl mx-auto'>
             <h2 className='text-2xl font-semibold text-center text-green-800'>
@@ -114,10 +114,11 @@ export default function ChristmasWishlist() {
             <div className='bg-white rounded-lg shadow-md p-4 max-h-60 overflow-y-auto space-y-4'>
               <div className='flex items-start space-x-3'>
                 <span className='relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full'>
-                  <img
+                  <Image
+                    fill
                     className='aspect-square h-full w-full'
                     alt='Alice'
-                    src='https://api.dicebear.com/9.x/micah/svg?seed=Rykerrs'
+                    src={DEFAULT_MALE_AVATAR}
                   />
                 </span>
                 <div>
@@ -129,10 +130,11 @@ export default function ChristmasWishlist() {
               </div>
               <div className='flex items-start space-x-3'>
                 <span className='relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full'>
-                  <img
+                  <Image
+                    fill
                     className='aspect-square h-full w-full'
                     alt='Bob'
-                    src='https://api.dicebear.com/9.x/micah/svg?seed=Rykerfr'
+                    src={DEFAULT_MALE_AVATAR}
                   />
                 </span>
                 <div>
@@ -144,10 +146,11 @@ export default function ChristmasWishlist() {
               </div>
               <div className='flex items-start space-x-3'>
                 <span className='relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full'>
-                  <img
+                  <Image
+                    fill
                     className='aspect-square h-full w-full'
                     alt='Charlie'
-                    src='https://api.dicebear.com/9.x/micah/svg?seed=Rykwerr'
+                    src={DEFAULT_FEMALE_AVATAR}
                   />
                 </span>
                 <div>
@@ -164,7 +167,7 @@ export default function ChristmasWishlist() {
               Share the Joy
             </h2>
             <div className='flex justify-center space-x-4'>
-              <button className='inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-input hover:text-accent-foreground h-10 px-4 py-2 bg-blue-600 text-white hover:bg-blue-700'>
+              <button className='inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-input h-10 px-4 py-2 bg-blue-600 text-white hover:bg-blue-700'>
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
                   width={24}
@@ -181,7 +184,7 @@ export default function ChristmasWishlist() {
                 </svg>{" "}
                 Share
               </button>
-              <button className='inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-input hover:text-accent-foreground h-10 px-4 py-2 bg-sky-500 text-white hover:bg-sky-600'>
+              <button className='inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-input h-10 px-4 py-2 bg-sky-500 text-white hover:bg-sky-600'>
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
                   width={24}
@@ -198,7 +201,7 @@ export default function ChristmasWishlist() {
                 </svg>{" "}
                 Tweet
               </button>
-              <button className='inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-input hover:text-accent-foreground h-10 px-4 py-2 bg-green-600 text-white hover:bg-green-700'>
+              <button className='inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-input h-10 px-4 py-2 bg-green-600 text-white hover:bg-green-700'>
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
                   width={24}
@@ -244,6 +247,7 @@ export default function ChristmasWishlist() {
                   <line x1='15.41' x2='8.59' y1='6.51' y2='10.49' />
                 </svg>{" "}
                 Copy
+                {/*  Copied */}
               </button>
             </div>
           </section>

@@ -1,5 +1,3 @@
-import { Check } from "lucide-react";
-
 interface CheckboxProps {
   checked: boolean;
   onChange: () => void;
