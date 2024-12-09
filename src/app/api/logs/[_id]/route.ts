@@ -2,9 +2,11 @@ import connectMongoose from "@/lib/mongodb";
 import { Logs } from "@/model/logs";
 import { NextRequest, NextResponse } from "next/server"
 
-const PUT = async (request: NextRequest, {params}: { params: { _id: string } }) => {
+const getDynamicParams = async (params: { _id: string }) => params;
+
+const PUT = async (request: NextRequest, context: { params: { _id: string } }) => {
     try {
-        const id = params._id;
+        const { _id: id } = await getDynamicParams(context.params);
         const body = await request.json();
         const { user_id, action, details, key } = body;
 
@@ -40,9 +42,9 @@ const PUT = async (request: NextRequest, {params}: { params: { _id: string } }) 
 }
 
 
-const DELETE = async (request: NextResponse, { params }: { params: { _id: string } }) => {
+const DELETE = async (request: NextResponse, context: { params: { _id: string } }) => {
     try {
-        const id = params._id;
+        const { _id: id } = await getDynamicParams(context.params);
         if (!id) {
             return NextResponse.json(
                 { message: "Log ID required" },

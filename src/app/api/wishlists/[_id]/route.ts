@@ -2,10 +2,13 @@ import connectMongoose from "@/lib/mongodb";
 import { WishLists } from "@/model/wishlists";
 import { NextRequest, NextResponse } from "next/server"
 
+const getDynamicParams = async (params: { _id: string }) => params;
 
-const PUT = async (request: NextRequest, { params }: {params: { _id: string } }) => {
+
+const PUT = async (request: NextRequest, context: { params: { _id: string } }) => {
     try {
-        const id = params._id;
+        const { _id: id } = await getDynamicParams(context.params);
+
         const body = await request.json();
 
         if (!id) {
@@ -37,9 +40,9 @@ const PUT = async (request: NextRequest, { params }: {params: { _id: string } })
     }
 };
 
-const DELETE = async (request: NextRequest, { params }: { params: { _id: string } }) => {
+const DELETE = async (request: NextRequest,  context: { params: { _id: string } }) => {
     try {
-        const id = params._id;
+        const { _id: id } = await getDynamicParams(context.params);
 
        if (!id) {
             return NextResponse.json(
