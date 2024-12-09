@@ -1,7 +1,26 @@
-import mongoose, { models, Schema } from "mongoose";
+import mongoose, { Document, models, Schema } from "mongoose";
 
 const ALLOWED_OCCASION = ['Christmas', 'Birthday', 'Graduation', 'Wedding'];
 const ALLOWED_STATUS = ['open', 'completed', 'closed']
+
+interface IWishlist extends Document { 
+    user_id: mongoose.Schema.Types.ObjectId; 
+    name: string; occasion: string; 
+    items: { 
+        title: string; 
+        description?: string; 
+        image_url?: string; 
+        target_amount: number; 
+        contributed_amount?: number; 
+        contributors?: { 
+            name: string; 
+            amount: number; 
+            contribution_date?: Date; 
+            note?: string; 
+        }[]; 
+        status: 'open' | 'completed' | 'closed'; 
+    }[]; 
+}
 
 const ContributorSchema: Schema = new Schema(
     {
@@ -35,15 +54,15 @@ const ItemSchema: Schema = new Schema(
         },
         image_url: {
             type: String,
-            required: true
+            // required: true
         },
         target_amount: {
-            type: String,
+            type: Number,
             required: true
         },
         contributed_amount: {
-            type: String,
-            required: true
+            type: Number,
+            default: 0
         },
         contributors: [ContributorSchema],
         status: {
@@ -57,7 +76,7 @@ const ItemSchema: Schema = new Schema(
 const WishlistsSchema: Schema = new Schema(
     {
         user_id: {
-            type: Schema.Types.ObjectId,
+            type: mongoose.Schema.Types.ObjectId,
             ref: 'User',
             required: true
         },
@@ -71,9 +90,11 @@ const WishlistsSchema: Schema = new Schema(
             required: true
         },
         items: [ItemSchema]
+    }, {
+        timestamps: true,
     }
 );
 
-const WishLists = models.Wishlists || mongoose.model('Wishlist', WishlistsSchema);
+const WishLists = models.Wishlists || mongoose.model<IWishlist>('Wishlist', WishlistsSchema);
 
 export { WishLists }

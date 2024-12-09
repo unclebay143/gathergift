@@ -6,15 +6,15 @@ const GiftIdeaSchema: Schema = new Schema(
             type: String,
             required: true
         },
-        item_name: {
+        name: {
             type: String,
             required: true
         },
-        item_description: {
+        description: {
             type: String,
             required: true,
         },
-        item_image: {
+        image: {
             type: String,
             required: true
         },
