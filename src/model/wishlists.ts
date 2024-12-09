@@ -64,6 +64,10 @@ const ItemSchema: Schema = new Schema(
             type: Number,
             default: 0
         },
+        currency: {
+            type: String,
+            required: true
+        },
         contributors: [ContributorSchema],
         status: {
             type: String,

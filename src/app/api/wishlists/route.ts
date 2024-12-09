@@ -11,6 +11,7 @@ interface WishlistRequest {
         description?: string; 
         image_url?: string; 
         target_amount: string; 
+        currency?: string;
         contributed_amount?: string; 
         contributors?: { 
             name: string; 
