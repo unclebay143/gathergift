@@ -69,7 +69,7 @@ export const featuredWishlists = [
 
 export default function FeaturedWishlists() {
   return (
-    <div className='flex flex-wrap justify-center gap-6 max-w-7xl mx-auto'>
+    <div className='flex flex-wrap justify-center gap-6 max-w-7xl mx-auto lg:justify-start'>
       {featuredWishlists.map((wishlist) => (
         <WishCard data={wishlist} key={wishlist.id} />
       ))}

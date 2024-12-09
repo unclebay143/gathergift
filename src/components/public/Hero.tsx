@@ -22,7 +22,8 @@ export default function Hero() {
               <div className='mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start'>
                 <div className='rounded-md shadow'>
                   <Button className='w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-red-600 hover:bg-red-700 md:py-4 md:text-lg md:px-10'>
-                    Get started
+                    <Gift className='w-5 h-5 mr-2' />
+                    Create Your Wishlist
                   </Button>
                 </div>
                 <div className='mt-3 sm:mt-0 sm:ml-3'>

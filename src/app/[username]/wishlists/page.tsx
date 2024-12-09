@@ -37,6 +37,23 @@ export default function ChristmasWishlist() {
                 <path d='m16 4-4 4-4-4' />
                 <path d='m8 20 4-4 4 4' />
               </svg>
+              {/* <svg
+                xmlns='http://www.w3.org/2000/svg'
+                viewBox='0 0 64 64'
+                width={24}
+                height={24}
+                className='lucide lucide-snowflake absolute -top-2 -right-2 text-blue-300'
+              >
+                <polygon
+                  fill='#4CAF50'
+                  points='32 4 12 28 20 28 10 48 26 48 18 64 46 64 38 48 54 48 44 28 52 28 32 4'
+                />
+                <rect x='28' y='48' width='8' height='16' fill='#8B4513' />
+                <circle cx='32' cy='12' r='2' fill='#FFEB3B' />
+                <circle cx='24' cy='20' r='2' fill='#FF5722' />
+                <circle cx='40' cy='20' r='2' fill='#FF5722' />
+                <circle cx='32' cy='36' r='2' fill='#FFEB3B' />
+              </svg> */}
             </div>
             <h1 className='text-4xl font-bold text-red-700'>
               John&apos;s Christmas Wishes
