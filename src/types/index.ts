@@ -1,4 +1,4 @@
-import { CATEGORIES, CATEGORY_TAG_LINES } from "@/const";
+import { CATEGORIES } from "@/const";
 
 export type Item = {
   name: string;

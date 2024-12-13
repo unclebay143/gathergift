@@ -1,16 +1,8 @@
 "use client";
 
 import * as React from "react";
-import {
-  BookOpen,
-  Bot,
-  GalleryVerticalEnd,
-  Gift,
-  Settings2,
-  SquareTerminal,
-} from "lucide-react";
+import { GalleryVerticalEnd, Gift } from "lucide-react";
 
-// import { NavMain } from "@/components/nav-main";
 import { NavProjects } from "@/components/nav-projects";
 import { TeamSwitcher } from "@/components/team-switcher";
 import {

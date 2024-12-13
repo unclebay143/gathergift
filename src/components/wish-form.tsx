@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { ArrowRight, Plus, Trash2, Upload } from "lucide-react";
-import { Wish, Categories } from "@/types";
+import { Wish } from "@/types";
 import { CATEGORIES, CATEGORY_TAG_LINES } from "@/const";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
