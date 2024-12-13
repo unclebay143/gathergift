@@ -6,8 +6,6 @@ export const getAllLogs = async () => {
         await connectMongoose();
 
         const logs = await Logs.find();
-
-        console.log("Fetched Logs:", logs);
         
         return JSON.parse(JSON.stringify(logs));
     } catch (error) {

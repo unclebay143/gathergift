@@ -1,8 +1,8 @@
 import connectMongoose from "@/lib/mongodb";
 import { GiftIdeas } from "@/model/gitfIdeas";
+import { getDynamicParams } from "@/utils/dynamics";
 import { NextRequest, NextResponse } from "next/server";
 
-const getDynamicParams = async (params: { _id: string }) => params;
 
 const PUT = async (request: NextRequest, context: { params: { _id: string } }) => {
     try {

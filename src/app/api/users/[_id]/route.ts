@@ -1,5 +1,6 @@
 import connectMongoose from "@/lib/mongodb";
 import { User } from "@/model/users";
+import { getDynamicParams } from "@/utils/dynamics";
 import { NextRequest, NextResponse } from "next/server"
 
 
@@ -35,7 +36,6 @@ const GET = async (request: NextRequest, {params}: { params: { email: string } }
     }
 }
 
-const getDynamicParams = async (params: { _id: string }) => params;
 
 const PUT = async (request: NextRequest, context: { params: { _id: string } }) => {
     try {
