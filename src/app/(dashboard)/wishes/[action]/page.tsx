@@ -27,6 +27,8 @@ export default function CreateUpdateWishPage({
     currency: null,
     category: null,
     itemsEnabled: false,
+    visibility: "PUBLIC",
+    thankYouMessage: "",
   });
 
   const isCreating = action === "create";
@@ -41,7 +43,7 @@ export default function CreateUpdateWishPage({
     } else {
       // send the data to API
       console.log("Submitting wish:", data);
-      router.push("/dashboard");
+      router.push("/wishes");
     }
   };
 

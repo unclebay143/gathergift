@@ -33,7 +33,7 @@ export function WishPreview({ wishData }: WishPreviewProps) {
             <div className='mt-6 p-6 rounded-lg bg-gradient-to-br from-violet-50 via-purple-50 to-pink-50 dark:from-violet-950/30 dark:via-purple-950/30 dark:to-pink-950/30 border border-purple-100/50 dark:border-purple-900/50 shadow-inner'>
               <h3 className='font-semibold mb-2'>Thank You Message</h3>
               <p className='text-sm italic'>
-                &quote;{wishData.thankYouMessage}&quote;
+                &quot;{wishData.thankYouMessage}&quot;
               </p>
             </div>
           )}

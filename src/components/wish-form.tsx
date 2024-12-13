@@ -27,7 +27,8 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { ArrowRight, Plus, Trash2, Upload } from "lucide-react";
-import { Wish } from "@/types";
+import { Wish, Categories } from "@/types";
+import { CATEGORIES, CATEGORY_TAG_LINES } from "@/const";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_IMAGE_TYPES = [
@@ -41,7 +42,8 @@ export const wishFormSchema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().min(1, "Description is required"),
   currency: z.enum(["USD", "NGN"]).nullable(),
-  category: z.enum(["Wedding", "Christmas"]).nullable(),
+  visibility: z.enum(["PUBLIC", "PRIVATE"]),
+  category: z.enum(CATEGORIES).nullable(),
   target: z.number().min(1, "Target amount must be greater than 0").nullable(),
   endDate: z.string().min(1, "End date is required"),
   itemsEnabled: z.boolean(),
@@ -88,6 +90,7 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
       currency: initialData?.currency,
       category: initialData?.category,
       thankYouMessage: initialData?.thankYouMessage || "",
+      visibility: initialData?.visibility || "PUBLIC",
       itemsEnabled: initialData?.itemsEnabled ?? true,
       items: initialData?.items || [],
       target: initialData?.target ?? null,
@@ -104,12 +107,25 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
     name: "items",
   });
 
+  const category = useWatch({
+    control: form.control,
+    name: "category",
+  });
+
+  useEffect(() => {
+    if (category) {
+      form.setValue("description", CATEGORY_TAG_LINES[category]);
+    }
+  }, [category, form]);
+
   const handleImageUpload = useCallback(
     (index: number, file: File) => {
       form.setValue(`items.${index}.image`, file);
     },
     [form]
   );
+
+  console.log("loop");
 
   useEffect(() => {
     if (itemsEnabled) {
@@ -158,8 +174,11 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
                 <SelectContent>
                   <SelectGroup>
                     <SelectLabel>Categories</SelectLabel>
-                    <SelectItem value='Wedding'>Wedding</SelectItem>
-                    <SelectItem value='Christmas'>Christmas</SelectItem>
+                    {CATEGORIES.map((category) => (
+                      <SelectItem value={category} key={category}>
+                        {category}
+                      </SelectItem>
+                    ))}
                   </SelectGroup>
                 </SelectContent>
               </Select>
@@ -202,19 +221,7 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name='endDate'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>End Date</FormLabel>
-              <FormControl>
-                <Input className='bg-zinc-50' type='date' {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+
         <FormField
           control={form.control}
           name='currency'
@@ -323,7 +330,10 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
                 name={`items.${index}.description`}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Item Description</FormLabel>
+                    <FormLabel>
+                      Item Description{" "}
+                      <span className='text-xs text-zinc-400'>(Optional)</span>
+                    </FormLabel>
                     <FormControl>
                       <Textarea
                         placeholder='Describe how this item will help with your wish...'
@@ -395,6 +405,7 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
             <Plus className='mr-2 h-4 w-4' /> Add Item
           </Button>
         </div>
+
         <FormField
           control={form.control}
           name='target'
@@ -427,6 +438,28 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
             </FormItem>
           )}
         />
+
+        <FormField
+          control={form.control}
+          name='endDate'
+          render={({ field }) => (
+            <FormItem>
+              <div className='space-y-0.5'>
+                <FormLabel>End Date</FormLabel>
+                <FormDescription>
+                  Specify the date when contributions will no longer be
+                  accepted.
+                </FormDescription>
+              </div>
+
+              <FormControl>
+                <Input className='bg-zinc-50' type='date' {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <FormField
           control={form.control}
           name='thankYouMessage'
@@ -446,6 +479,42 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
             </FormItem>
           )}
         />
+
+        <FormField
+          control={form.control}
+          name='visibility'
+          render={({ field }) => (
+            <FormItem className='flex bg-zinc-50 flex-row items-center justify-between'>
+              <div className='space-y-0.5'>
+                <FormLabel className='capitalize text-base'>
+                  Visibility ({field.value.toLowerCase()})
+                </FormLabel>
+                <FormDescription>
+                  Decide who can view this wish list. Use the toggle to make it
+                  public for everyone or private for personal use.
+                </FormDescription>
+              </div>
+              <FormControl>
+                <Switch
+                  checked={field.value === "PUBLIC" ? true : false}
+                  onCheckedChange={(checked) => {
+                    field.onChange(checked ? "PUBLIC" : "PRIVATE");
+                    if (!checked) {
+                      form.setValue(
+                        "visibility",
+                        checked ? "PUBLIC" : "PRIVATE",
+                        {
+                          shouldValidate: true,
+                        }
+                      );
+                    }
+                  }}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
         <div className='w-full flex items-end justify-end'>
           <Button type='submit'>
             Preview <ArrowRight className='ml-2 h-4 w-4' />

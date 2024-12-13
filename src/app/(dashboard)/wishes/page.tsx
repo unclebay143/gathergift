@@ -7,18 +7,16 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import {
-  Cake,
-  EllipsisVertical,
-  ExternalLink,
-  Plus,
-  Settings,
-  Snowflake,
-  Trash,
-  Trash2,
-} from "lucide-react";
+import { EllipsisVertical, ExternalLink, Plus, Settings } from "lucide-react";
+
 import Link from "next/link";
 import React from "react";
+import { Switch } from "@/components/ui/switch";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 const wishes = [
   {
     id: 1,
@@ -33,6 +31,8 @@ const wishes = [
   },
 ];
 const Page = () => {
+  // const isMobile = useIsMobile();
+
   return (
     <>
       {/* <div className='grid auto-rows-min gap-4 md:grid-cols-3'>
@@ -99,7 +99,7 @@ const Page = () => {
 
       <div className='flex flex-col'>
         <div className='container w-full mx-auto px-4 py-6 lg:px-8'>
-          <div className='flex items-center justify-between'>
+          <div className='flex flex-col sm:flex-row gap-4  sm:items-center justify-between'>
             <div>
               <h1 className='text-3xl font-bold tracking-tight text-gray-900'>
                 Wishes
@@ -116,7 +116,7 @@ const Page = () => {
             </Button>
           </div>
 
-          <div className='mt-8 grid gap-6 sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-4'>
+          <div className='mt-8 grid gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4'>
             {wishes.map((wish) => (
               <Card
                 key={wish.id}
@@ -163,13 +163,26 @@ const Page = () => {
                 <CardFooter>
                   <div className='flex items-center justify-between w-full gap-1'>
                     <div className='flex items-center'>
-                      <Button
-                        variant='ghost'
-                        className='h-8 w-8 rounded-full text-zinc-600'
-                      >
-                        {/* <EllipsisVertical /> */}
-                        <Trash2 />
-                      </Button>
+                      <Popover>
+                        <PopoverTrigger>
+                          <Button
+                            variant='ghost'
+                            className='h-8 w-8 rounded-full text-zinc-600'
+                          >
+                            <EllipsisVertical />
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent
+                          align='start'
+                          className='w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg'
+                        >
+                          <div className='flex justify-between cursor-default gap-2 select-none items-center rounded-sm text-sm outline-none focus:bg-accent data-[state=open]:bg-accent [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0'>
+                            Archive
+                            <Switch />
+                          </div>
+                        </PopoverContent>
+                      </Popover>
+
                       <Button
                         variant='ghost'
                         className='h-8 w-8 rounded-full text-zinc-600'
