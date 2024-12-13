@@ -1,3 +1,4 @@
+import { formatCurrencyWithComma } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -74,7 +75,9 @@ export const WishCard = ({
               />
             </div>
             <div className='flex justify-between'>
-              <p className='text-xs text-right text-zinc-500'>{amount}</p>
+              <p className='text-xs text-right text-zinc-500'>
+                {formatCurrencyWithComma(amount)}
+              </p>
               <p className='text-xs text-right text-zinc-500'>
                 75% funded for 4 items
               </p>

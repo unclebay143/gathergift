@@ -35,7 +35,7 @@ export default function Footer() {
           </Link>
         </nav>
         <p className='mt-8 text-center text-base text-gray-400'>
-          © 2023 GatherGift. All rights reserved.
+          © {new Date().getFullYear()} GatherGift. All rights reserved.
         </p>
       </div>
     </footer>
