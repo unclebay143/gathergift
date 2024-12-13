@@ -1,7 +1,6 @@
 import React from "react";
 
 import {
-  Gift,
   Cake,
   BellRingIcon as Ring,
   GraduationCapIcon as Graduation,
@@ -47,7 +46,7 @@ export const Occasions = () => {
         </p>
         <p className='mx-auto mt-5 max-w-prose text-xl text-gray-500'>
           GatherGift makes it easy to create and manage wishlists for all of
-          life's special moments.
+          life&apos;s special moments.
         </p>
         <div className='mt-12'>
           <div className='grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4'>

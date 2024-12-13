@@ -1,1 +1,2 @@
-export const getDynamicParams = async (params: { _id: string }) => params;
+export const getDynamicParams = async (params: Promise<{ _id: string }>) =>
+  params;
