@@ -7,7 +7,6 @@ import {
 import React from "react";
 
 import { Separator } from "@/components/ui/separator";
-import { usePathname } from "next/navigation";
 import { DashboardBreadCrumb } from "./dashboard-breadcrumb";
 
 export default function DashboardLayout({

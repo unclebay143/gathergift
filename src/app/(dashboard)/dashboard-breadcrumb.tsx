@@ -12,8 +12,6 @@ import {
 import { create } from "zustand";
 import { usePathname } from "next/navigation";
 
-type Props = {};
-
 type Item = { href: string; label: string; isCurrent?: boolean };
 type Items = Item[];
 
@@ -47,7 +45,7 @@ export const useDashboardBreadCrumb = create<DashboardBreadCrumbStore>(
   })
 );
 
-export const DashboardBreadCrumb = (props: Props) => {
+export const DashboardBreadCrumb = () => {
   const { items } = useDashboardBreadCrumb();
   const currentItem = items.find((item) => item.isCurrent);
   const previewItems = items.filter(
