@@ -164,7 +164,7 @@ const Page = () => {
                   <div className='flex items-center justify-between w-full gap-1'>
                     <div className='flex items-center'>
                       <Popover>
-                        <PopoverTrigger>
+                        <PopoverTrigger asChild>
                           <Button
                             variant='ghost'
                             className='h-8 w-8 rounded-full text-zinc-600'
@@ -174,10 +174,24 @@ const Page = () => {
                         </PopoverTrigger>
                         <PopoverContent
                           align='start'
-                          className='w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg'
+                          className='w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg flex flex-col gap-3'
                         >
-                          <div className='flex justify-between cursor-default gap-2 select-none items-center rounded-sm text-sm outline-none focus:bg-accent data-[state=open]:bg-accent [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0'>
-                            Archive
+                          <div className='flex justify-between cursor-default gap-5 select-none items-center rounded-sm text-sm outline-none focus:bg-accent data-[state=open]:bg-accent [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0'>
+                            <p className='flex flex-col'>
+                              Archive
+                              <span className='text-xs text-zinc-500'>
+                                Soft delete this wish list.
+                              </span>
+                            </p>
+                            <Switch />
+                          </div>
+                          <div className='flex justify-between cursor-default gap-5 select-none items-center rounded-sm text-sm outline-none focus:bg-accent data-[state=open]:bg-accent [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0'>
+                            <p className='flex flex-col'>
+                              Visibility
+                              <span className='text-xs text-zinc-500'>
+                                Remove it from community view.
+                              </span>
+                            </p>
                             <Switch />
                           </div>
                         </PopoverContent>

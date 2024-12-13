@@ -14,7 +14,7 @@ export default function Navigation() {
                 GatherGift
               </span>
             </Link>
-            <div className='hidden sm:ml-6 md:flex sm:space-x-8'>
+            <div className='hidden sm:ml-6 md:flex sm:space-x-8 items-center'>
               <Link
                 href='/#how-it-works'
                 className='inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-700'
@@ -36,10 +36,12 @@ export default function Navigation() {
             </div>
           </div>
           <div className='hidden sm:ml-6 sm:flex sm:items-center'>
-            <Button variant='outline' className='mr-2'>
-              Log in
+            <Button variant='outline' className='mr-2' asChild>
+              <Link href='/onboard'>Log in</Link>
             </Button>
-            <Button>Sign up</Button>
+            <Button asChild>
+              <Link href='/onboard'>Sign up</Link>
+            </Button>
           </div>
         </div>
       </div>
