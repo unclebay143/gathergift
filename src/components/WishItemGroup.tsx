@@ -101,7 +101,7 @@ export function WishItemGroup({ items }: WishItemGroupProps) {
         );
       })}
 
-      <div className='flex items-center mb-2 sm:mb-0 px-4'>
+      <div className='border rounded-md p-4 mb-4 bg-zinc-100'>
         <Checkbox
           checked={allSelected}
           onChange={() => {
