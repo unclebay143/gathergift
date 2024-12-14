@@ -1,5 +1,3 @@
-import Image from "next/image";
-
 const testimonials = [
   {
     content:
@@ -33,8 +31,8 @@ export default function Testimonials() {
             Hear from our happy users
           </h2>
           <p className='mt-4 max-w-3xl mx-auto text-center text-xl text-gray-500'>
-            GatherGift has brought joy to countless people. Here's what they
-            have to say:
+            GatherGift has brought joy to countless people. Here&apos;s what
+            they have to say:
           </p>
         </div>
         <div className='mt-20'>
@@ -65,7 +63,7 @@ export default function Testimonials() {
                     </div>
                   </div>
                   <div className='mt-4 text-base text-gray-500'>
-                    "{testimonial.content}"
+                    &quot;{testimonial.content}&quot;
                   </div>
                 </div>
               </div>
