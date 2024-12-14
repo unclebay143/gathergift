@@ -42,7 +42,7 @@ const PUT = async (request: NextRequest, context: { params: { _id: string } }) =
 }
 
 
-const DELETE = async (request: NextResponse, context: { params: { _id: string } }) => {
+const DELETE = async (request: NextRequest, context: { params: { _id: string } }) => {
     try {
         const { _id: id } = await getDynamicParams(context.params);
         if (!id) {
