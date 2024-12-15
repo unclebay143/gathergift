@@ -1,7 +1,7 @@
 import { PublicLayout } from "@/app/public-layout";
-import { featuredWishlists } from "@/components/public/FeaturedWishlists";
 import { WishItemGroup } from "@/components/WishItemGroup";
 import { DEFAULT_FEMALE_AVATAR, DEFAULT_MALE_AVATAR } from "@/utils";
+import { wishes } from "@/utils/dummy";
 import Image from "next/image";
 
 export default function ChristmasWishlist() {
@@ -54,7 +54,7 @@ export default function ChristmasWishlist() {
                 Gift Wishes
               </h2>
               <div className='space-y-3' id='selections'>
-                <WishItemGroup items={featuredWishlists} />
+                <WishItemGroup items={wishes[0].items} />
               </div>
             </section>
             <section className='bg-white rounded-lg shadow-md p-6 space-y-4 max-w-4xl mx-auto'>

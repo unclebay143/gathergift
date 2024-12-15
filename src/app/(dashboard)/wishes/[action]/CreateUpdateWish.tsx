@@ -13,13 +13,13 @@ import { Wish } from "@/types";
 export function CreateUpdateWish({ action }: { action: string }) {
   const router = useRouter();
   const [step, setStep] = useState(1);
-  const [wishData, setWishData] = useState<Wish>({
-    _id: "",
-    isArchived: false,
+  const [wishData, setWishData] = useState<
+    Omit<Wish, "contributed_amount" | "wish" | "owner" | "isArchived" | "_id">
+  >({
     title: "",
     description: "",
-    target: 0,
-    endDate: "",
+    target_amount: 0,
+    endDate: new Date(),
     items: [],
     currency: null,
     category: null,
@@ -32,7 +32,12 @@ export function CreateUpdateWish({ action }: { action: string }) {
   const isCreateScreen = step === 1;
   const isPreviewScreen = step === 2;
 
-  const handleSubmit = (data: Wish) => {
+  const handleSubmit = (
+    data: Omit<
+      Wish,
+      "contributed_amount" | "wish" | "owner" | "isArchived" | "_id"
+    >
+  ) => {
     console.log(data);
     setWishData(data);
     if (step < 2) {

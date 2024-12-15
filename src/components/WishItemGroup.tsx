@@ -71,13 +71,13 @@ export function WishItemGroup({ items }: WishItemGroupProps) {
     console.log(newContributions);
     // send this data to backend
     // Update the fundedPercentage of items based on contributions
-    wishes.forEach((item) => {
-      if (newContributions[item._id]) {
-        const contributionPercentage =
-          (newContributions[item._id] / item.amount) * 100;
-        item.progress = Math.min(100, item.progress + contributionPercentage);
-      }
-    });
+    // wishes.forEach((item) => {
+    //   if (newContributions[item._id]) {
+    //     const contributionPercentage =
+    //       (newContributions[item._id] / item.amount) * 100;
+    //     item.progress = Math.min(100, item.progress + contributionPercentage);
+    //   }
+    // });
   };
 
   return (
@@ -142,9 +142,7 @@ export function WishItemGroup({ items }: WishItemGroupProps) {
       <ContributionModal
         isOpen={isContributionModalOpen}
         onClose={() => setIsContributionModalOpen(false)}
-        selectedItems={featuredWishlists.filter((item) =>
-          selectedItems.has(item._id)
-        )}
+        selectedItems={wishes.filter((item) => selectedItems.has(item._id))}
         onContribute={handleContribute}
         initialContributions={contributions}
       />

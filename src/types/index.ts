@@ -1,13 +1,13 @@
 import { WISH_CATEGORIES } from "@/const";
 
 export type Item = {
-  _id: string;
-  wish: string;
+  _id?: string;
+  wish?: string;
   name: string;
   description?: string;
   image_url?: string;
   amount: number;
-  contributed_amount: number;
+  contributed_amount?: number;
 };
 export type Items = Item[];
 
@@ -19,7 +19,7 @@ export type Wish = {
   coverImage?: string;
   visibility: "PUBLIC" | "PRIVATE";
   title: string;
-  endDate: Date;
+  endDate?: Date;
   description: string;
   items: Items;
   currency: "NGN" | "USD" | null;

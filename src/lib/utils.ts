@@ -5,7 +5,11 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatCurrencyWithComma(amount: number | string): string {
+export function formatCurrencyWithComma(
+  amount: number | string
+): string | number {
+  if (!amount) return amount;
+
   const numericAmount =
     typeof amount === "string" ? parseFloat(amount) : amount;
 
