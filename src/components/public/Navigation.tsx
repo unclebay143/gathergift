@@ -40,7 +40,7 @@ export default function Navigation() {
               <Link href='/onboard'>Log in</Link>
             </Button>
             <Button asChild>
-              <Link href='/onboard'>Sign up</Link>
+              <Link href='/onboard?view=signup'>Sign up</Link>
             </Button>
           </div>
         </div>

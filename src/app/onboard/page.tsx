@@ -1,20 +1,20 @@
 "use client";
 
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
-// import { Gift } from "lucide-react";
-// import Link from "next/link";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
 export default function AuthPage() {
-  
-  const [authMode, setAuthMode] = useState<"login" | "signup">("login");
+  const searchParams = useSearchParams();
+  const isSignupView = searchParams.get("view") === "signup";
+  const [authMode, setAuthMode] = useState<"login" | "signup">(
+    isSignupView ? "signup" : "login"
+  );
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const router = useRouter();
-
 
   // SIGN-UP INTEGRATION
   const handleSignup = async (event: React.FormEvent) => {
@@ -23,13 +23,13 @@ export default function AuthPage() {
     const response = await fetch("/api/auth/signup", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         email,
         password,
-        confirmPassword
-      })
+        confirmPassword,
+      }),
     });
 
     const data = await response.json();
@@ -37,26 +37,26 @@ export default function AuthPage() {
     if (response.ok) {
       toast(data.message);
     } else {
-      toast(data.message || "Unable to create User")
+      toast(data.message || "Unable to create User");
     }
-  }
+  };
 
   //SIGN-IN INTEGRATION
   const handlelogin = async (event: React.FormEvent) => {
     event.preventDefault();
-  
+
     const response = await signIn("credentials", {
       email,
       password,
       redirect: false,
       callbackUrl: "/dashboard",
     });
-  
+
     if (response?.error) {
       toast.error(response.error || "Invalid email or password");
     } else {
       toast.success("Login successful");
-      router.push(  "/dashboard");
+      router.push("/dashboard");
     }
   };
 
@@ -99,7 +99,10 @@ export default function AuthPage() {
               </button>
             </div>
 
-            <form className='space-y-6' onSubmit={authMode === "signup" ? handleSignup : handlelogin}>
+            <form
+              className='space-y-6'
+              onSubmit={authMode === "signup" ? handleSignup : handlelogin}
+            >
               <div>
                 <label
                   htmlFor='email'
@@ -138,19 +141,19 @@ export default function AuthPage() {
               {authMode === "signup" && (
                 <div>
                   <label
-                    htmlFor="confirmPassword"
-                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                    htmlFor='confirmPassword'
+                    className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'
                   >
                     Confirm Password
                   </label>
                   <input
-                    type="password"
-                    id="confirmPassword"
-                    name="confirmPassword"
+                    type='password'
+                    id='confirmPassword'
+                    name='confirmPassword'
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-transparent transition-colors duration-200"
-                    placeholder="Confirm your password"
+                    className='w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-transparent transition-colors duration-200'
+                    placeholder='Confirm your password'
                   />
                 </div>
               )}
