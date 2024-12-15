@@ -57,8 +57,6 @@ export const WishesPage = () => {
     refetchOnWindowFocus: true,
   });
 
-  console.log(wishes);
-
   const [
     isSearchMode,
     // setIsSearchMode

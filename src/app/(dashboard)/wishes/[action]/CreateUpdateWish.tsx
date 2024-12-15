@@ -46,7 +46,7 @@ export function CreateUpdateWish({ action }: { action: string }) {
     onSuccess({ data }) {
       toast.success("Wish created successfully.");
       const wishListId = data.wishlist;
-      console.log(wishListId);
+      void wishListId; // to prevent unused variable
       // Todo: redirect to wish page itself `/[username]/wishes/wishListId`
       router.push("/wishes");
     },

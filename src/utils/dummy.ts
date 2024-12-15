@@ -14,13 +14,19 @@ export const wishes: Wishes = [
     items: [
       {
         wish: "",
-        _id: "",
+        image_url:
+          "https://gathergift.vercel.app/_next/image?url=https%3A%2F%2Friverfrontestates.ca%2Fwp-content%2Fuploads%2F2016%2F05%2FNew-Construction-Homes.jpg&w=1920&q=75",
+        contributed_amount: 100,
+        _id: "7",
         name: "Wedding Cake",
         amount: 50000,
       },
       {
         wish: "",
-        _id: "",
+        image_url:
+          "https://gathergift.vercel.app/_next/image?url=https%3A%2F%2Friverfrontestates.ca%2Fwp-content%2Fuploads%2F2016%2F05%2FNew-Construction-Homes.jpg&w=1920&q=75",
+        contributed_amount: 100,
+        _id: "6",
         name: "Venue Decoration",
         amount: 300000,
       },
@@ -44,13 +50,19 @@ export const wishes: Wishes = [
     items: [
       {
         wish: "",
-        _id: "",
+        image_url:
+          "https://gathergift.vercel.app/_next/image?url=https%3A%2F%2Friverfrontestates.ca%2Fwp-content%2Fuploads%2F2016%2F05%2FNew-Construction-Homes.jpg&w=1920&q=75",
+        contributed_amount: 100,
+        _id: "5",
         name: "Baby Crib",
         amount: 80000,
       },
       {
         wish: "",
-        _id: "",
+        image_url:
+          "https://gathergift.vercel.app/_next/image?url=https%3A%2F%2Friverfrontestates.ca%2Fwp-content%2Fuploads%2F2016%2F05%2FNew-Construction-Homes.jpg&w=1920&q=75",
+        contributed_amount: 100,
+        _id: "44",
         name: "Diaper Supply",
         amount: 20000,
       },
@@ -73,13 +85,19 @@ export const wishes: Wishes = [
     items: [
       {
         wish: "",
+        image_url:
+          "https://gathergift.vercel.app/_next/image?url=https%3A%2F%2Friverfrontestates.ca%2Fwp-content%2Fuploads%2F2016%2F05%2FNew-Construction-Homes.jpg&w=1920&q=75",
+        contributed_amount: 100,
         _id: "",
         name: "Christmas Tree",
         amount: 50000,
       },
       {
         wish: "",
-        _id: "",
+        image_url:
+          "https://gathergift.vercel.app/_next/image?url=https%3A%2F%2Friverfrontestates.ca%2Fwp-content%2Fuploads%2F2016%2F05%2FNew-Construction-Homes.jpg&w=1920&q=75",
+        contributed_amount: 100,
+        _id: "3",
         name: "Holiday Feast",
         amount: 100000,
       },
@@ -102,13 +120,19 @@ export const wishes: Wishes = [
     items: [
       {
         wish: "",
-        _id: "",
+        image_url:
+          "https://gathergift.vercel.app/_next/image?url=https%3A%2F%2Friverfrontestates.ca%2Fwp-content%2Fuploads%2F2016%2F05%2FNew-Construction-Homes.jpg&w=1920&q=75",
+        contributed_amount: 100,
+        _id: "1",
         name: "Flight Tickets",
         amount: 1500000,
       },
       {
         wish: "",
-        _id: "",
+        image_url:
+          "https://gathergift.vercel.app/_next/image?url=https%3A%2F%2Friverfrontestates.ca%2Fwp-content%2Fuploads%2F2016%2F05%2FNew-Construction-Homes.jpg&w=1920&q=75",
+        contributed_amount: 100,
+        _id: "2",
         name: "Hotel Stay",
         amount: 1000000,
       },
