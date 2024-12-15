@@ -8,9 +8,10 @@ import { User } from "@/model/users";
 const POST = async (request: NextRequest) => {
   try {
     const wish = await request.json();
-    const { owner, title, category, items } = wish;
 
-    if (!owner || !title || !category) {
+    const { title, category, items } = wish;
+
+    if (!title || !category) {
       return NextResponse.json(
         { message: "Missing required fields: owner, title, or category" },
         { status: 400 }
@@ -24,14 +25,28 @@ const POST = async (request: NextRequest) => {
       );
     }
 
+    const session = await getServerSessionWithAuthOptions();
+
+    if (!session) {
+      return NextResponse.json(
+        { message: "Missing required fields: owner, title, or category" },
+        { status: 404 }
+      );
+    }
+
     await connectMongoose();
+    const user = await User.findOne({ email: session.user?.email });
 
     // Separate items from the rest of the wish data
     const { items: excludeItemsFromWish, ...restOfWish } = wish;
 
     let wishlist;
     try {
-      wishlist = await Wish.create(restOfWish);
+      wishlist = await Wish.create({
+        owner: user._id,
+        status: "ONGOING",
+        ...restOfWish,
+      });
     } catch (err) {
       console.error("Error creating wishlist:", err);
       return NextResponse.json(
@@ -68,7 +83,6 @@ const POST = async (request: NextRequest) => {
       { status: 201 }
     );
   } catch (error) {
-    console.error("Unhandled error creating wishlist:", error);
     return NextResponse.json(
       {
         message: "Unhandled error creating wishlist",
@@ -97,12 +111,27 @@ const GET = async () => {
     if (!user) {
       return NextResponse.json({ message: "No user found " }, { status: 404 });
     }
+    // Todo: populate the items of each wishes using aggregates before sending to client
     const wishes = await Wish.find({ owner: user._id });
+
+    const wishesWithItems = await Wish.aggregate([
+      { $match: { owner: user._id } },
+      {
+        $lookup: {
+          from: "wishitems",
+          localField: "_id",
+          foreignField: "wish",
+          as: "items",
+        },
+      },
+    ]);
+
+    console.log(wishesWithItems);
 
     return NextResponse.json(wishes, { status: 200 });
   } catch (error) {
     return NextResponse.json(
-      { message: "Error fetching user", error },
+      { message: "Error fetching wishes", error },
       { status: 500 }
     );
   }

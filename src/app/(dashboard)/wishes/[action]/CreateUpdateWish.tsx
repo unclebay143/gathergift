@@ -9,6 +9,10 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Wish } from "@/types";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import { getSession } from "next-auth/react";
+import { toast } from "sonner";
 
 export function CreateUpdateWish({ action }: { action: string }) {
   const router = useRouter();
@@ -32,20 +36,38 @@ export function CreateUpdateWish({ action }: { action: string }) {
   const isCreateScreen = step === 1;
   const isPreviewScreen = step === 2;
 
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (
+      data: Omit<
+        Wish,
+        "contributed_amount" | "wish" | "owner" | "isArchived" | "_id"
+      >
+    ) =>
+      (await axios.post("/api/wishes", data)) as { data: { wishlist: Wish } },
+    onSuccess({ data }) {
+      toast.success("Wish created successfully.");
+      const wishListId = data.wishlist;
+      console.log(wishListId);
+      // Todo: redirect to wish page itself `/[username]/wishes/wishListId`
+      router.push("/wishes");
+    },
+    onError(error) {
+      console.log(error);
+      toast.error("Error creating wish");
+    },
+  });
+
   const handleSubmit = (
     data: Omit<
       Wish,
       "contributed_amount" | "wish" | "owner" | "isArchived" | "_id"
     >
   ) => {
-    console.log(data);
     setWishData(data);
     if (step < 2) {
       setStep(step + 1);
     } else {
-      // send the data to API
-      console.log("Submitting wish:", data);
-      router.push("/wishes");
+      mutate(data);
     }
   };
 
@@ -113,8 +135,16 @@ export function CreateUpdateWish({ action }: { action: string }) {
         )}
 
         {isPreviewScreen && (
-          <Button onClick={() => handleSubmit(wishData)} className='ml-auto'>
-            {isPreviewScreen ? "Create Wish" : "Update Wish"}
+          <Button
+            onClick={() => handleSubmit(wishData)}
+            className='ml-auto'
+            disabled={isPending}
+          >
+            {isPending ? (
+              "Please wait..."
+            ) : (
+              <>{isPreviewScreen ? "Create Wish" : "Update Wish"}</>
+            )}
           </Button>
         )}
       </div>

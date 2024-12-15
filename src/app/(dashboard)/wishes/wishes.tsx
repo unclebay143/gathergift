@@ -42,7 +42,7 @@ import {
   calculateProgressPercentage,
   formatCurrencyWithComma,
 } from "@/lib/utils";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 dayjs.extend(relativeTime);
 
@@ -50,46 +50,48 @@ export const WishesPage = () => {
   const { data: wishes, isLoading } = useQuery({
     queryFn: async () => {
       const res = await fetch("api/wishes");
-      return res.json();
+      const data = await res.json();
+      return data as Wishes;
     },
     queryKey: ["wishes"],
+    refetchOnWindowFocus: true,
   });
 
-  const [searchTerm, setSearchTerm] = useState("");
-  const [wishesState, setWishesState] = useState<Wishes>(wishes ?? []);
+  const [isSearchMode, setIsSearchMode] = useState(false);
+  // const [searchTerm, setSearchTerm] = useState("");
+  // const [wishesState, setWishesState] = useState<Wishes>(wishes ?? []);
 
-  const showEmptyState = wishesState.length === 0;
+  const showEmptyState = wishes?.length === 0;
 
-  const filteredWishes = wishesState.filter(
-    (wish) =>
-      (wish.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        wish.description.toLowerCase().includes(searchTerm.toLowerCase())) &&
-      !wish.isArchived
-  );
+  // const filteredWishes = wishes?.filter(
+  //   (wish) =>
+  //     (wish.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //       wish.description.toLowerCase().includes(searchTerm.toLowerCase())) &&
+  //     !wish.isArchived
+  // );
 
-  const handleToggleVisibility = (id: string) => {
-    setWishesState((prevWishes) =>
-      prevWishes.map((wish) =>
-        wish._id === id
-          ? {
-              ...wish,
-              visibility: wish.visibility === "PUBLIC" ? "PRIVATE" : "PUBLIC",
-            }
-          : wish
-      )
-    );
-  };
+  // const handleToggleVisibility = (id: string) => {
+  //   setWishesState((prevWishes) =>
+  //     prevWishes?.map((wish) =>
+  //       wish._id === id
+  //         ? {
+  //             ...wish,
+  //             visibility: wish.visibility === "PUBLIC" ? "PRIVATE" : "PUBLIC",
+  //           }
+  //         : wish
+  //     )
+  //   );
+  // };
 
-  const handleArchive = (id: string) => {
-    setWishesState((prevWishes) =>
-      prevWishes.filter((wish) => wish._id !== id)
-    );
-  };
+  // const handleArchive = (id: string) => {
+  //   setWishesState((prevWishes) =>
+  //     prevWishes?.filter((wish) => wish._id !== id)
+  //   );
+  // };
 
   if (isLoading) {
     return <LoaderScreen />;
   }
-
   return (
     <>
       <div className='container w-full mx-auto px-4 py-6 lg:px-8 flex flex-col gap-8'>
@@ -99,7 +101,7 @@ export const WishesPage = () => {
               My Wishes
             </h1>
             <p className='text-muted-foreground'>
-              Track and manage your gift wishes. Create new wishes, set goals,
+              Track and manage your gift wishes?. Create new wishes, set goals,
               and share with friends and family.
             </p>
           </div>
@@ -109,10 +111,10 @@ export const WishesPage = () => {
                 <Search className='absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400' />
                 <Input
                   type='text'
-                  placeholder='Search wishes...'
+                  placeholder='Search wishes?...'
                   className='pl-8 w-[200px] md:w-[300px]'
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  // value={searchTerm}
+                  // onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
               <Button asChild className='bg-black hover:bg-gray-800'>
@@ -146,7 +148,7 @@ export const WishesPage = () => {
         )}
 
         <div className='grid gap-6 md:grid-cols-2 lg:grid-cols-4'>
-          {filteredWishes.map((wish) => (
+          {wishes?.map((wish) => (
             <Card
               key={wish._id}
               className='overflow-hidden transition-all duration-300 hover:shadow-xl group dark:bg-gray-800/50 backdrop-blur-sm '
@@ -180,7 +182,7 @@ export const WishesPage = () => {
                     className='bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200'
                   >
                     <Gift className='mr-1 h-3 w-3' />
-                    {wish.items.length} items
+                    {wish?.items?.length || "0"} items
                   </Badge>
                   <span className='text-sm text-muted-foreground flex items-center'>
                     <Calendar className='inline mr-1 h-3 w-3' />
@@ -222,7 +224,7 @@ export const WishesPage = () => {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align='end'>
                       <DropdownMenuItem
-                        onClick={() => handleToggleVisibility(wish._id)}
+                      // onClick={() => handleToggleVisibility(wish._id)}
                       >
                         {wish.visibility === "PUBLIC" ? (
                           <>
@@ -247,7 +249,7 @@ export const WishesPage = () => {
                       <DropdownMenuSeparator />
                       <DropdownMenuItem
                         className='text-red-600'
-                        onClick={() => handleArchive(wish._id)}
+                        // onClick={() => handleArchive(wish._id)}
                       >
                         <Archive className='mr-2 h-4 w-4' />
                         Archive Wish
@@ -260,7 +262,7 @@ export const WishesPage = () => {
           ))}
         </div>
 
-        {wishesState.length > 0 && filteredWishes.length === 0 && (
+        {isSearchMode && wishes?.length === 0 && (
           <div className='text-center py-24 border border-dashed rounded-lg'>
             <h3 className='text-2xl font-semibold text-gray-600 dark:text-gray-400 mb-2'>
               No wishes found

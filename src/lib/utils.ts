@@ -15,7 +15,8 @@ export function formatCurrencyWithComma(
     typeof amount === "string" ? parseFloat(amount) : amount;
 
   if (isNaN(numericAmount)) {
-    throw new Error("Invalid amount: Unable to format.");
+    return (numericAmount ?? "").toString();
+    // throw new Error("Invalid amount: Unable to format.");
   }
 
   return numericAmount

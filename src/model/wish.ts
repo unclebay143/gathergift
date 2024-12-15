@@ -32,6 +32,14 @@ const WishSchema: Schema = new Schema(
       enum: CURRENCIES,
       required: true,
     },
+    target_amount: {
+      type: Number,
+      required: true,
+    },
+    contributed_amount: {
+      type: Number,
+      default: 0,
+    },
     description: {
       type: String,
       required: true,
