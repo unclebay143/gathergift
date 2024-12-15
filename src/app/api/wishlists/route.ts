@@ -1,55 +1,80 @@
 import connectMongoose from "@/lib/mongodb";
-import { WishLists } from "@/model/wishlists";
+import { WishItem } from "@/model/wishItems";
+import { Wish } from "@/model/wish";
 import { NextRequest, NextResponse } from "next/server";
 
-interface WishlistRequest { 
-    user_id: string; 
-    name: string; 
-    occasion: string; 
-    items: { 
-        title: string; 
-        description?: string; 
-        image_url?: string; 
-        target_amount: string; 
-        currency?: string;
-        contributed_amount?: string; 
-        contributors?: { 
-            name: string; 
-            amount: number; 
-            contribution_date?: string; 
-            note?: string; 
-        }[]; 
-        status: 'open' | 'completed' | 'closed'; 
-    }[]; 
-    
-}
-
 const POST = async (request: NextRequest) => {
-    try {
-        const body: WishlistRequest = await request.json();
-        const { user_id, name, occasion, items } = body;
+  try {
+    const wish = await request.json();
+    const { owner, title, category, items } = wish;
 
-        if (!user_id || !name || !occasion || !items) {
-            return NextResponse.json(
-                { message: "Missing required fields"},
-                { status: 400 }
-            );
-        }
-        await connectMongoose();
-
-        const wishlist = await WishLists.create(body);
-
-        return NextResponse.json(
-            { message: 'Wishlist created Successfully!', wishlist },
-            { status: 201 }
-        );
-    } catch (error) {
-        console.error("Error creating wishlist", error);
-        return NextResponse.json(
-            { message: "Error creating wishlist", error },
-            { status: 500 }
-        )
+    if (!owner || !title || !category) {
+      return NextResponse.json(
+        { message: "Missing required fields: owner, title, or category" },
+        { status: 400 }
+      );
     }
-}
 
-export { POST }
+    if (items && !Array.isArray(items)) {
+      return NextResponse.json(
+        { message: "Items must be an array" },
+        { status: 400 }
+      );
+    }
+
+    await connectMongoose();
+
+    // Separate items from the rest of the wish data
+    const { items: excludeItemsFromWish, ...restOfWish } = wish;
+
+    let wishlist;
+    try {
+      wishlist = await Wish.create(restOfWish);
+    } catch (err) {
+      console.error("Error creating wishlist:", err);
+      return NextResponse.json(
+        {
+          message: "Error creating wishlist",
+          error: err instanceof Error ? err.message : String(err),
+        },
+        { status: 500 }
+      );
+    }
+
+    if (Array.isArray(items) && items.length > 0) {
+      const itemsToInsert = items.map((item) => ({
+        ...item,
+        wish: wishlist._id,
+      }));
+
+      try {
+        await WishItem.insertMany(itemsToInsert);
+      } catch (err) {
+        console.error("Error creating wishlist items:", err);
+        return NextResponse.json(
+          {
+            message: "Error creating wishlist items",
+            error: err instanceof Error ? err.message : String(err),
+          },
+          { status: 500 }
+        );
+      }
+    }
+
+    return NextResponse.json(
+      { message: "Wishlist created successfully!", wishlist },
+      { status: 201 }
+    );
+  } catch (error) {
+    console.error("Unhandled error creating wishlist:", error);
+    return NextResponse.json(
+      {
+        message: "Unhandled error creating wishlist",
+        error: error instanceof Error ? error.message : String(error),
+      },
+      { status: 500 }
+    );
+  }
+};
+
+export { POST };

@@ -11,7 +11,7 @@ export const CATEGORY_TAG_LINES = {
   Generic: "Bring joy to this special occasion with your generosity!",
 } as const;
 
-export const CATEGORIES = [
+export const WISH_CATEGORIES = [
   "Christmas",
   "Wedding",
   "Convocation",
@@ -23,3 +23,8 @@ export const CATEGORIES = [
   "Graduation",
   "Generic",
 ] as const;
+
+export const CURRENCIES = ["USD", "NGN"] as const;
+
+export const WISH_STATUS = ["ONGOING", "FULFILLED", "INACTIVE"];
+export const WISH_VISIBILITIES = ["PUBLIC", "PRIVATE"];

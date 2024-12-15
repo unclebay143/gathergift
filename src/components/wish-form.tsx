@@ -28,7 +28,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { ArrowRight, Plus, Trash2, Upload } from "lucide-react";
 import { Wish } from "@/types";
-import { CATEGORIES, CATEGORY_TAG_LINES } from "@/const";
+import { WISH_CATEGORIES, CATEGORY_TAG_LINES } from "@/const";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_IMAGE_TYPES = [
@@ -43,9 +43,9 @@ export const wishFormSchema = z.object({
   description: z.string().min(1, "Description is required"),
   currency: z.enum(["USD", "NGN"]).nullable(),
   visibility: z.enum(["PUBLIC", "PRIVATE"]),
-  category: z.enum(CATEGORIES).nullable(),
+  category: z.enum(WISH_CATEGORIES).nullable(),
   target: z.number().min(1, "Target amount must be greater than 0").nullable(),
-  endDate: z.string().min(1, "End date is required"),
+  endDate: z.date(),
   itemsEnabled: z.boolean(),
   thankYouMessage: z
     .string()
@@ -74,7 +74,19 @@ export const wishFormSchema = z.object({
 });
 
 type WishFormProps = {
-  onSubmit: (data: Wish) => void;
+  onSubmit: (
+    data: Omit<
+      Wish,
+      | "amount"
+      | "target_amount"
+      | "contributed_amount"
+      | "_id"
+      | "wish"
+      | "owner"
+      | "isArchived"
+      | "items"
+    >
+  ) => void;
   initialData?: Wish;
 };
 
@@ -93,7 +105,7 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
       visibility: initialData?.visibility || "PUBLIC",
       itemsEnabled: initialData?.itemsEnabled ?? true,
       items: initialData?.items || [],
-      target: initialData?.target ?? null,
+      target: initialData?.target_amount ?? null,
     },
   });
 
@@ -174,7 +186,7 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
                 <SelectContent>
                   <SelectGroup>
                     <SelectLabel>Categories</SelectLabel>
-                    {CATEGORIES.map((category) => (
+                    {WISH_CATEGORIES.map((category) => (
                       <SelectItem value={category} key={category}>
                         {category}
                       </SelectItem>
@@ -453,7 +465,12 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
               </div>
 
               <FormControl>
-                <Input className='bg-zinc-50' type='date' {...field} />
+                <Input
+                  className='bg-zinc-50'
+                  type='date'
+                  {...field}
+                  value={field.value.toString()}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

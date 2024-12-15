@@ -12,3 +12,15 @@ export function formatCurrencyWithComma(amount: number | string): string {
   // Ensure the number has two decimal places and add commas
   return numericAmount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
+
+export const calculateProgressPercentage = (
+  target_amount: number,
+  contributed_amount: number
+): number => {
+  if (target_amount <= 0) {
+    throw new Error("Target amount must be greater than zero.");
+  }
+
+  const percentage = (contributed_amount / target_amount) * 100;
+  return Math.min(Math.max(percentage, 0), 100); // Clamp between 0 and 100
+};

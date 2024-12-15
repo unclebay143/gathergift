@@ -28,6 +28,7 @@ export default function DashboardLayout({
           </header>
           <div className='p-4 pt-0'>
             <div className='min-h-screen flex flex-1 flex-col gap-4 rounded-xl'>
+              {/* <div className='min-h-screen flex flex-1 flex-col gap-4 rounded-xl bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-purple-50 via-pink-50 to-white dark:from-purple-900 dark:via-pink-900 dark:to-gray-900'> */}
               {children}
             </div>
           </div>
