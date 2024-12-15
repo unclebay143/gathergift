@@ -10,23 +10,21 @@ export const handleAuthentication = async ({
   data?: { email: string; password: string };
 }) => {
   try {
-    const csrfResponse = await fetch('/api/auth/csrf');
+    const csrfResponse = await fetch("/api/auth/csrf");
     const { csrfToken } = await csrfResponse.json();
 
     const response = await signIn(provider, {
       callbackUrl: nextUrl || `${window.location.origin}/dashboard`,
-      csrfToken, 
+      csrfToken,
       ...data,
       redirect: false,
     });
 
-    console.log("SignIn Response:", response);
     return response;
   } catch (err) {
     console.error("Error during authentication:", err);
   }
 };
-
 
 export const handleLogout = () => {
   signOut({

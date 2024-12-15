@@ -5,12 +5,18 @@ import Link from "next/link";
 import React from "react";
 
 export const WishCard = ({ data }: { data: Wish }) => {
-  const { description, coverImage, title, target_amount } = data;
+  const { description, coverImage, title, target_amount, items } = data;
+  const coverImageWithAltImg = coverImage ?? items[0]?.image_url;
   return (
     <div className='bg-white rounded-lg shadow-md overflow-hidden w-[300px] transition-transform hover:scale-105'>
       <div className='relative h-[200px] min-w-[200px] max-w-[300px] w-full'>
-        {coverImage && (
-          <Image layout='fill' objectFit='cover' src={coverImage} alt={title} />
+        {coverImageWithAltImg && (
+          <Image
+            layout='fill'
+            objectFit='cover'
+            src={coverImageWithAltImg}
+            alt={title}
+          />
         )}
         <div className='absolute top-2 right-2'>
           <svg

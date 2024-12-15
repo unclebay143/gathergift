@@ -7,7 +7,6 @@ import { WishCard } from "../WishCard";
 import { wishes } from "@/utils/dummy";
 
 export const InfiniteMovingCards = ({
-  //   items,
   direction = "left",
   speed = "fast",
   pauseOnHover = true,
