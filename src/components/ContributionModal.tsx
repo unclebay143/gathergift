@@ -3,16 +3,12 @@ import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Wishes } from "@/types";
 
 interface ContributionModalProps {
   isOpen: boolean;
   onClose: () => void;
-  selectedItems: Array<{
-    id: string;
-    name: string;
-    amount: number;
-    progress: number;
-  }>;
+  selectedItems: Wishes;
   onContribute: (contributions: Record<string, number>) => void;
   initialContributions: Record<string, number>;
 }
@@ -25,7 +21,7 @@ export function ContributionModal({
   initialContributions,
 }: ContributionModalProps) {
   const [contributions, setContributions] = useState<Record<string, number>>(
-    Object.fromEntries(selectedItems.map((item) => [item.id, 0]))
+    Object.fromEntries(selectedItems.map((item) => [item._id, 0]))
   );
 
   useEffect(() => {
@@ -33,13 +29,13 @@ export function ContributionModal({
       setContributions(() => {
         const newContributions = { ...initialContributions };
         selectedItems.forEach((item) => {
-          if (!(item.id in newContributions)) {
-            newContributions[item.id] = 0;
+          if (!(item._id in newContributions)) {
+            newContributions[item._id] = 0;
           }
         });
         // Remove contributions for items that are no longer selected
         Object.keys(newContributions).forEach((id) => {
-          if (!selectedItems.some((item) => item.id === id)) {
+          if (!selectedItems.some((item) => item._id === id)) {
             delete newContributions[id];
           }
         });
@@ -82,24 +78,26 @@ export function ContributionModal({
           <X size={24} />
         </button>
         {selectedItems.map((item) => (
-          <div key={item.id} className='mb-4'>
-            <Label htmlFor={`contribution-${item.id}`} className='block mb-2'>
-              {item.name} (${item.amount.toFixed(2)})
+          <div key={item._id} className='mb-4'>
+            <Label htmlFor={`contribution-${item._id}`} className='block mb-2'>
+              {item.title} (${item.target_amount.toFixed(2)})
             </Label>
             <Input
               type='number'
-              id={`contribution-${item.id}`}
+              id={`contribution-${item._id}`}
               // max={1000} // we can have a settings for this "Receive payment when full percentage reached"
               value={
-                contributions[item.id] === 0
+                contributions[item._id] === 0
                   ? ""
-                  : contributions[item.id]?.toString() || ""
+                  : contributions[item._id]?.toString() || ""
               }
-              onChange={(e) => handleInputChange(item.id, e.target.value)}
+              onChange={(e) => handleInputChange(item._id, e.target.value)}
             />
             <div className='text-sm text-gray-500 mt-1'>
-              {((contributions[item.id] / item.amount) * 100).toFixed(2)}% of
-              total amount
+              {((contributions[item._id] / item.target_amount) * 100).toFixed(
+                2
+              )}
+              % of total amount
             </div>
           </div>
         ))}

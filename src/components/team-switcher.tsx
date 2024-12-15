@@ -15,6 +15,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import Link from "next/link";
 
 export function TeamSwitcher() {
   const { isMobile } = useSidebar();
@@ -24,9 +25,9 @@ export function TeamSwitcher() {
       <SidebarMenuItem>
         <DropdownMenu>
           <div className='flex items-center justify-between'>
-            <div className='grid flex-1 text-left text-lg leading-tight grow'>
+            <Link href='/'>
               <span className='truncate font-semibold'>GatherGift</span>
-            </div>
+            </Link>
             <DropdownMenuTrigger
               className='w-fit bg-transparent hover:bg-transparent'
               asChild

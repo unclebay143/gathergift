@@ -23,6 +23,7 @@ const UserSchema: Schema = new Schema(
         },
         profile_picture: {
             type: String,
+            default: null,
         },
         authProvider: {
             type: String,

@@ -3,7 +3,10 @@ import { formatCurrencyWithComma } from "@/lib/utils";
 import { Wish } from "@/types";
 
 type WishPreviewProps = {
-  wishData: Wish;
+  wishData: Omit<
+    Wish,
+    "contributed_amount" | "wish" | "owner" | "isArchived" | "_id"
+  >;
 };
 
 export function WishPreview({ wishData }: WishPreviewProps) {
@@ -46,9 +49,9 @@ export function WishPreview({ wishData }: WishPreviewProps) {
                     <li key={index} className='flex flex-col'>
                       <div className='flex items-center justify-between'>
                         <div className='flex items-center'>
-                          {item.image && (
+                          {item.image_url && (
                             <img
-                              src={URL.createObjectURL(item.image)}
+                              src={item.image_url}
                               alt={item.name}
                               className='w-12 h-12 object-cover rounded-md mr-4'
                             />
@@ -56,11 +59,11 @@ export function WishPreview({ wishData }: WishPreviewProps) {
                           <span className='font-medium'>{item.name}</span>
                         </div>
                         <span>
-                          {item.price
+                          {item.amount
                             ? `${currencySymbol}${formatCurrencyWithComma(
-                                item.price
+                                item.amount
                               )}`
-                            : "No price set"}
+                            : "No amount set"}
                         </span>
                       </div>
                       {item.description && (
@@ -80,7 +83,7 @@ export function WishPreview({ wishData }: WishPreviewProps) {
             <span className='font-medium'>Total</span>
             <span className='text-muted-foreground'>
               {currencySymbol}
-              {formatCurrencyWithComma(wishData.target)}
+              {formatCurrencyWithComma(wishData.target_amount)}
             </span>
           </div>
         </CardContent>
