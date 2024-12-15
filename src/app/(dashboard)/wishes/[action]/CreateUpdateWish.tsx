@@ -11,7 +11,6 @@ import { cn } from "@/lib/utils";
 import { Wish } from "@/types";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import { getSession } from "next-auth/react";
 import { toast } from "sonner";
 
 export function CreateUpdateWish({ action }: { action: string }) {

@@ -39,6 +39,7 @@ const POST = async (request: NextRequest) => {
 
     // Separate items from the rest of the wish data
     const { items: excludeItemsFromWish, ...restOfWish } = wish;
+    void excludeItemsFromWish; // prevent ts from erroring unused value
 
     let wishlist;
     try {

@@ -31,7 +31,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Wishes } from "@/types";
@@ -59,7 +59,10 @@ export const WishesPage = () => {
 
   console.log(wishes);
 
-  const [isSearchMode, setIsSearchMode] = useState(false);
+  const [
+    isSearchMode,
+    // setIsSearchMode
+  ] = useState(false);
   // const [searchTerm, setSearchTerm] = useState("");
   // const [wishesState, setWishesState] = useState<Wishes>(wishes ?? []);
 
