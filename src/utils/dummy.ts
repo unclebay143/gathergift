@@ -5,24 +5,22 @@ export const wishes: Wishes = [
     _id: "1",
     visibility: "PUBLIC",
     owner: "",
-    contributed_amount: 0,
+    contributed_amount: 200,
     title: "Dream Wedding",
     description:
       "Help us make our wedding day extra special with your contributions!",
-    target_amount: 1000000,
+    target_amount: 20,
     endDate: new Date("2024-12-31"),
     items: [
       {
         wish: "",
         _id: "",
-        contributed_amount: 0,
         name: "Wedding Cake",
         amount: 50000,
       },
       {
         wish: "",
         _id: "",
-        contributed_amount: 0,
         name: "Venue Decoration",
         amount: 300000,
       },
@@ -37,7 +35,7 @@ export const wishes: Wishes = [
     _id: "2",
     visibility: "PRIVATE",
     owner: "",
-    contributed_amount: 0,
+    contributed_amount: 2000,
     title: "Baby Shower Bliss",
     description:
       "Join us in welcoming our little one with your heartfelt gifts!",
@@ -47,14 +45,12 @@ export const wishes: Wishes = [
       {
         wish: "",
         _id: "",
-        contributed_amount: 0,
         name: "Baby Crib",
         amount: 80000,
       },
       {
         wish: "",
         _id: "",
-        contributed_amount: 0,
         name: "Diaper Supply",
         amount: 20000,
       },
@@ -68,7 +64,7 @@ export const wishes: Wishes = [
     _id: "3",
     visibility: "PUBLIC",
     owner: "",
-    contributed_amount: 0,
+    contributed_amount: 10,
     title: "Christmas Wishlist",
     description:
       "Make this Christmas magical for our family with your kind gestures!",
@@ -78,14 +74,12 @@ export const wishes: Wishes = [
       {
         wish: "",
         _id: "",
-        contributed_amount: 0,
         name: "Christmas Tree",
         amount: 50000,
       },
       {
         wish: "",
         _id: "",
-        contributed_amount: 0,
         name: "Holiday Feast",
         amount: 100000,
       },
@@ -109,14 +103,12 @@ export const wishes: Wishes = [
       {
         wish: "",
         _id: "",
-        contributed_amount: 0,
         name: "Flight Tickets",
         amount: 1500000,
       },
       {
         wish: "",
         _id: "",
-        contributed_amount: 0,
         name: "Hotel Stay",
         amount: 1000000,
       },

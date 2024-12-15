@@ -2,63 +2,111 @@
 
 import { signIn } from "next-auth/react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useState } from "react";
 import { toast } from "sonner";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+
+const loginSchema = z.object({
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters long"),
+});
+
+const signupSchema = loginSchema
+  .extend({
+    confirmPassword: z
+      .string()
+      .min(6, "Password must be at least 6 characters long"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords must match",
+    path: ["confirmPassword"],
+  });
+
+const defaultValues = {
+  email: "",
+  password: "",
+  confirmPassword: "",
+};
 
 export default function AuthPage() {
   const searchParams = useSearchParams();
   const isSignupView = searchParams.get("view") === "signup";
-  const [authMode, setAuthMode] = useState<"login" | "signup">(
-    isSignupView ? "signup" : "login"
-  );
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const mode = isSignupView ? "signup" : "login";
+  const [authMode, setAuthMode] = useState<"login" | "signup">(mode);
   const router = useRouter();
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
-  // SIGN-UP INTEGRATION
-  const handleSignup = async (event: React.FormEvent) => {
-    event.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(authMode === "signup" ? signupSchema : loginSchema),
+    defaultValues,
+  });
 
-    const response = await fetch("/api/auth/signup", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email,
-        password,
-        confirmPassword,
-      }),
-    });
-
-    const data = await response.json();
-
-    if (response.ok) {
-      toast(data.message);
-    } else {
-      toast(data.message || "Unable to create User");
-    }
-  };
-
-  //SIGN-IN INTEGRATION
-  const handlelogin = async (event: React.FormEvent) => {
-    event.preventDefault();
-
+  const handleLogin = async (data: { email: string; password: string }) => {
+    setIsLoggingIn(true);
     const response = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-      callbackUrl: "/dashboard",
+      email: data.email,
+      password: data.password,
+      callbackUrl: "/wishes",
     });
+
+    if (response?.ok) {
+      reset();
+      toast.success("Login successful");
+    }
 
     if (response?.error) {
       toast.error(response.error || "Invalid email or password");
-    } else {
-      toast.success("Login successful");
-      router.push("/dashboard");
+      setIsLoggingIn(false);
     }
   };
+
+  const { mutate, isPending: isSigningUp } = useMutation({
+    mutationFn: async (data: {
+      email: string;
+      password: string;
+      confirmPassword: string;
+    }) =>
+      await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      }),
+
+    onSuccess(data, variables, context) {
+      handleLogin({
+        email: variables.email,
+        password: variables.password,
+      }).then(() => {
+        reset();
+        router.push("/wishes");
+      });
+    },
+    onError(error) {
+      toast.error(error.message || "Unable to create User");
+    },
+  });
+
+  const onSubmit = async (data: {
+    email: string;
+    password: string;
+    confirmPassword: string;
+  }) => {
+    if (authMode == "signup") {
+      return mutate(data);
+    }
+
+    return handleLogin(data);
+  };
+
+  const isAuthenticating = isSigningUp || isLoggingIn;
 
   return (
     <div className='flex flex-col gap-10 lg:24 items-center justify-center min-h-screen bg-gradient-to-br from-purple-100 via-pink-100 to-indigo-100 dark:from-purple-950 dark:via-pink-950 dark:to-indigo-950'>
@@ -71,7 +119,7 @@ export default function AuthPage() {
               </h2>
               <p className='text-gray-600 dark:text-gray-400 mt-2'>
                 {authMode === "login"
-                  ? "Sign in to your  account"
+                  ? "Sign in to your account"
                   : "Create your account"}
               </p>
             </div>
@@ -99,10 +147,7 @@ export default function AuthPage() {
               </button>
             </div>
 
-            <form
-              className='space-y-6'
-              onSubmit={authMode === "signup" ? handleSignup : handlelogin}
-            >
+            <form className='space-y-6' onSubmit={handleSubmit(onSubmit)}>
               <div>
                 <label
                   htmlFor='email'
@@ -113,13 +158,21 @@ export default function AuthPage() {
                 <input
                   type='email'
                   id='email'
-                  name='email'
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className='w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-transparent transition-colors duration-200'
+                  {...register("email")}
+                  className={`w-full px-4 py-3 rounded-lg border ${
+                    errors.email
+                      ? "border-red-500"
+                      : "border-gray-300 dark:border-gray-700"
+                  } bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-transparent transition-colors duration-200`}
                   placeholder='Enter your email'
                 />
+                {errors.email && (
+                  <p className='mt-2 text-sm text-red-500'>
+                    {errors.email.message}
+                  </p>
+                )}
               </div>
+
               <div>
                 <label
                   htmlFor='password'
@@ -130,12 +183,19 @@ export default function AuthPage() {
                 <input
                   type='password'
                   id='password'
-                  name='password'
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className='w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-transparent transition-colors duration-200'
+                  {...register("password")}
+                  className={`w-full px-4 py-3 rounded-lg border ${
+                    errors.password
+                      ? "border-red-500"
+                      : "border-gray-300 dark:border-gray-700"
+                  } bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-transparent transition-colors duration-200`}
                   placeholder='Enter your password'
                 />
+                {errors.password && (
+                  <p className='mt-2 text-sm text-red-500'>
+                    {errors.password.message}
+                  </p>
+                )}
               </div>
 
               {authMode === "signup" && (
@@ -149,48 +209,34 @@ export default function AuthPage() {
                   <input
                     type='password'
                     id='confirmPassword'
-                    name='confirmPassword'
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    className='w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-transparent transition-colors duration-200'
+                    {...register("confirmPassword")}
+                    className={`w-full px-4 py-3 rounded-lg border ${
+                      errors.confirmPassword
+                        ? "border-red-500"
+                        : "border-gray-300 dark:border-gray-700"
+                    } bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-transparent transition-colors duration-200`}
                     placeholder='Confirm your password'
                   />
-                </div>
-              )}
-
-              {authMode === "login" && (
-                <div className='flex items-center justify-between text-sm'>
-                  <div className='flex items-center'>
-                    <input
-                      id='remember-me'
-                      name='remember-me'
-                      type='checkbox'
-                      className='h-4 w-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500'
-                    />
-                    <label
-                      htmlFor='remember-me'
-                      className='ml-2 text-gray-600 dark:text-gray-400'
-                    >
-                      Remember me
-                    </label>
-                  </div>
-                  <button
-                    type='button'
-                    className='text-purple-600 dark:text-purple-400 hover:text-purple-500'
-                  >
-                    Forgot password?
-                  </button>
+                  {errors.confirmPassword && (
+                    <p className='mt-2 text-sm text-red-500'>
+                      {errors.confirmPassword.message}
+                    </p>
+                  )}
                 </div>
               )}
 
               <button
+                disabled={isAuthenticating}
                 type='submit'
-                className='w-full bg-purple-600 dark:bg-purple-500 text-white py-3 px-4 rounded-lg font-medium hover:bg-purple-700 dark:hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900 transition-colors duration-200'
+                className='disabled:bg-opacity-65 w-full bg-purple-600 dark:bg-purple-500 text-white py-3 px-4 rounded-lg font-medium hover:bg-purple-700 dark:hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900 transition-colors duration-200'
               >
-                {authMode === "login" ? "Sign In" : "Create Account"}
+                {isAuthenticating ? (
+                  "Please wait..."
+                ) : (
+                  <>{authMode === "login" ? "Sign In" : "Create Account"}</>
+                )}
               </button>
             </form>
-
             <div className='mt-8'>
               <div className='relative'>
                 <div className='absolute inset-0 flex items-center'>
@@ -205,6 +251,7 @@ export default function AuthPage() {
 
               <div className='mt-6'>
                 <button
+                  disabled={isAuthenticating}
                   type='button'
                   className='w-full flex items-center justify-center gap-3 px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900 transition-colors duration-200'
                 >
@@ -220,46 +267,40 @@ export default function AuthPage() {
                     className='h-5 w-5'
                     height='1em'
                     width='1em'
-                    xmlns='http://www.w3.org/2000/svg'
+                    xmlns='http:www.w3.org/2000/svg'
                   >
                     <path
                       fill='#FFC107'
                       d='M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12
-                      c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24
-                      c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z'
+                       c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24
+                       c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z'
                     />
                     <path
                       fill='#FF3D00'
                       d='M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657
-                    	C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z'
+                     	C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z'
                     />
                     <path
                       fill='#4CAF50'
                       d='M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36
-	                    c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z'
+ 	                    c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z'
                     />
                     <path
                       fill='#1976D2'
                       d='M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571
-	                    c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z'
+ 	                    c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z'
                     />
                   </svg>
 
-                  <span>Sign in with Google</span>
+                  <span>
+                    Sign {authMode === "login" ? "in" : "up"} with Google
+                  </span>
                 </button>
               </div>
             </div>
           </div>
         </div>
       </div>
-      {/* <div className=' pb-4 flex justify-center'>
-        <Link href='/' className='flex-shrink-0 flex items-center'>
-          <Gift className='h-8 w-8 text-red-600' />
-          <span className='ml-2 mt-1 text-2xl font-bold text-green-600'>
-            GatherGift
-          </span>
-        </Link>
-      </div> */}
     </div>
   );
 }

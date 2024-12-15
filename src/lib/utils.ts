@@ -6,15 +6,21 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatCurrencyWithComma(
-  amount: number | string
-): string | number {
-  if (!amount) return amount;
+  amount: number | string,
+  options?: { includeDecimal?: boolean }
+): string {
+  const { includeDecimal = false } = options || {};
 
   const numericAmount =
     typeof amount === "string" ? parseFloat(amount) : amount;
 
-  // Ensure the number has two decimal places and add commas
-  return numericAmount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  if (isNaN(numericAmount)) {
+    throw new Error("Invalid amount: Unable to format.");
+  }
+
+  return numericAmount
+    .toFixed(includeDecimal ? 2 : 0)
+    .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
 export const calculateProgressPercentage = (
@@ -25,6 +31,5 @@ export const calculateProgressPercentage = (
     throw new Error("Target amount must be greater than zero.");
   }
 
-  const percentage = (contributed_amount ?? 0 / target_amount) * 100;
-  return Math.min(Math.max(percentage, 0), 100); // Clamp between 0 and 100
+  return ((contributed_amount ?? 0) / target_amount) * 100;
 };

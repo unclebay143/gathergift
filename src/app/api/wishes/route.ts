@@ -2,6 +2,8 @@ import connectMongoose from "@/lib/mongodb";
 import { WishItem } from "@/model/wishItems";
 import { Wish } from "@/model/wish";
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSessionWithAuthOptions } from "@/utils/nextAuth.config";
+import { User } from "@/model/users";
 
 const POST = async (request: NextRequest) => {
   try {
@@ -77,4 +79,33 @@ const POST = async (request: NextRequest) => {
   }
 };
 
-export { POST };
+const GET = async () => {
+  try {
+    const session = await getServerSessionWithAuthOptions();
+    const email = session?.user?.email;
+
+    if (!session) {
+      return NextResponse.json(
+        { message: "Session is required" },
+        { status: 400 }
+      );
+    }
+    await connectMongoose();
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return NextResponse.json({ message: "No user found " }, { status: 404 });
+    }
+    const wishes = await Wish.find({ owner: user._id });
+
+    return NextResponse.json(wishes, { status: 200 });
+  } catch (error) {
+    return NextResponse.json(
+      { message: "Error fetching user", error },
+      { status: 500 }
+    );
+  }
+};
+
+export { POST, GET };
