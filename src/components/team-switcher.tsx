@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Plus } from "lucide-react";
+import { LogOut } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -50,11 +50,11 @@ export function TeamSwitcher() {
             className='w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg'
             align='start'
             side={isMobile ? "bottom" : "right"}
-            sideOffset={4}
+            sideOffset={10}
           >
-            <DropdownMenuItem className='gap-2 p-2'>
+            <DropdownMenuItem className='gap-2 p-2 cursor-pointer'>
               <div className='flex size-6 items-center justify-center rounded-md border bg-background'>
-                <Plus className='size-4' />
+                <LogOut className='size-4' />
               </div>
               <div className='font-medium text-muted-foreground'>Logout</div>
             </DropdownMenuItem>
