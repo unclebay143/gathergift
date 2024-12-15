@@ -111,10 +111,8 @@ const GET = async () => {
     if (!user) {
       return NextResponse.json({ message: "No user found " }, { status: 404 });
     }
-    // Todo: populate the items of each wishes using aggregates before sending to client
-    const wishes = await Wish.find({ owner: user._id });
 
-    const wishesWithItems = await Wish.aggregate([
+    const wishes = await Wish.aggregate([
       { $match: { owner: user._id } },
       {
         $lookup: {
@@ -125,8 +123,6 @@ const GET = async () => {
         },
       },
     ]);
-
-    console.log(wishesWithItems);
 
     return NextResponse.json(wishes, { status: 200 });
   } catch (error) {

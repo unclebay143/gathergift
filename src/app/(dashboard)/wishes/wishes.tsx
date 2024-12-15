@@ -57,6 +57,8 @@ export const WishesPage = () => {
     refetchOnWindowFocus: true,
   });
 
+  console.log(wishes);
+
   const [isSearchMode, setIsSearchMode] = useState(false);
   // const [searchTerm, setSearchTerm] = useState("");
   // const [wishesState, setWishesState] = useState<Wishes>(wishes ?? []);
