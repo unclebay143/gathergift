@@ -22,11 +22,13 @@
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-switch": "^1.1.2",
     "@radix-ui/react-tooltip": "^1.1.5",
+    "@tanstack/react-query": "^5.62.7",
     "@types/bcrypt": "^5.0.2",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dayjs": "^1.11.13",
     "flattenColorPalette": "link:tailwindcss/lib/util/flattenColorPalette",
     "framer-motion": "^11.13.1",
     "lucide-react": "^0.468.0",
@@ -43,6 +45,7 @@
     "zustand": "^5.0.2"
   },
   "devDependencies": {
+    "@tanstack/eslint-plugin-query": "^5.62.1",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

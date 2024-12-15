@@ -13,18 +13,20 @@ interface WishItemGroupProps {
 }
 
 export function WishItemGroup({ items }: WishItemGroupProps) {
-  const [expandedItems, setExpandedItems] = useState<Set<string>>(
-    new Set([items[0]?._id])
+  const [expandedItems, setExpandedItems] = useState<Set<string | undefined>>(
+    new Set([items[0]._id])
   );
   const [isContributionModalOpen, setIsContributionModalOpen] = useState(false);
   const [contributions, setContributions] = useState<Record<string, number>>(
     {}
   );
 
-  const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
+  const [selectedItems, setSelectedItems] = useState<Set<string | undefined>>(
+    new Set()
+  );
   const [allSelected, setAllSelected] = useState(false);
 
-  const toggleExpanded = useCallback((id: string) => {
+  const toggleExpanded = useCallback((id: string | undefined) => {
     setExpandedItems((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(id)) {
@@ -36,7 +38,7 @@ export function WishItemGroup({ items }: WishItemGroupProps) {
     });
   }, []);
 
-  const toggleAllItems = useCallback((ids: string[]) => {
+  const toggleAllItems = useCallback((ids: (string | undefined)[]) => {
     setSelectedItems((prev) => {
       const newSet = new Set(prev);
       const allAreSelected = ids.every((id) => newSet.has(id));
@@ -53,7 +55,7 @@ export function WishItemGroup({ items }: WishItemGroupProps) {
     });
   }, []);
 
-  const toggleItem = (id: string) => {
+  const toggleItem = (id: string | undefined) => {
     setSelectedItems((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(id)) {

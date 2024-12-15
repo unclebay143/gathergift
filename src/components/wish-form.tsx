@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { ArrowRight, Plus, Trash2, Upload } from "lucide-react";
-import { Item, Wish } from "@/types";
+import { Wish } from "@/types";
 import { WISH_CATEGORIES, CATEGORY_TAG_LINES } from "@/const";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -80,12 +80,12 @@ type WishFormProps = {
   onSubmit: (
     data: Omit<
       Wish,
-      "contributed_amount" | "wish" | "owner" | "isArchived" | "_id"
+      "wish" | "owner" | "isArchived" | "contributed_amount" | "_id"
     >
   ) => void;
   initialData?: Omit<
     Wish,
-    "contributed_amount" | "wish" | "owner" | "isArchived" | "_id"
+    "wish" | "owner" | "isArchived" | "contributed_amount" | "_id"
   >;
 };
 

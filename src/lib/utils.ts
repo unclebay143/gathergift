@@ -19,12 +19,12 @@ export function formatCurrencyWithComma(
 
 export const calculateProgressPercentage = (
   target_amount: number,
-  contributed_amount: number
+  contributed_amount: number | undefined
 ): number => {
   if (target_amount <= 0) {
     throw new Error("Target amount must be greater than zero.");
   }
 
-  const percentage = (contributed_amount / target_amount) * 100;
+  const percentage = (contributed_amount ?? 0 / target_amount) * 100;
   return Math.min(Math.max(percentage, 0), 100); // Clamp between 0 and 100
 };
