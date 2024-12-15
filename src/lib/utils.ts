@@ -7,7 +7,7 @@ export function cn(...inputs: ClassValue[]) {
 
 export function formatCurrencyWithComma(
   amount: number | string,
-  options?: { includeDecimal?: boolean }
+  options?: { includeDecimal?: boolean; toFixed: boolean }
 ): string {
   const { includeDecimal = false } = options || {};
 
@@ -26,11 +26,15 @@ export function formatCurrencyWithComma(
 
 export const calculateProgressPercentage = (
   target_amount: number,
-  contributed_amount: number | undefined
+  contributed_amount: number | undefined,
+  options?: { toFixed: boolean }
 ): number => {
+  const { toFixed = true } = options || {};
   if (target_amount <= 0) {
     throw new Error("Target amount must be greater than zero.");
   }
 
-  return ((contributed_amount ?? 0) / target_amount) * 100;
+  const percentage = ((contributed_amount ?? 0) / target_amount) * 100;
+
+  return toFixed ? Number(percentage.toFixed(2)) : percentage;
 };
