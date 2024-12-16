@@ -22,7 +22,7 @@ export type Wish = {
   endDate?: Date;
   description: string;
   items: Items;
-  currency: "NGN" | "USD" | null;
+  currency: "NGN" | "USD";
   category: Categories | null;
   itemsEnabled: boolean;
   thankYouMessage?: string;

@@ -27,7 +27,7 @@ import {
 import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Wishes } from "@/types";
-import relativeTime from "dayjs/plugin/relativeTime"; // ES 2015
+import relativeTime from "dayjs/plugin/relativeTime";
 import dayjs from "dayjs";
 import { LoaderScreen } from "@/components/LoaderScreen";
 import {

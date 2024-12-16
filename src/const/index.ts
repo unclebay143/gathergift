@@ -25,6 +25,10 @@ export const WISH_CATEGORIES = [
 ] as const;
 
 export const CURRENCIES = ["USD", "NGN"] as const;
+export const MAP_CURRENCIES_TO_SYMBOLS: { [key: string]: string } = {
+  USD: "$",
+  NGN: "₦",
+};
 
 export const WISH_STATUS = ["ONGOING", "FULFILLED", "INACTIVE"];
 export const WISH_VISIBILITIES = ["PUBLIC", "PRIVATE"];
