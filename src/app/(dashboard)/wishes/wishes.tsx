@@ -22,7 +22,7 @@ import {
   Gift,
   InstagramIcon,
   Mail,
-  PhoneCall,
+  MessageCircleMore,
   Plus,
   Search,
   Share2,
@@ -42,9 +42,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-// import { FaWhatsapp, FaFacebookF, FaTwitter, FaInstagram  } from "react-icons/fa";
 
-// import { FaXTwitter } from "react-icons/fa6";
 import Link from "next/link";
 import React, { useState } from "react";
 import { Badge } from "@/components/ui/badge";
@@ -69,15 +67,15 @@ export const WishesPage = () => {
   };
 
 
-  const [wishes, setWishes] = useState<Wishes>([]);
+  // const [wishes, setWishes] = useState<Wishes>([]);
   const queryClient = useQueryClient();
 
-  const {  isLoading } = useQuery({
+  const { data: wishes, isLoading } = useQuery({
     queryFn: async () => {
       const res = await fetch("api/wishes");
       const data: Wishes = await res.json();
       const nonArchivedWishes = data.filter((wish) => !wish.isArchived);
-      setWishes(nonArchivedWishes);
+      // setWishes(nonArchivedWishes);
       return nonArchivedWishes as Wishes;
     },
     queryKey: ["wishes"],
@@ -130,9 +128,9 @@ export const WishesPage = () => {
         return;
       }
   
-      setWishes((prev) =>
-        prev.filter((wish) => wish._id !== id || !wish.isArchived)
-      );
+      // setWishes((prev) =>
+      //   prev.filter((wish) => wish._id !== id || !wish.isArchived)
+      // );
 
       await queryClient.invalidateQueries({ queryKey: ['wishes'] });
       
@@ -310,9 +308,7 @@ export const WishesPage = () => {
 
 
                         <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-                        {/* <DialogTrigger asChild>
-                        </DialogTrigger> */}
-                        <DialogContent className="bg-gray-200">
+                        <DialogContent className="bg-white">
                           <DialogHeader>
                             <DialogTitle>Share This Wish</DialogTitle>
                             <DialogDescription>
@@ -324,23 +320,23 @@ export const WishesPage = () => {
                             <p className="text-gray-600">
                               Copy the link to share or choose from the social media options.
                             </p>
-                            <div className="flex gap-2 bg-white p-2 rounded-xl">
-                            <Input
-                              type="text"
-                              value={`https://example.com/wishes/${wish._id}`} 
-                              readOnly
-                              className="w-full bg-slate-100"
-                            />
-                            <Button
-                              variant="outline"  onClick={() => {
-                                navigator.clipboard.writeText("https://example.com/wish/1234");
-                                toast.success("Link copied to clipboard!");
-                              }}
-                              className="bg-yellow-400 w-28 text-white hover:bg-yellow-600"
-                            >
-                              <Share2 />
-                              Copy Link
-                            </Button>
+                            <div className="flex gap-2 bg-gray-100 p-2 rounded-xl">
+                              <Input
+                                type="text"
+                                value={`https://example.com/wishes/${wish._id}`} 
+                                readOnly
+                                className="w-full bg-slate-100"
+                              />
+                              <Button
+                                variant="outline"  onClick={() => {
+                                  navigator.clipboard.writeText("https://example.com/wish/1234");
+                                  toast.success("Link copied to clipboard!");
+                                }}
+                                className="bg-yellow-400 w-28 text-white hover:bg-yellow-600"
+                              >
+                                <Share2 />
+                                Copy Link
+                              </Button>
                             </div>
 
                             <div className="flex justify-center gap-4 items-center w-full">
@@ -348,15 +344,17 @@ export const WishesPage = () => {
                               <a
                                 href={`https://wa.me/?text=${encodeURIComponent(`Check out this wish: https://example.com/wishes/${wish._id}`)}`}
                                 target="_blank"
-                                rel="noopener noreferrer"
+                                rel="noopener"
+                                aria-label="brandname"
                               >
-                                <PhoneCall size={24} className="text-green-500 hover:opacity-80" />
+                                <MessageCircleMore size={24} className="text-green-500 hover:opacity-80" />
                               </a>
                               {/* Facebook */}
                               <a
                                 href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`https://example.com/wishes/${wish._id}`)}`}
                                 target="_blank"
-                                rel="noopener noreferrer"
+                                rel="noopener"
+                                aria-label="brandname"
                               >
                                 <FacebookIcon size={24} className="text-blue-700 hover:opacity-80" />
                               </a>
@@ -364,7 +362,8 @@ export const WishesPage = () => {
                               <a
                                 href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(`https://example.com/wishes/${wish._id}`)}&text=${encodeURIComponent("Check out this wish!")}`}
                                 target="_blank"
-                                rel="noopener noreferrer"
+                                rel="noopener"
+                                aria-label="brandname"
                               >
                                 <TwitterIcon size={24} className="text-blue-500 hover:opacity-80" />
                               </a>
@@ -372,15 +371,18 @@ export const WishesPage = () => {
                               <a
                                 href={`https://instagram.com`}
                                 target="_blank"
-                                rel="noopener noreferrer"
+                                rel="noopener"
+                                aria-label="brandname"
                               >
                                 <InstagramIcon size={24} className="text-pink-500 hover:opacity-80" />
                               </a>
-                              {/* Email */}
+
+                              {/* mail */}
                               <a
-                                href={`https://instagram.com`}
+                                href={`mailto:recipient@example.com?subject=${encodeURIComponent("Check out this wish!")}&body=${encodeURIComponent(`Hi there,\n\nI wanted to share this wish with you: https://example.com/wishes/${wish._id}`)}`}
                                 target="_blank"
-                                rel="noopener noreferrer"
+                                rel="noopener"
+                                aria-label="brandname"
                               >
                                 <Mail size={24} className="text-black hover:opacity-80" />
                               </a>
