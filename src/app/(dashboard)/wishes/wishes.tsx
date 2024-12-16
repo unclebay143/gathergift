@@ -384,7 +384,7 @@ export const WishesPage = () => {
                                 rel="noopener"
                                 aria-label="brandname"
                               >
-                                <Mail size={24} className="text-black hover:opacity-80" />
+                                <Mail size={24} className="text-green-500 hover:opacity-80" />
                               </a>
                             </div>
 
