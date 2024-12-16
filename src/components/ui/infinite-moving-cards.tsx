@@ -2,21 +2,17 @@
 
 import { cn } from "@/lib/utils";
 import React, { useEffect, useState } from "react";
-
 import { WishCard } from "../WishCard";
-import { wishes } from "@/utils/dummy";
+import { Wishes } from "@/types";
 
 export const InfiniteMovingCards = ({
   direction = "left",
   speed = "fast",
   pauseOnHover = true,
   className,
+  data,
 }: {
-  items?: {
-    quote: string;
-    name: string;
-    title: string;
-  }[];
+  data: Wishes;
   direction?: "left" | "right";
   speed?: "fast" | "normal" | "slow";
   pauseOnHover?: boolean;
@@ -87,8 +83,8 @@ export const InfiniteMovingCards = ({
           pauseOnHover && "hover:[animation-play-state:paused]"
         )}
       >
-        {wishes.map((wish) => (
-          <WishCard data={wish} key={wish._id} />
+        {data.map((datum) => (
+          <WishCard data={datum} key={datum._id} />
         ))}
       </ul>
     </div>

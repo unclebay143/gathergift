@@ -1,3 +1,4 @@
+import { MAP_CURRENCIES_TO_SYMBOLS } from "@/const";
 import { formatCurrencyWithComma } from "@/lib/utils";
 import { Wish } from "@/types";
 import Image from "next/image";
@@ -5,7 +6,8 @@ import Link from "next/link";
 import React from "react";
 
 export const WishCard = ({ data }: { data: Wish }) => {
-  const { description, coverImage, title, target_amount, items } = data;
+  const { description, coverImage, title, target_amount, items, currency } =
+    data;
   const coverImageWithAltImg = coverImage ?? items[0]?.image_url;
   return (
     <div className='bg-white rounded-lg shadow-md overflow-hidden w-[300px] transition-transform hover:scale-105'>
@@ -69,6 +71,7 @@ export const WishCard = ({ data }: { data: Wish }) => {
             </div>
             <div className='flex justify-between'>
               <p className='text-xs text-right text-zinc-500'>
+                {MAP_CURRENCIES_TO_SYMBOLS[currency]}
                 {formatCurrencyWithComma(target_amount)}
               </p>
               <p className='text-xs text-right text-zinc-500'>
