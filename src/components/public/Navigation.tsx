@@ -7,7 +7,6 @@ import { useSession } from "next-auth/react";
 
 export default function Navigation() {
   const session = useSession();
-  console.log(!!session);
 
   const isLoggedIn = !!session;
   return (

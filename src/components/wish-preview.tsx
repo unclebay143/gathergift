@@ -1,6 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatCurrencyWithComma } from "@/lib/utils";
 import { Wish } from "@/types";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+
+dayjs.extend(relativeTime);
 
 type WishPreviewProps = {
   wishData: Omit<
@@ -28,7 +32,7 @@ export function WishPreview({ wishData }: WishPreviewProps) {
           </p>
           <div className='text-sm text-muted-foreground'>
             {wishData.endDate
-              ? `Ends on ${new Date(wishData.endDate).toLocaleDateString()}`
+              ? `Ends ${dayjs(wishData.endDate).fromNow()}`
               : "No end date set"}
           </div>
           {wishData.thankYouMessage && (
