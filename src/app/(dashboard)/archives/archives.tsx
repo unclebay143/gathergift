@@ -12,28 +12,20 @@ import {
 import { Progress } from "@/components/ui/progress";
 import {
   Archive,
+  ArchiveIcon,
   Calendar,
   ChevronDown,
   DollarSign,
-  Edit,
-  Eye,
-  EyeOff,
   Gift,
-  Plus,
-  Search,
-  Share2,
 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import Link from "next/link";
-import React, { useState } from "react";
+import React from "react";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
 import { Wishes } from "@/types";
 import relativeTime from "dayjs/plugin/relativeTime"; // ES 2015
 import dayjs from "dayjs";
@@ -44,39 +36,31 @@ import {
 } from "@/lib/utils";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 dayjs.extend(relativeTime);
 
-const queryKey = ["wishes"];
-
-export const WishesPage = () => {
+const queryKey = ["archive-wishes"];
+export const ArchivePage = () => {
   const queryClient = useQueryClient();
 
   const { isLoading, data: wishes } = useQuery({
     queryFn: async () => {
       const res = await fetch("api/wishes");
       const data: Wishes = await res.json();
-      const nonArchivedWishes = data.filter((wish) => !wish.isArchived);
+      const nonArchivedWishes = data.filter((wish) => wish.isArchived);
       return nonArchivedWishes as Wishes;
     },
     queryKey,
     refetchOnWindowFocus: true,
   });
 
-  const [
-    isSearchMode,
-    // setIsSearchMode
-  ] = useState(false);
-  // const [searchTerm, setSearchTerm] = useState("");
-
   const showEmptyState = wishes?.length === 0;
-
-  // const filteredWishes = wishes?.filter(
-  //   (wish) =>
-  //     (wish.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-  //       wish.description.toLowerCase().includes(searchTerm.toLowerCase())) &&
-  //     !wish.isArchived
-  // );
 
   const handleArchiveToggle = async (id: string) => {
     try {
@@ -85,16 +69,16 @@ export const WishesPage = () => {
       });
 
       if (!response.ok) {
-        toast.error("Failed to archive/unarchive the wish.");
+        toast.error("Failed to unarchive the wish.");
         return;
       }
 
       await queryClient.invalidateQueries({ queryKey });
 
-      toast.success("Wish Archived successfully!");
+      toast.success("Wish unArchived successfully!");
     } catch (error) {
-      console.error("Error archiving/unarchiving the wish:", error);
-      toast.error("An error occurred while archiving the wish.");
+      console.error("Error un-archiving the wish:", error);
+      toast.error("An error occurred while un-archiving the wish.");
     }
   };
 
@@ -104,55 +88,28 @@ export const WishesPage = () => {
   return (
     <>
       <div className='container w-full mx-auto px-4 py-6 lg:px-8 flex flex-col gap-8'>
-        <div className='flex flex-col xl:flex-row gap-4 xl:items-center justify-between'>
-          <div>
-            <h1 className='text-3xl font-bold tracking-tight text-gray-900'>
-              My Wishes
-            </h1>
-            <p className='text-muted-foreground'>
-              Track and manage your gift wishes?. Create new wishes, set goals,
-              and share with friends and family.
-            </p>
-          </div>
-          {!showEmptyState && (
-            <div className='flex items-center gap-4 w-full justify-between xl:justify-end xl:w-auto'>
-              <div className='relative'>
-                <Search className='absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400' />
-                <Input
-                  type='text'
-                  placeholder='Search wishes?...'
-                  className='pl-8 w-[200px] md:w-[300px]'
-                  // value={searchTerm}
-                  // onChange={(e) => setSearchTerm(e.target.value)}
-                />
-              </div>
-              <Button asChild className='bg-black hover:bg-gray-800'>
-                <Link href='/wishes/create'>
-                  <Plus className='mr-2 h-4 w-4' />
-                  Create new Wish
-                </Link>
-              </Button>
-            </div>
-          )}
+        <div>
+          <h1 className='text-3xl font-bold tracking-tight text-gray-900'>
+            My Archives
+          </h1>
+          <p className='text-muted-foreground'>
+            Keep your past wishes organized and cherish memories of fulfilled
+            goals!
+          </p>
         </div>
 
         {showEmptyState && (
           <div className='text-center py-24 border border-dashed rounded-lg'>
             <div className='w-24 h-24 bg-indigo-100 dark:bg-indigo-900 rounded-full flex items-center justify-center mx-auto mb-6'>
-              <Gift className='w-12 h-12 text-indigo-600 dark:text-indigo-400' />
+              <ArchiveIcon className='w-12 h-12 text-indigo-600 dark:text-indigo-400' />
             </div>
             <h2 className='text-3xl font-bold text-gray-900 dark:text-white mb-2'>
-              No wishes yet
+              No archives yet
             </h2>
-            <p className='text-xl text-gray-600 dark:text-gray-400 mb-8'>
-              Create your first wish and start tracking your gift ideas!
+            <p className='text-xl text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto'>
+              Your archives are empty for now. Once you fulfill and archive a
+              wish, it will appear here. milestones.
             </p>
-            <Button asChild className='bg-black hover:bg-gray-800'>
-              <Link href='/wishes/create'>
-                <Plus className='mr-2 h-4 w-4' />
-                Create new Wish
-              </Link>
-            </Button>
           </div>
         )}
 
@@ -221,9 +178,20 @@ export const WishesPage = () => {
               </CardContent>
               <CardFooter className='p-4 bg-gray-50 dark:bg-gray-800/30'>
                 <div className='flex justify-between items-center w-full'>
-                  <Button variant='outline' size='sm'>
-                    View Details
-                  </Button>
+                  <Tooltip>
+                    <TooltipProvider>
+                      <TooltipTrigger asChild>
+                        <div>
+                          <Button variant='outline' size='sm' disabled>
+                            View Details
+                          </Button>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent sideOffset={8} side='bottom'>
+                        Unarchive wish to manage
+                      </TooltipContent>
+                    </TooltipProvider>
+                  </Tooltip>
 
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -233,32 +201,7 @@ export const WishesPage = () => {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align='end'>
                       <DropdownMenuItem
-                      // onClick={() => handleToggleVisibility(wish._id)}
-                      >
-                        {wish.visibility === "PUBLIC" ? (
-                          <>
-                            <EyeOff className='mr-2 h-4 w-4' />
-                            Hide Wish
-                          </>
-                        ) : (
-                          <>
-                            <Eye className='mr-2 h-4 w-4' />
-                            Show Wish
-                          </>
-                        )}
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <Edit className='mr-2 h-4 w-4' />
-                        Edit Wish
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <Share2 className='mr-2 h-4 w-4' />
-                        Share Wish
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem
-                        className='text-red-600'
-                        // onClick={() => handleArchive(wish._id)}
+                        className='text-red-600 cursor-pointer'
                         onClick={() => handleArchiveToggle(wish._id)}
                       >
                         <Archive className='mr-2 h-4 w-4' />
@@ -271,24 +214,6 @@ export const WishesPage = () => {
             </Card>
           ))}
         </div>
-
-        {isSearchMode && wishes?.length === 0 && (
-          <div className='text-center py-24 border border-dashed rounded-lg'>
-            <h3 className='text-2xl font-semibold text-gray-600 dark:text-gray-400 mb-2'>
-              No wishes found
-            </h3>
-            <p className='text-muted-foreground mb-4'>
-              Try adjusting your search or create a new wish.
-            </p>
-
-            <Button asChild className='bg-black hover:bg-gray-800'>
-              <Link href='/wishes/create'>
-                <Plus className='mr-2 h-4 w-4' />
-                Create new Wish
-              </Link>
-            </Button>
-          </div>
-        )}
       </div>
     </>
   );
