@@ -153,7 +153,13 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
         0
       );
       if (totalAmount !== form.getValues("target_amount")) {
-        form.setValue("target_amount", totalAmount, { shouldValidate: true });
+        form.setValue(
+          "target_amount",
+          totalAmount
+
+          // Todo: validate here only when in edit mode (not create mode)
+          // { shouldValidate: true }
+        );
       }
     }
   }, [form, itemsEnabled, items]);
