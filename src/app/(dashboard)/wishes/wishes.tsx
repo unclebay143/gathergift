@@ -42,16 +42,22 @@ import {
   calculateProgressPercentage,
   formatCurrencyWithComma,
 } from "@/lib/utils";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 dayjs.extend(relativeTime);
 
 export const WishesPage = () => {
-  const { data: wishes, isLoading } = useQuery({
+  const [wishes, setWishes] = useState<Wishes>([]);
+  const queryClient = useQueryClient();
+
+  const {  isLoading } = useQuery({
     queryFn: async () => {
       const res = await fetch("api/wishes");
-      const data = await res.json();
-      return data as Wishes;
+      const data: Wishes = await res.json();
+      const nonArchivedWishes = data.filter((wish) => !wish.isArchived);
+      setWishes(nonArchivedWishes);
+      return nonArchivedWishes as Wishes;
     },
     queryKey: ["wishes"],
     refetchOnWindowFocus: true,
@@ -91,6 +97,31 @@ export const WishesPage = () => {
   //     prevWishes?.filter((wish) => wish._id !== id)
   //   );
   // };
+
+  const handleArchiveToggle = async (id: string) => { 
+    try { 
+      const response = await fetch(`/api/wishes/${id}/archive`, { 
+        method: 'PUT', 
+      }); 
+
+      if (!response.ok) {
+        toast.error("Failed to archive/unarchive the wish.");
+        return;
+      }
+  
+      setWishes((prev) =>
+        prev.filter((wish) => wish._id !== id || !wish.isArchived)
+      );
+
+      await queryClient.invalidateQueries({ queryKey: ['wishes'] });
+      
+      toast.success("Wish Archived successfully!");
+
+    } catch (error) { 
+      console.error("Error archiving/unarchiving the wish:", error);
+      toast.error("An error occurred while archiving the wish.");
+    } 
+  }
 
   if (isLoading) {
     return <LoaderScreen />;
@@ -253,10 +284,11 @@ export const WishesPage = () => {
                       <DropdownMenuItem
                         className='text-red-600'
                         // onClick={() => handleArchive(wish._id)}
+                        onClick={() => handleArchiveToggle(wish._id)}
                       >
                         <Archive className='mr-2 h-4 w-4' />
-                        Archive Wish
-                      </DropdownMenuItem>
+                        {wish.isArchived ? "Unarchive Wish" : "Archive Wish"}
+                        </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
