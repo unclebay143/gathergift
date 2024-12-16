@@ -8,7 +8,7 @@ export const getPublicWishes = async () => {
     await connectMongoose();
 
     wishes = await Wish.aggregate([
-      { $match: { visibility: "PUBLIC" } },
+      { $match: { visibility: "PUBLIC", isArchived: false } },
       {
         $lookup: {
           from: "wishitems",
