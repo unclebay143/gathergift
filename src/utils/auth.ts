@@ -26,7 +26,6 @@ export const handleAuthentication = async ({
   }
 };
 
-
 export const handleLogout = () => {
   signOut({
     callbackUrl: `${window.location.origin}`,
