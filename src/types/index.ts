@@ -1,4 +1,4 @@
-import { WISH_CATEGORIES } from "@/const";
+import { CURRENCIES, WISH_CATEGORIES, WISH_VISIBILITIES } from "@/const";
 
 export type Item = {
   _id?: string;
@@ -17,12 +17,12 @@ export type Wish = {
   _id: string;
   owner: string;
   coverImage?: string;
-  visibility: "PUBLIC" | "PRIVATE";
+  visibility: (typeof WISH_VISIBILITIES)[number];
   title: string;
   endDate?: Date;
   description: string;
   items: Items;
-  currency: "NGN" | "USD";
+  currency: (typeof CURRENCIES)[number];
   category: Categories | null;
   itemsEnabled: boolean;
   thankYouMessage?: string;

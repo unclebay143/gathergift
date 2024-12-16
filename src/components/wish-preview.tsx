@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { MAP_CURRENCIES_TO_SYMBOLS } from "@/const";
 import { formatCurrencyWithComma } from "@/lib/utils";
 import { Wish } from "@/types";
 import dayjs from "dayjs";
@@ -18,7 +19,7 @@ export function WishPreview({ wishData }: WishPreviewProps) {
   //   (sum, item) => sum + (Number(item.price) || 0),
   //   0
   // );
-  const currencySymbol = wishData.currency === "USD" ? "$" : "₦";
+  const currencySymbol = MAP_CURRENCIES_TO_SYMBOLS[wishData.currency];
 
   return (
     <div className='max-w-2xl mx-auto'>
