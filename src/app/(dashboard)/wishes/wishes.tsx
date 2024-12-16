@@ -18,10 +18,15 @@ import {
   Edit,
   Eye,
   EyeOff,
+  FacebookIcon,
   Gift,
+  InstagramIcon,
+  Mail,
+  PhoneCall,
   Plus,
   Search,
   Share2,
+  TwitterIcon,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -30,6 +35,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+// import { FaWhatsapp, FaFacebookF, FaTwitter, FaInstagram  } from "react-icons/fa";
+
+// import { FaXTwitter } from "react-icons/fa6";
 import Link from "next/link";
 import React, { useState } from "react";
 import { Badge } from "@/components/ui/badge";
@@ -48,6 +63,12 @@ import { toast } from "sonner";
 dayjs.extend(relativeTime);
 
 export const WishesPage = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false); 
+  const toggleModal = () => {
+    setIsModalOpen((prev) => !prev);
+  };
+
+
   const [wishes, setWishes] = useState<Wishes>([]);
   const queryClient = useQueryClient();
 
@@ -276,14 +297,102 @@ export const WishesPage = () => {
                         <Edit className='mr-2 h-4 w-4' />
                         Edit Wish
                       </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <Share2 className='mr-2 h-4 w-4' />
+
+                      <DropdownMenuItem
+                        onSelect={(e) => {
+                          e.preventDefault();
+                          toggleModal();
+                        }}
+                      >
+                        <Share2 className="mr-2 h-4 w-4" />
                         Share Wish
                       </DropdownMenuItem>
+
+
+                        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+                        {/* <DialogTrigger asChild>
+                        </DialogTrigger> */}
+                        <DialogContent className="bg-gray-200">
+                          <DialogHeader>
+                            <DialogTitle>Share This Wish</DialogTitle>
+                            <DialogDescription>
+                              Share your wish with friends and family using the options below.
+                            </DialogDescription>
+                          </DialogHeader>
+                          <div className="space-y-4">
+                            
+                            <p className="text-gray-600">
+                              Copy the link to share or choose from the social media options.
+                            </p>
+                            <div className="flex gap-2 bg-white p-2 rounded-xl">
+                            <Input
+                              type="text"
+                              value={`https://example.com/wishes/${wish._id}`} 
+                              readOnly
+                              className="w-full bg-slate-100"
+                            />
+                            <Button
+                              variant="outline"  onClick={() => {
+                                navigator.clipboard.writeText("https://example.com/wish/1234");
+                                toast.success("Link copied to clipboard!");
+                              }}
+                              className="bg-yellow-400 w-28 text-white hover:bg-yellow-600"
+                            >
+                              <Share2 />
+                              Copy Link
+                            </Button>
+                            </div>
+
+                            <div className="flex justify-center gap-4 items-center w-full">
+                              {/* WhatsApp */}
+                              <a
+                                href={`https://wa.me/?text=${encodeURIComponent(`Check out this wish: https://example.com/wishes/${wish._id}`)}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                <PhoneCall size={24} className="text-green-500 hover:opacity-80" />
+                              </a>
+                              {/* Facebook */}
+                              <a
+                                href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`https://example.com/wishes/${wish._id}`)}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                <FacebookIcon size={24} className="text-blue-700 hover:opacity-80" />
+                              </a>
+                              {/* Twitter */}
+                              <a
+                                href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(`https://example.com/wishes/${wish._id}`)}&text=${encodeURIComponent("Check out this wish!")}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                <TwitterIcon size={24} className="text-blue-500 hover:opacity-80" />
+                              </a>
+                              {/* Instagram  */}
+                              <a
+                                href={`https://instagram.com`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                <InstagramIcon size={24} className="text-pink-500 hover:opacity-80" />
+                              </a>
+                              {/* Email */}
+                              <a
+                                href={`https://instagram.com`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                <Mail size={24} className="text-black hover:opacity-80" />
+                              </a>
+                            </div>
+
+                            
+                          </div>
+                        </DialogContent>
+                      </Dialog>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem
                         className='text-red-600'
-                        // onClick={() => handleArchive(wish._id)}
                         onClick={() => handleArchiveToggle(wish._id)}
                       >
                         <Archive className='mr-2 h-4 w-4' />
