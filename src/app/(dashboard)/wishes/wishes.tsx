@@ -60,6 +60,8 @@ import { toast } from "sonner";
 
 dayjs.extend(relativeTime);
 const queryKey = ["wishes"];
+const BASE_URL = "https://gathergift.vercel.app";
+
 
 export const WishesPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false); 
@@ -317,7 +319,7 @@ export const WishesPage = () => {
                             <div className="flex justify-center gap-4 items-center w-full">
                               {/* WhatsApp */}
                               <a
-                                href={`https://wa.me/?text=${encodeURIComponent(`Check out this wish: https://example.com/wishes/${wish._id}`)}`}
+                                href={`https://wa.me/?text=${encodeURIComponent(`Check out this wish: ${BASE_URL}/wishes/${wish._id}`)}`}
                                 target="_blank"
                                 rel="noopener"
                                 aria-label="brandname"
@@ -326,7 +328,7 @@ export const WishesPage = () => {
                               </a>
                               {/* Facebook */}
                               <a
-                                href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`https://example.com/wishes/${wish._id}`)}`}
+                                href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`${BASE_URL}/wishes/${wish._id}`)}`}
                                 target="_blank"
                                 rel="noopener"
                                 aria-label="brandname"
@@ -335,7 +337,7 @@ export const WishesPage = () => {
                               </a>
                               {/* Twitter */}
                               <a
-                                href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(`https://example.com/wishes/${wish._id}`)}&text=${encodeURIComponent("Check out this wish!")}`}
+                                href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(`${BASE_URL}/wishes/${wish._id}`)}&text=${encodeURIComponent("Check out this wish!")}`}
                                 target="_blank"
                                 rel="noopener"
                                 aria-label="brandname"
@@ -354,7 +356,7 @@ export const WishesPage = () => {
 
                               {/* mail */}
                               <a
-                                href={`mailto:recipient@example.com?subject=${encodeURIComponent("Check out this wish!")}&body=${encodeURIComponent(`Hi there,\n\nI wanted to share this wish with you: https://example.com/wishes/${wish._id}`)}`}
+                                href={`mailto:recipient@example.com?subject=${encodeURIComponent("Check out this wish!")}&body=${encodeURIComponent(`Hi there,\n\nI wanted to share this wish with you: ${BASE_URL}/wishes/${wish._id}`)}`}
                                 target="_blank"
                                 rel="noopener"
                                 aria-label="brandname"
