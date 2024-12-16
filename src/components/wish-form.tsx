@@ -29,6 +29,7 @@ import { Switch } from "@/components/ui/switch";
 import { ArrowRight, Plus, Trash2, Upload } from "lucide-react";
 import { Wish } from "@/types";
 import { WISH_CATEGORIES, CATEGORY_TAG_LINES } from "@/const";
+import { isValidDate } from "@/lib/utils";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_IMAGE_TYPES = [
@@ -48,7 +49,7 @@ export const wishFormSchema = z.object({
     .number()
     .min(1, "Target amount must be greater than 0")
     .nullable(),
-  endDate: z.coerce.date(),
+  endDate: z.coerce.date().optional(),
   itemsEnabled: z.boolean(),
   thankYouMessage: z
     .string()
@@ -98,8 +99,7 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
     resolver: zodResolver(wishFormSchema),
     defaultValues: {
       ...initialData,
-      currency: initialData?.currency,
-      category: initialData?.category,
+      title: initialData?.title || "",
       thankYouMessage: initialData?.thankYouMessage || "",
       visibility: initialData?.visibility || "PUBLIC",
       itemsEnabled: initialData?.itemsEnabled ?? true,
@@ -111,6 +111,11 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: "items",
+  });
+
+  const endDate = useWatch({
+    control: form.control,
+    name: "endDate",
   });
 
   const items = useWatch({
@@ -161,6 +166,12 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
     };
     onSubmit(formattedData);
   });
+
+  useEffect(() => {
+    if (typeof endDate === "string" && !isValidDate(endDate)) {
+      form.setValue("endDate", undefined);
+    }
+  }, [endDate, form]);
 
   return (
     <Form {...form}>
@@ -474,7 +485,7 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
                   className='bg-zinc-50'
                   type='date'
                   {...field}
-                  value={field.value.toString()}
+                  value={field.value ? field.value.toString() : ""}
                 />
               </FormControl>
               <FormMessage />

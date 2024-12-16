@@ -16,20 +16,10 @@ import { toast } from "sonner";
 export function CreateUpdateWish({ action }: { action: string }) {
   const router = useRouter();
   const [step, setStep] = useState(1);
-  const [wishData, setWishData] = useState<
-    Omit<Wish, "contributed_amount" | "wish" | "owner" | "isArchived" | "_id">
-  >({
-    title: "",
-    description: "",
-    target_amount: 0,
-    endDate: new Date(),
-    items: [],
-    currency: null,
-    category: null,
-    itemsEnabled: false,
-    visibility: "PUBLIC",
-    thankYouMessage: "",
-  });
+  const [wishData, setWishData] = useState<Omit<
+    Wish,
+    "contributed_amount" | "wish" | "owner" | "isArchived" | "_id"
+  > | null>(null);
 
   const isCreating = action === "create";
   const isCreateScreen = step === 1;
@@ -73,10 +63,6 @@ export function CreateUpdateWish({ action }: { action: string }) {
   return (
     <div className='relative container bg-white rounded-lg mx-auto px-12 py-8 min-h-[90vh] flex justify-between flex-col'>
       <div>
-        {/* <h1 className='text-3xl font-bold mb-6'>
-          {isCreating ? "Create New Wish" : "Update Wish"}
-        </h1> */}
-
         <div className='space-y-1 mb-6'>
           <h1 className='text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent'>
             {isCreating ? "Create New Wish" : "Update Wish"}
@@ -120,11 +106,14 @@ export function CreateUpdateWish({ action }: { action: string }) {
           </div>
         </div>
 
-        {isCreateScreen ? (
-          <WishForm onSubmit={handleSubmit} initialData={wishData} />
-        ) : (
-          <WishPreview wishData={wishData} />
+        {isCreateScreen && (
+          <WishForm
+            onSubmit={handleSubmit}
+            {...(!!wishData ? { initialData: wishData } : {})}
+          />
         )}
+
+        {isPreviewScreen && !!wishData && <WishPreview wishData={wishData} />}
       </div>
       <div className='mt-6 flex justify-between'>
         {step > 1 && (
@@ -133,7 +122,7 @@ export function CreateUpdateWish({ action }: { action: string }) {
           </Button>
         )}
 
-        {isPreviewScreen && (
+        {isPreviewScreen && !!wishData && (
           <Button
             onClick={() => handleSubmit(wishData)}
             className='ml-auto'
