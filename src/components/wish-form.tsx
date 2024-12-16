@@ -41,7 +41,7 @@ const ACCEPTED_IMAGE_TYPES = [
 export const wishFormSchema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().min(1, "Description is required"),
-  currency: z.enum(["USD", "NGN"]).nullable(),
+  currency: z.enum(["USD", "NGN"]),
   visibility: z.enum(["PUBLIC", "PRIVATE"]),
   category: z.enum(WISH_CATEGORIES).nullable(),
   target_amount: z
