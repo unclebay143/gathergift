@@ -59,6 +59,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 dayjs.extend(relativeTime);
+const queryKey = ["wishes"];
 
 export const WishesPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false); 
