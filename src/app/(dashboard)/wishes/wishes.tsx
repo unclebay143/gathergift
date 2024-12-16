@@ -41,7 +41,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
 
 import Link from "next/link";
 import React, { useState } from "react";
@@ -62,13 +62,11 @@ dayjs.extend(relativeTime);
 const queryKey = ["wishes"];
 const BASE_URL = "https://gathergift.vercel.app";
 
-
 export const WishesPage = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false); 
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const toggleModal = () => {
     setIsModalOpen((prev) => !prev);
   };
-
 
   // const [wishes, setWishes] = useState<Wishes>([]);
   const queryClient = useQueryClient();
@@ -110,7 +108,7 @@ export const WishesPage = () => {
         return;
       }
 
-      await queryClient.invalidateQueries({ queryKey: ['wishes'] });
+      await queryClient.invalidateQueries({ queryKey: ["wishes"] });
 
       toast.success("Wish Archived successfully!");
     } catch (error) {
@@ -279,93 +277,128 @@ export const WishesPage = () => {
                           toggleModal();
                         }}
                       >
-                        <Share2 className="mr-2 h-4 w-4" />
+                        <Share2 className='mr-2 h-4 w-4' />
                         Share Wish
                       </DropdownMenuItem>
 
-
-                        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-                        <DialogContent className="bg-white">
+                      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+                        <DialogContent className='bg-white'>
                           <DialogHeader>
                             <DialogTitle>Share This Wish</DialogTitle>
                             <DialogDescription>
-                              Share your wish with friends and family using the options below.
+                              Share your wish with friends and family using the
+                              options below.
                             </DialogDescription>
                           </DialogHeader>
-                          <div className="space-y-4">
-                            
-                            <p className="text-gray-600">
-                              Copy the link to share or choose from the social media options.
-                            </p>
-                            <div className="flex gap-2 bg-gray-100 p-2 rounded-xl">
+                          <div className='space-y-4'>
+                            <div className='flex gap-2 bg-gray-100 p-2 border shadow-sm rounded-xl'>
                               <Input
-                                type="text"
-                                value={`https://example.com/wishes/${wish._id}`} 
+                                type='text'
+                                value={`https://example.com/wishes/${wish._id}`}
                                 readOnly
-                                className="w-full bg-slate-100"
+                                className='w-full bg-slate-100 border-none bg-transparent shadow-none'
                               />
                               <Button
-                                variant="outline"  onClick={() => {
-                                  navigator.clipboard.writeText("https://example.com/wish/1234");
+                                variant='outline'
+                                onClick={() => {
+                                  navigator.clipboard.writeText(
+                                    "https://example.com/wish/1234"
+                                  );
                                   toast.success("Link copied to clipboard!");
                                 }}
-                                className="bg-yellow-400 w-28 text-white hover:bg-yellow-600"
+                                className='bg-yellow-500 w-28 text-white hover:bg-yellow-600 hover:text-white'
                               >
                                 <Share2 />
                                 Copy Link
                               </Button>
                             </div>
 
-                            <div className="flex justify-center gap-4 items-center w-full">
+                            <div className='relative'>
+                              <div className='absolute inset-0 flex items-center'>
+                                <div className='w-full border-t border-gray-200 dark:border-gray-800' />
+                              </div>
+                              <div className='relative flex justify-center text-sm'>
+                                <span className='px-2 bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400'>
+                                  Or share on socials
+                                </span>
+                              </div>
+                            </div>
+
+                            <div className='flex justify-center gap-4 items-center w-full'>
                               {/* WhatsApp */}
                               <a
-                                href={`https://wa.me/?text=${encodeURIComponent(`Check out this wish: ${BASE_URL}/wishes/${wish._id}`)}`}
-                                target="_blank"
-                                rel="noopener"
-                                aria-label="brandname"
+                                href={`https://wa.me/?text=${encodeURIComponent(
+                                  `Check out this wish: ${BASE_URL}/wishes/${wish._id}`
+                                )}`}
+                                target='_blank'
+                                rel='noopener'
+                                aria-label='brandname'
                               >
-                                <MessageCircleMore size={24} className="text-green-500 hover:opacity-80" />
+                                <MessageCircleMore
+                                  size={24}
+                                  className='text-zinc-500 hover:opacity-80'
+                                />
                               </a>
                               {/* Facebook */}
                               <a
-                                href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`${BASE_URL}/wishes/${wish._id}`)}`}
-                                target="_blank"
-                                rel="noopener"
-                                aria-label="brandname"
+                                href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+                                  `${BASE_URL}/wishes/${wish._id}`
+                                )}`}
+                                target='_blank'
+                                rel='noopener'
+                                aria-label='brandname'
                               >
-                                <FacebookIcon size={24} className="text-blue-700 hover:opacity-80" />
+                                <FacebookIcon
+                                  size={24}
+                                  className='text-zinc-500 hover:opacity-80'
+                                />
                               </a>
                               {/* Twitter */}
                               <a
-                                href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(`${BASE_URL}/wishes/${wish._id}`)}&text=${encodeURIComponent("Check out this wish!")}`}
-                                target="_blank"
-                                rel="noopener"
-                                aria-label="brandname"
+                                href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(
+                                  `${BASE_URL}/wishes/${wish._id}`
+                                )}&text=${encodeURIComponent(
+                                  "Check out this wish!"
+                                )}`}
+                                target='_blank'
+                                rel='noopener'
+                                aria-label='brandname'
                               >
-                                <TwitterIcon size={24} className="text-blue-500 hover:opacity-80" />
+                                <TwitterIcon
+                                  size={24}
+                                  className='text-zinc-500 hover:opacity-80'
+                                />
                               </a>
                               {/* Instagram  */}
                               <a
                                 href={`https://instagram.com`}
-                                target="_blank"
-                                rel="noopener"
-                                aria-label="brandname"
+                                target='_blank'
+                                rel='noopener'
+                                aria-label='brandname'
                               >
-                                <InstagramIcon size={24} className="text-pink-500 hover:opacity-80" />
+                                <InstagramIcon
+                                  size={24}
+                                  className='text-zinc-500 hover:opacity-80'
+                                />
                               </a>
 
                               {/* mail */}
                               <a
-                                href={`mailto:recipient@example.com?subject=${encodeURIComponent("Check out this wish!")}&body=${encodeURIComponent(`Hi there,\n\nI wanted to share this wish with you: ${BASE_URL}/wishes/${wish._id}`)}`}
-                                target="_blank"
-                                rel="noopener"
-                                aria-label="brandname"
+                                href={`mailto:recipient@example.com?subject=${encodeURIComponent(
+                                  "Check out this wish!"
+                                )}&body=${encodeURIComponent(
+                                  `Hi there,\n\nI wanted to share this wish with you: ${BASE_URL}/wishes/${wish._id}`
+                                )}`}
+                                target='_blank'
+                                rel='noopener'
+                                aria-label='brandname'
                               >
-                                <Mail size={24} className="text-green-500 hover:opacity-80" />
+                                <Mail
+                                  size={24}
+                                  className='text-zinc-500 hover:opacity-80'
+                                />
                               </a>
                             </div>
-
-                            
                           </div>
                         </DialogContent>
                       </Dialog>
