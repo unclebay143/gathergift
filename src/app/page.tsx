@@ -12,8 +12,6 @@ export default async function LandingPage() {
   const wishes = await getPublicWishes();
   const showWishes = wishes.length !== 0;
 
-  console.log(wishes);
-
   return (
     <PublicLayout>
       <div className='bg-gradient-to-b from-red-50 to-green-50 text-gray-800'>
