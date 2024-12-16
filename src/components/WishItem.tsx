@@ -2,14 +2,11 @@ import { useState } from "react";
 import { ChevronDown, ChevronUp, Info } from "lucide-react";
 import { Checkbox } from "./ui/Checkbox";
 import { WishItemDetailModal } from "./WishItemDetailModal";
+import { Item } from "@/types";
+import { calculateProgressPercentage } from "@/lib/utils";
 
 interface WishItemProps {
-  id: string;
-  name: string;
-  description: string;
-  image: string;
-  amount: number;
-  progress: number;
+  item: Item;
   isSelected: boolean;
   isExpanded: boolean;
   onSelect: () => void;
@@ -17,18 +14,18 @@ interface WishItemProps {
 }
 
 export function WishItem({
-  id,
-  name,
-  description,
-  image,
+  item,
   isSelected,
   isExpanded,
-  amount,
-  progress,
   onSelect,
   onExpand,
 }: WishItemProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const { _id, name, description, image_url, amount, contributed_amount } =
+    item;
+
+  const progress = calculateProgressPercentage(amount, contributed_amount);
 
   return (
     <div className='border rounded-md p-4 mb-4 bg-zinc-50'>
@@ -37,7 +34,7 @@ export function WishItem({
           <Checkbox
             checked={isSelected}
             onChange={onSelect}
-            id={`checkbox-${id}`}
+            id={`checkbox-${_id}`}
             label={name}
           />
         </div>
@@ -77,7 +74,7 @@ export function WishItem({
       {isExpanded && (
         <div className='mt-2'>
           <img
-            src={image}
+            src={image_url}
             alt={name}
             className='w-full h-48 object-cover rounded-md mb-2'
           />
@@ -87,11 +84,7 @@ export function WishItem({
       <WishItemDetailModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        name={name}
-        description={description}
-        image={image}
-        amount={amount}
-        progress={progress}
+        item={item}
       />
     </div>
   );

@@ -1,12 +1,13 @@
 "use client";
 
 import * as React from "react";
-import { Plus } from "lucide-react";
+import { Archive, LogOut } from "lucide-react";
 
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -15,6 +16,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import Link from "next/link";
 
 export function TeamSwitcher() {
   const { isMobile } = useSidebar();
@@ -24,9 +26,9 @@ export function TeamSwitcher() {
       <SidebarMenuItem>
         <DropdownMenu>
           <div className='flex items-center justify-between'>
-            <div className='grid flex-1 text-left text-lg leading-tight grow'>
+            <Link href='/'>
               <span className='truncate font-semibold'>GatherGift</span>
-            </div>
+            </Link>
             <DropdownMenuTrigger
               className='w-fit bg-transparent hover:bg-transparent'
               asChild
@@ -49,11 +51,22 @@ export function TeamSwitcher() {
             className='w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg'
             align='start'
             side={isMobile ? "bottom" : "right"}
-            sideOffset={4}
+            sideOffset={10}
           >
-            <DropdownMenuItem className='gap-2 p-2'>
+            <DropdownMenuItem className='gap-2 p-2 cursor-pointer' asChild>
+              <Link href='/archives'>
+                <div className='flex size-6 items-center justify-center rounded-md border bg-background'>
+                  <Archive className='size-4' />
+                </div>
+                <div className='font-medium text-muted-foreground'>
+                  Archives
+                </div>
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem className='gap-2 p-2 cursor-pointer'>
               <div className='flex size-6 items-center justify-center rounded-md border bg-background'>
-                <Plus className='size-4' />
+                <LogOut className='size-4' />
               </div>
               <div className='font-medium text-muted-foreground'>Logout</div>
             </DropdownMenuItem>

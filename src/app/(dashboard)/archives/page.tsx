@@ -1,9 +1,8 @@
 import React from "react";
-
-import { WishesPage } from "./wishes";
+import { ArchivePage } from "./archives";
 
 const Page = () => {
-  return <WishesPage />;
+  return <ArchivePage />;
 };
 
 export default Page;

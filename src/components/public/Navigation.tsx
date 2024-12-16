@@ -1,8 +1,15 @@
+"use client";
+
 import Link from "next/link";
 import { Gift } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useSession } from "next-auth/react";
 
 export default function Navigation() {
+  const session = useSession();
+  console.log(!!session);
+
+  const isLoggedIn = !!session;
   return (
     <nav className='bg-white shadow-md'>
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-0'>
@@ -35,13 +42,22 @@ export default function Navigation() {
               </Link>
             </div>
           </div>
+
           <div className='hidden sm:ml-6 sm:flex sm:items-center'>
-            <Button variant='outline' className='mr-2' asChild>
-              <Link href='/onboard'>Log in</Link>
-            </Button>
-            <Button asChild>
-              <Link href='/onboard'>Sign up</Link>
-            </Button>
+            {isLoggedIn ? (
+              <Button asChild>
+                <Link href='/wishes'>Dashboard</Link>
+              </Button>
+            ) : (
+              <>
+                <Button variant='outline' className='mr-2' asChild>
+                  <Link href='/onboard'>Log in</Link>
+                </Button>
+                <Button asChild>
+                  <Link href='/onboard?view=signup'>Sign up</Link>
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </div>

@@ -2,11 +2,11 @@
 
 import { cn } from "@/lib/utils";
 import React, { useEffect, useState } from "react";
-import { featuredWishlists } from "../public/FeaturedWishlists";
+
 import { WishCard } from "../WishCard";
+import { wishes } from "@/utils/dummy";
 
 export const InfiniteMovingCards = ({
-  //   items,
   direction = "left",
   speed = "fast",
   pauseOnHover = true,
@@ -87,8 +87,8 @@ export const InfiniteMovingCards = ({
           pauseOnHover && "hover:[animation-play-state:paused]"
         )}
       >
-        {featuredWishlists.map((wishlist) => (
-          <WishCard data={wishlist} key={wishlist.id} />
+        {wishes.map((wish) => (
+          <WishCard data={wish} key={wish._id} />
         ))}
       </ul>
     </div>

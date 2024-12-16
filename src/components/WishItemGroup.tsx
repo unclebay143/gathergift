@@ -2,35 +2,31 @@
 
 import { WishItem } from "./WishItem";
 import { useCallback, useState } from "react";
-import { featuredWishlists } from "./public/FeaturedWishlists";
 import { Checkbox } from "./ui/Checkbox";
 import { ContributionModal } from "./ContributionModal";
 import { toast } from "sonner";
+import { Items } from "@/types";
+import { wishes } from "@/utils/dummy";
 
 interface WishItemGroupProps {
-  items: Array<{
-    id: string;
-    name: string;
-    description: string;
-    image: string;
-    amount: number;
-    progress: number;
-  }>;
+  items: Items;
 }
 
 export function WishItemGroup({ items }: WishItemGroupProps) {
-  const [expandedItems, setExpandedItems] = useState<Set<string>>(
-    new Set([items[0]?.id])
+  const [expandedItems, setExpandedItems] = useState<Set<string | undefined>>(
+    new Set([items[0]._id])
   );
   const [isContributionModalOpen, setIsContributionModalOpen] = useState(false);
   const [contributions, setContributions] = useState<Record<string, number>>(
     {}
   );
 
-  const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
+  const [selectedItems, setSelectedItems] = useState<Set<string | undefined>>(
+    new Set()
+  );
   const [allSelected, setAllSelected] = useState(false);
 
-  const toggleExpanded = useCallback((id: string) => {
+  const toggleExpanded = useCallback((id: string | undefined) => {
     setExpandedItems((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(id)) {
@@ -42,7 +38,7 @@ export function WishItemGroup({ items }: WishItemGroupProps) {
     });
   }, []);
 
-  const toggleAllItems = useCallback((ids: string[]) => {
+  const toggleAllItems = useCallback((ids: (string | undefined)[]) => {
     setSelectedItems((prev) => {
       const newSet = new Set(prev);
       const allAreSelected = ids.every((id) => newSet.has(id));
@@ -59,7 +55,7 @@ export function WishItemGroup({ items }: WishItemGroupProps) {
     });
   }, []);
 
-  const toggleItem = (id: string) => {
+  const toggleItem = (id: string | undefined) => {
     setSelectedItems((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(id)) {
@@ -77,13 +73,13 @@ export function WishItemGroup({ items }: WishItemGroupProps) {
     console.log(newContributions);
     // send this data to backend
     // Update the fundedPercentage of items based on contributions
-    featuredWishlists.forEach((item) => {
-      if (newContributions[item.id]) {
-        const contributionPercentage =
-          (newContributions[item.id] / item.amount) * 100;
-        item.progress = Math.min(100, item.progress + contributionPercentage);
-      }
-    });
+    // wishes.forEach((item) => {
+    //   if (newContributions[item._id]) {
+    //     const contributionPercentage =
+    //       (newContributions[item._id] / item.amount) * 100;
+    //     item.progress = Math.min(100, item.progress + contributionPercentage);
+    //   }
+    // });
   };
 
   return (
@@ -91,12 +87,12 @@ export function WishItemGroup({ items }: WishItemGroupProps) {
       {items.map((item) => {
         return (
           <WishItem
-            key={item.id}
-            {...item}
-            isSelected={selectedItems.has(item.id)}
-            isExpanded={expandedItems.has(item.id)}
-            onSelect={() => toggleItem(item.id)}
-            onExpand={() => toggleExpanded(item.id)}
+            key={item._id}
+            item={item}
+            isSelected={selectedItems.has(item._id)}
+            isExpanded={expandedItems.has(item._id)}
+            onSelect={() => toggleItem(item._id)}
+            onExpand={() => toggleExpanded(item._id)}
           />
         );
       })}
@@ -105,7 +101,7 @@ export function WishItemGroup({ items }: WishItemGroupProps) {
         <Checkbox
           checked={allSelected}
           onChange={() => {
-            const allIds = items.map((item) => item.id);
+            const allIds = items.map((item) => item._id);
             toggleAllItems(allIds);
           }}
           id={`checkbox-all}`}
@@ -148,9 +144,7 @@ export function WishItemGroup({ items }: WishItemGroupProps) {
       <ContributionModal
         isOpen={isContributionModalOpen}
         onClose={() => setIsContributionModalOpen(false)}
-        selectedItems={featuredWishlists.filter((item) =>
-          selectedItems.has(item.id)
-        )}
+        selectedItems={wishes.filter((item) => selectedItems.has(item._id))}
         onContribute={handleContribute}
         initialContributions={contributions}
       />

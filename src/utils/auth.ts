@@ -10,13 +10,19 @@ export const handleAuthentication = async ({
   data?: { email: string; password: string };
 }) => {
   try {
-    return signIn(provider, {
+    const csrfResponse = await fetch("/api/auth/csrf");
+    const { csrfToken } = await csrfResponse.json();
+
+    const response = await signIn(provider, {
       callbackUrl: nextUrl || `${window.location.origin}/dashboard`,
+      csrfToken,
       ...data,
       redirect: false,
     });
+
+    return response;
   } catch (err) {
-    return console.log(err);
+    console.error("Error during authentication:", err);
   }
 };
 
