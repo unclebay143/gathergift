@@ -24,11 +24,29 @@ export const WISH_CATEGORIES = [
   "Generic",
 ] as const;
 
-export const CURRENCIES = ["USD", "NGN"] as const;
-export const MAP_CURRENCIES_TO_SYMBOLS: { [key: string]: string } = {
+export const WISH_STATUS = ["ONGOING", "FULFILLED", "INACTIVE"] as const;
+export const WISH_VISIBILITIES = ["PUBLIC", "PRIVATE"] as const;
+
+export const CURRENCIES = [
+  "USD",
+  "NGN",
+  "GBP",
+  "EUR",
+  "CAD",
+  "GMD",
+  "GHS",
+  "KES",
+] as const;
+
+export const MAP_CURRENCIES_TO_SYMBOLS: {
+  [key in (typeof CURRENCIES)[number]]: string;
+} = {
   USD: "$",
   NGN: "₦",
+  GBP: "£",
+  EUR: "€",
+  CAD: "C$",
+  GMD: "D",
+  GHS: "₵",
+  KES: "Ksh",
 };
-
-export const WISH_STATUS = ["ONGOING", "FULFILLED", "INACTIVE"];
-export const WISH_VISIBILITIES = ["PUBLIC", "PRIVATE"];

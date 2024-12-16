@@ -28,7 +28,12 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { ArrowRight, Plus, Trash2, Upload } from "lucide-react";
 import { Wish } from "@/types";
-import { WISH_CATEGORIES, CATEGORY_TAG_LINES } from "@/const";
+import {
+  WISH_CATEGORIES,
+  CATEGORY_TAG_LINES,
+  CURRENCIES,
+  WISH_VISIBILITIES,
+} from "@/const";
 import { isValidDate } from "@/lib/utils";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -42,8 +47,8 @@ const ACCEPTED_IMAGE_TYPES = [
 export const wishFormSchema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().min(1, "Description is required"),
-  currency: z.enum(["USD", "NGN"]),
-  visibility: z.enum(["PUBLIC", "PRIVATE"]),
+  currency: z.enum(CURRENCIES),
+  visibility: z.enum(WISH_VISIBILITIES),
   category: z.enum(WISH_CATEGORIES).nullable(),
   target_amount: z
     .number()
@@ -260,8 +265,14 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
                 <SelectContent>
                   <SelectGroup>
                     <SelectLabel>Currencies</SelectLabel>
-                    <SelectItem value='USD'>USD</SelectItem>
-                    <SelectItem value='NGN'>NGN</SelectItem>
+                    {CURRENCIES.map((currency) => (
+                      <SelectItem
+                        value={currency}
+                        key={`currency-items-${currency}`}
+                      >
+                        {currency}
+                      </SelectItem>
+                    ))}
                   </SelectGroup>
                 </SelectContent>
               </Select>
