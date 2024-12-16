@@ -75,10 +75,9 @@ export const WishesPage = () => {
       const res = await fetch("api/wishes");
       const data: Wishes = await res.json();
       const nonArchivedWishes = data.filter((wish) => !wish.isArchived);
-      // setWishes(nonArchivedWishes);
       return nonArchivedWishes as Wishes;
     },
-    queryKey: ["wishes"],
+    queryKey,
     refetchOnWindowFocus: true,
   });
 
@@ -87,7 +86,6 @@ export const WishesPage = () => {
     // setIsSearchMode
   ] = useState(false);
   // const [searchTerm, setSearchTerm] = useState("");
-  // const [wishesState, setWishesState] = useState<Wishes>(wishes ?? []);
 
   const showEmptyState = wishes?.length === 0;
 
@@ -98,49 +96,25 @@ export const WishesPage = () => {
   //     !wish.isArchived
   // );
 
-  // const handleToggleVisibility = (id: string) => {
-  //   setWishesState((prevWishes) =>
-  //     prevWishes?.map((wish) =>
-  //       wish._id === id
-  //         ? {
-  //             ...wish,
-  //             visibility: wish.visibility === "PUBLIC" ? "PRIVATE" : "PUBLIC",
-  //           }
-  //         : wish
-  //     )
-  //   );
-  // };
-
-  // const handleArchive = (id: string) => {
-  //   setWishesState((prevWishes) =>
-  //     prevWishes?.filter((wish) => wish._id !== id)
-  //   );
-  // };
-
-  const handleArchiveToggle = async (id: string) => { 
-    try { 
-      const response = await fetch(`/api/wishes/${id}/archive`, { 
-        method: 'PUT', 
-      }); 
+  const handleArchiveToggle = async (id: string) => {
+    try {
+      const response = await fetch(`/api/wishes/${id}/archive`, {
+        method: "PUT",
+      });
 
       if (!response.ok) {
         toast.error("Failed to archive/unarchive the wish.");
         return;
       }
-  
-      // setWishes((prev) =>
-      //   prev.filter((wish) => wish._id !== id || !wish.isArchived)
-      // );
 
       await queryClient.invalidateQueries({ queryKey: ['wishes'] });
-      
-      toast.success("Wish Archived successfully!");
 
-    } catch (error) { 
+      toast.success("Wish Archived successfully!");
+    } catch (error) {
       console.error("Error archiving/unarchiving the wish:", error);
       toast.error("An error occurred while archiving the wish.");
-    } 
-  }
+    }
+  };
 
   if (isLoading) {
     return <LoaderScreen />;
@@ -399,7 +373,7 @@ export const WishesPage = () => {
                       >
                         <Archive className='mr-2 h-4 w-4' />
                         {wish.isArchived ? "Unarchive Wish" : "Archive Wish"}
-                        </DropdownMenuItem>
+                      </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>

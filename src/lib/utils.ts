@@ -38,3 +38,9 @@ export const calculateProgressPercentage = (
 
   return toFixed ? Number(percentage.toFixed(2)) : percentage;
 };
+
+export const isValidDate = (dateString: string): boolean => {
+  if (typeof dateString !== "string") return dateString;
+  const date = new Date(dateString);
+  return !isNaN(date.getTime());
+};

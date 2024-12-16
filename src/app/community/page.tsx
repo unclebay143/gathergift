@@ -1,7 +1,11 @@
 import FeaturedWishlists from "@/components/public/FeaturedWishlists";
 import { PublicLayout } from "../public-layout";
+import { getPublicWishes } from "@/service/wishlists/wishlists.server";
 
-export default function CommunityPage() {
+export default async function CommunityPage() {
+  const wishes = await getPublicWishes();
+  const showWishes = wishes.length !== 0;
+
   return (
     <PublicLayout>
       <div className='min-h-screen  bg-gradient-to-b from-red-50 to-green-50 text-zinc-800'>
@@ -18,7 +22,7 @@ export default function CommunityPage() {
               moments that matter.
             </p>
           </header>
-          <FeaturedWishlists />
+          {showWishes ? <FeaturedWishlists wishes={wishes} /> : null}
         </div>
       </div>
     </PublicLayout>
