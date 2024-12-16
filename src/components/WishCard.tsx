@@ -1,30 +1,23 @@
 import { formatCurrencyWithComma } from "@/lib/utils";
+import { Wish } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-export const WishCard = ({
-  data,
-}: {
-  data: {
-    id: string;
-    name: string;
-    image: string;
-    description: string;
-    amount: number;
-  };
-}) => {
-  const { description, image, name, amount } = data;
+export const WishCard = ({ data }: { data: Wish }) => {
+  const { description, coverImage, title, target_amount, items } = data;
+  const coverImageWithAltImg = coverImage ?? items[0]?.image_url;
   return (
     <div className='bg-white rounded-lg shadow-md overflow-hidden w-[300px] transition-transform hover:scale-105'>
       <div className='relative h-[200px] min-w-[200px] max-w-[300px] w-full'>
-        <Image
-          layout='fill'
-          objectFit='cover'
-          data-nimg={1}
-          src={image}
-          alt={name}
-        />
+        {coverImageWithAltImg && (
+          <Image
+            layout='fill'
+            objectFit='cover'
+            src={coverImageWithAltImg}
+            alt={title}
+          />
+        )}
         <div className='absolute top-2 right-2'>
           <svg
             xmlns='http://www.w3.org/2000/svg'
@@ -45,7 +38,7 @@ export const WishCard = ({
       <div className='p-4 flex flex-col justify-between h-[208px] w-[300px]'>
         <div className='space-y-2'>
           <h3 className='text-lg font-semibold text-zinc-700 line-clamp-1'>
-            {name}
+            {title}
           </h3>
           <p className='text-sm text-zinc-600 line-clamp-2'>{description}</p>
         </div>
@@ -76,7 +69,7 @@ export const WishCard = ({
             </div>
             <div className='flex justify-between'>
               <p className='text-xs text-right text-zinc-500'>
-                {formatCurrencyWithComma(amount)}
+                {formatCurrencyWithComma(target_amount)}
               </p>
               <p className='text-xs text-right text-zinc-500'>
                 75% funded for 4 items

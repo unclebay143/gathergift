@@ -2,6 +2,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Toaster } from "sonner";
+import { AppProvider } from "./providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,17 +22,9 @@ export default function RootLayout({
       <body className={inter.className}>
         <div className='relative min-h-screen flex flex-col'>
           <Toaster />
-          <main className='flex-grow'>{children}</main>
-          {/* {Array.from({ length: 50 }).map((_, index) => (
-            <div
-              key={index}
-              className='snowflake'
-              style={{
-                left: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 5}s`,
-              }}
-            />
-          ))} */}
+          <AppProvider>
+            <main className='flex-grow'>{children}</main>
+          </AppProvider>
         </div>
       </body>
     </html>

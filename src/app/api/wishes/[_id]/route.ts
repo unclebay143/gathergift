@@ -1,5 +1,5 @@
 import connectMongoose from "@/lib/mongodb";
-import { WishLists } from "@/model/wishlists";
+import { Wish } from "@/model/wish";
 import { getDynamicParams } from "@/utils/dynamics";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -13,14 +13,11 @@ const PUT = async (
     const body = await request.json();
 
     if (!id) {
-      return NextResponse.json(
-        { message: "missing fields required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ message: "invalid id" }, { status: 400 });
     }
 
     await connectMongoose();
-    const wishlist = await WishLists.findByIdAndUpdate(id, body, { new: true });
+    const wishlist = await Wish.findByIdAndUpdate(id, body, { new: true });
 
     if (!wishlist) {
       return NextResponse.json(
@@ -57,7 +54,7 @@ const DELETE = async (
 
     await connectMongoose();
 
-    const wishlist = await WishLists.findByIdAndDelete(id);
+    const wishlist = await Wish.findByIdAndDelete(id);
 
     if (!wishlist) {
       return NextResponse.json(

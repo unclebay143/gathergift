@@ -28,7 +28,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { ArrowRight, Plus, Trash2, Upload } from "lucide-react";
 import { Wish } from "@/types";
-import { CATEGORIES, CATEGORY_TAG_LINES } from "@/const";
+import { WISH_CATEGORIES, CATEGORY_TAG_LINES } from "@/const";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_IMAGE_TYPES = [
@@ -43,9 +43,12 @@ export const wishFormSchema = z.object({
   description: z.string().min(1, "Description is required"),
   currency: z.enum(["USD", "NGN"]).nullable(),
   visibility: z.enum(["PUBLIC", "PRIVATE"]),
-  category: z.enum(CATEGORIES).nullable(),
-  target: z.number().min(1, "Target amount must be greater than 0").nullable(),
-  endDate: z.string().min(1, "End date is required"),
+  category: z.enum(WISH_CATEGORIES).nullable(),
+  target_amount: z
+    .number()
+    .min(1, "Target amount must be greater than 0")
+    .nullable(),
+  endDate: z.coerce.date(),
   itemsEnabled: z.boolean(),
   thankYouMessage: z
     .string()
@@ -54,7 +57,7 @@ export const wishFormSchema = z.object({
   items: z.array(
     z.object({
       name: z.string().min(1, "Item name is required"),
-      price: z.number().min(0, "Price must be 0 or greater").nullable(),
+      amount: z.number().min(0, "Price must be 0 or greater").nullable(),
       description: z
         .string()
         .max(200, "Item description must be 200 characters or less")
@@ -74,8 +77,16 @@ export const wishFormSchema = z.object({
 });
 
 type WishFormProps = {
-  onSubmit: (data: Wish) => void;
-  initialData?: Wish;
+  onSubmit: (
+    data: Omit<
+      Wish,
+      "wish" | "owner" | "isArchived" | "contributed_amount" | "_id"
+    >
+  ) => void;
+  initialData?: Omit<
+    Wish,
+    "wish" | "owner" | "isArchived" | "contributed_amount" | "_id"
+  >;
 };
 
 export function WishForm({ onSubmit, initialData }: WishFormProps) {
@@ -93,7 +104,7 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
       visibility: initialData?.visibility || "PUBLIC",
       itemsEnabled: initialData?.itemsEnabled ?? true,
       items: initialData?.items || [],
-      target: initialData?.target ?? null,
+      target_amount: initialData?.target_amount ?? null,
     },
   });
 
@@ -125,16 +136,14 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
     [form]
   );
 
-  console.log("loop");
-
   useEffect(() => {
     if (itemsEnabled) {
       const totalAmount = items.reduce(
-        (sum, item) => sum + (Number(item.price) || 0),
+        (sum, item) => sum + (Number(item.amount) || 0),
         0
       );
-      if (totalAmount !== form.getValues("target")) {
-        form.setValue("target", totalAmount, { shouldValidate: true });
+      if (totalAmount !== form.getValues("target_amount")) {
+        form.setValue("target_amount", totalAmount, { shouldValidate: true });
       }
     }
   }, [form, itemsEnabled, items]);
@@ -142,12 +151,12 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
   const handleSubmit = form.handleSubmit((data) => {
     const formattedData = {
       ...data,
-      target: data.itemsEnabled
-        ? data.items.reduce((sum, item) => sum + (Number(item.price) || 0), 0)
-        : Number(data.target),
+      target_amount: data.itemsEnabled
+        ? data.items.reduce((sum, item) => sum + (Number(item.amount) || 0), 0)
+        : Number(data.target_amount),
       items: data.items.map((item) => ({
         ...item,
-        price: Number(item.price),
+        amount: Number(item.amount),
       })),
     };
     onSubmit(formattedData);
@@ -174,7 +183,7 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
                 <SelectContent>
                   <SelectGroup>
                     <SelectLabel>Categories</SelectLabel>
-                    {CATEGORIES.map((category) => (
+                    {WISH_CATEGORIES.map((category) => (
                       <SelectItem value={category} key={category}>
                         {category}
                       </SelectItem>
@@ -268,7 +277,9 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
                     field.onChange(checked);
                     setItemsEnabled(checked);
                     if (!checked) {
-                      form.setValue("target", 0, { shouldValidate: true });
+                      form.setValue("target_amount", 0, {
+                        shouldValidate: true,
+                      });
                     }
                   }}
                 />
@@ -292,7 +303,11 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
                     <FormItem className='flex-1'>
                       <FormLabel>Item Name</FormLabel>
                       <FormControl>
-                        <Input placeholder='Item name' {...field} />
+                        <Input
+                          placeholder='Item name'
+                          {...field}
+                          className='bg-zinc-50/50'
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -300,7 +315,7 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
                 />
                 <FormField
                   control={form.control}
-                  name={`items.${index}.price`}
+                  name={`items.${index}.amount`}
                   render={({ field }) => (
                     <FormItem className='w-1/3'>
                       <FormLabel>Price</FormLabel>
@@ -308,13 +323,14 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
                         <Input
                           type='number'
                           placeholder='Enter price'
+                          className='bg-zinc-50/50'
                           value={field.value === null ? "" : field.value}
                           onChange={(e) => {
                             const value =
                               e.target.value === ""
                                 ? null
                                 : parseFloat(e.target.value);
-                            form.setValue(`items.${index}.price`, value, {
+                            form.setValue(`items.${index}.amount`, value, {
                               shouldValidate: true,
                             });
                           }}
@@ -337,6 +353,7 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
                     <FormControl>
                       <Textarea
                         placeholder='Describe how this item will help with your wish...'
+                        className='bg-zinc-50/50'
                         {...field}
                       />
                     </FormControl>
@@ -400,7 +417,7 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
             variant='outline'
             size='sm'
             className='mt-2'
-            onClick={() => append({ name: "", price: null, description: "" })}
+            onClick={() => append({ name: "", amount: null, description: "" })}
           >
             <Plus className='mr-2 h-4 w-4' /> Add Item
           </Button>
@@ -408,7 +425,7 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
 
         <FormField
           control={form.control}
-          name='target'
+          name='target_amount'
           render={({ field }) => (
             <FormItem>
               <FormLabel>Target Amount</FormLabel>
@@ -426,7 +443,7 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
                     field.onChange(value);
                   }}
                   readOnly={itemsEnabled}
-                  className={itemsEnabled ? "bg-gray-100" : ""}
+                  className={itemsEnabled ? "bg-gray-100" : "bg-zinc-50"}
                 />
               </FormControl>
               <FormDescription>
@@ -453,7 +470,12 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
               </div>
 
               <FormControl>
-                <Input className='bg-zinc-50' type='date' {...field} />
+                <Input
+                  className='bg-zinc-50'
+                  type='date'
+                  {...field}
+                  value={field.value.toString()}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -469,6 +491,7 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
               <FormControl>
                 <Textarea
                   placeholder='Write a custom thank you message for your contributors...'
+                  className='bg-zinc-50'
                   {...field}
                 />
               </FormControl>
@@ -484,7 +507,7 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
           control={form.control}
           name='visibility'
           render={({ field }) => (
-            <FormItem className='flex bg-zinc-50 flex-row items-center justify-between'>
+            <FormItem className='flex flex-row items-center justify-between gap-5'>
               <div className='space-y-0.5'>
                 <FormLabel className='capitalize text-base'>
                   Visibility ({field.value.toLowerCase()})

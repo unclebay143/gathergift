@@ -1,26 +1,23 @@
 import { useState, useEffect } from "react";
 import { X } from "lucide-react";
+import { Item } from "@/types";
+import { calculateProgressPercentage } from "@/lib/utils";
 
 interface WishItemDetailModalProps {
   isOpen: boolean;
   onClose: () => void;
-  name: string;
-  description: string;
-  image: string;
-  amount: number;
-  progress: number;
+  item: Item;
 }
 
 export function WishItemDetailModal({
   isOpen,
   onClose,
-  name,
-  description,
-  image,
-  amount,
-  progress,
+  item,
 }: WishItemDetailModalProps) {
   const [isVisible, setIsVisible] = useState(isOpen);
+  const { name, description, image_url, amount, contributed_amount } = item;
+
+  const progress = calculateProgressPercentage(amount, contributed_amount);
 
   useEffect(() => {
     if (isOpen) {
@@ -43,7 +40,7 @@ export function WishItemDetailModal({
       >
         <h2 className='text-xl font-bold mb-4'>{name}</h2>
         <img
-          src={image}
+          src={image_url}
           alt={name}
           className='w-full object-cover rounded-md mb-4'
         />

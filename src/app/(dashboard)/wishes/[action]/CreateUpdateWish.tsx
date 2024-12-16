@@ -9,15 +9,20 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Wish } from "@/types";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import { toast } from "sonner";
 
 export function CreateUpdateWish({ action }: { action: string }) {
   const router = useRouter();
   const [step, setStep] = useState(1);
-  const [wishData, setWishData] = useState<Wish>({
+  const [wishData, setWishData] = useState<
+    Omit<Wish, "contributed_amount" | "wish" | "owner" | "isArchived" | "_id">
+  >({
     title: "",
     description: "",
-    target: 0,
-    endDate: "",
+    target_amount: 0,
+    endDate: new Date(),
     items: [],
     currency: null,
     category: null,
@@ -30,24 +35,58 @@ export function CreateUpdateWish({ action }: { action: string }) {
   const isCreateScreen = step === 1;
   const isPreviewScreen = step === 2;
 
-  const handleSubmit = (data: Wish) => {
-    console.log(data);
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (
+      data: Omit<
+        Wish,
+        "contributed_amount" | "wish" | "owner" | "isArchived" | "_id"
+      >
+    ) =>
+      (await axios.post("/api/wishes", data)) as { data: { wishlist: Wish } },
+    onSuccess({ data }) {
+      toast.success("Wish created successfully.");
+      const wishListId = data.wishlist;
+      void wishListId; // to prevent unused variable
+      // Todo: redirect to wish page itself `/[username]/wishes/wishListId`
+      router.push("/wishes");
+    },
+    onError(error) {
+      console.log(error);
+      toast.error("Error creating wish");
+    },
+  });
+
+  const handleSubmit = (
+    data: Omit<
+      Wish,
+      "contributed_amount" | "wish" | "owner" | "isArchived" | "_id"
+    >
+  ) => {
     setWishData(data);
     if (step < 2) {
       setStep(step + 1);
     } else {
-      // send the data to API
-      console.log("Submitting wish:", data);
-      router.push("/wishes");
+      mutate(data);
     }
   };
 
   return (
-    <div className='relative container mx-auto px-4 py-8 min-h-[90vh] flex justify-between flex-col'>
+    <div className='relative container bg-white rounded-lg mx-auto px-12 py-8 min-h-[90vh] flex justify-between flex-col'>
       <div>
-        <h1 className='text-3xl font-bold mb-6'>
+        {/* <h1 className='text-3xl font-bold mb-6'>
           {isCreating ? "Create New Wish" : "Update Wish"}
-        </h1>
+        </h1> */}
+
+        <div className='space-y-1 mb-6'>
+          <h1 className='text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent'>
+            {isCreating ? "Create New Wish" : "Update Wish"}
+          </h1>
+          <p className='text-muted-foreground'>
+            {isCreating
+              ? "Create a new wish to share with others."
+              : "Update your existing wish."}
+          </p>
+        </div>
         <div className='mb-6'>
           <div className='flex items-center'>
             <div
@@ -80,6 +119,7 @@ export function CreateUpdateWish({ action }: { action: string }) {
             </span>
           </div>
         </div>
+
         {isCreateScreen ? (
           <WishForm onSubmit={handleSubmit} initialData={wishData} />
         ) : (
@@ -94,8 +134,16 @@ export function CreateUpdateWish({ action }: { action: string }) {
         )}
 
         {isPreviewScreen && (
-          <Button onClick={() => handleSubmit(wishData)} className='ml-auto'>
-            {isPreviewScreen ? "Create Wish" : "Update Wish"}
+          <Button
+            onClick={() => handleSubmit(wishData)}
+            className='ml-auto'
+            disabled={isPending}
+          >
+            {isPending ? (
+              "Please wait..."
+            ) : (
+              <>{isPreviewScreen ? "Create Wish" : "Update Wish"}</>
+            )}
           </Button>
         )}
       </div>

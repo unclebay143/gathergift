@@ -2,7 +2,11 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { compare } from "bcrypt";
 
-import type { GetServerSidePropsContext, NextApiRequest, NextApiResponse } from "next";
+import type {
+  GetServerSidePropsContext,
+  NextApiRequest,
+  NextApiResponse,
+} from "next";
 import { getServerSession, type NextAuthOptions } from "next-auth";
 import { User } from "@/model/users";
 import connectMongoose from "@/lib/mongodb";
@@ -53,12 +57,11 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     async session({ session, token }) {
-      console.log("Session Callback - Token:", token, "Session:", session);
-        session.user = token.user as { 
-            last_name?: string | null; 
-            email?: string | null; 
-            profile_picture?: string | null; 
-        };
+      session.user = token.user as {
+        last_name?: string | null;
+        email?: string | null;
+        profile_picture?: string | null;
+      };
       return session;
     },
   },
