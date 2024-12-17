@@ -6,7 +6,6 @@ import { Checkbox } from "./ui/Checkbox";
 import { ContributionModal } from "./ContributionModal";
 import { toast } from "sonner";
 import { Currency, Items } from "@/types";
-import { wishes } from "@/utils/dummy";
 
 interface WishItemGroupProps {
   items: Items;
@@ -71,7 +70,6 @@ export function WishItemGroup({ items, currency }: WishItemGroupProps) {
 
   const handleContribute = (newContributions: Record<string, number>) => {
     setContributions((prev) => ({ ...prev, ...newContributions }));
-    console.log(newContributions);
     // send this data to backend
     // Update the fundedPercentage of items based on contributions
     // wishes.forEach((item) => {
@@ -146,7 +144,7 @@ export function WishItemGroup({ items, currency }: WishItemGroupProps) {
       <ContributionModal
         isOpen={isContributionModalOpen}
         onClose={() => setIsContributionModalOpen(false)}
-        selectedItems={wishes.filter((item) => selectedItems.has(item._id))}
+        selectedItems={items.filter((item) => selectedItems.has(item._id))}
         onContribute={handleContribute}
         initialContributions={contributions}
         currency={currency}
