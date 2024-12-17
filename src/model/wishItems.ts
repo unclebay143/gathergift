@@ -2,6 +2,9 @@ import mongoose, { models, Schema } from "mongoose";
 
 const WishItemSchema: Schema = new Schema(
   {
+    coverImage: {
+      type: String,
+    },
     name: {
       type: String,
       required: true,

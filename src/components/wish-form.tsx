@@ -35,6 +35,7 @@ import {
   WISH_VISIBILITIES,
 } from "@/const";
 import { isValidDate } from "@/lib/utils";
+import Image from "next/image";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_IMAGE_TYPES = [
@@ -45,6 +46,7 @@ const ACCEPTED_IMAGE_TYPES = [
 ];
 
 export const wishFormSchema = z.object({
+  coverImage: z.string(),
   title: z.string().min(1, "Title is required"),
   description: z.string().min(1, "Description is required"),
   currency: z.enum(CURRENCIES),
@@ -187,6 +189,53 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit} className='space-y-8'>
+        <FormField
+          control={form.control}
+          name='coverImage'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Cover Image</FormLabel>
+              <FormControl>
+                <div className='flex items-center'>
+                  <Input
+                    type='file'
+                    accept='image/*'
+                    onChange={(e) => {
+                      form.setValue(
+                        "coverImage",
+                        "https://res.cloudinary.com/dxgkyhqzh/image/upload/v1734459695/nick-stephenson-P-KESVNvA84-unsplash_yawg5k.jpg"
+                      );
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        // Todo: upload to cloudinary using a service
+                      }
+                    }}
+                    className='hidden'
+                    id='coverImage'
+                  />
+                  <label
+                    htmlFor='coverImage'
+                    className='cursor-pointer bg-gray-200 hover:bg-gray-300 p-2 rounded-md'
+                  >
+                    <Upload className='h-5 w-5' />
+                  </label>
+                  {field.value && (
+                    <div className='relative h-10 w-10 ml-2'>
+                      <Image
+                        src={field.value}
+                        alt='Preview'
+                        className=' object-cover rounded-md'
+                        fill
+                      />
+                    </div>
+                  )}
+                </div>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <FormField
           control={form.control}
           name='category'
