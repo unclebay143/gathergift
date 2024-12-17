@@ -42,9 +42,9 @@ export const getPublicWish = async (username: string, id: string) => {
       {
         $match: {
           _id: new mongoose.Types.ObjectId(id),
+          owner: new mongoose.Types.ObjectId(user._id),
           visibility: "PUBLIC",
           isArchived: false,
-          owner: user._id,
         },
       },
       {
