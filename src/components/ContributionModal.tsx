@@ -3,7 +3,7 @@ import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Currency, Items, Wishes } from "@/types";
+import { Currency, Items } from "@/types";
 import { MAP_CURRENCIES_TO_SYMBOLS } from "@/const";
 
 interface ContributionModalProps {
