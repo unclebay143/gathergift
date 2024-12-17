@@ -180,7 +180,6 @@ export const getPublicWish = async (username: string, id: string) => {
     }
 
     const wish = result[0];
-    console.log(wish);
 
     return JSON.parse(JSON.stringify(wish)) as WishType;
   } catch (error) {
