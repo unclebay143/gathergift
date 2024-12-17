@@ -175,7 +175,7 @@ export const WishesPage = () => {
           </div>
         )}
 
-        <div className='grid gap-6 md:grid-cols-2 lg:grid-cols-4 grow'>
+        <div className='grid gap-6 md:grid-cols-2 lg:grid-cols-4'>
           {wishes?.map((wish) => (
             <Card
               key={wish._id}
