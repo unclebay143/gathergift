@@ -5,14 +5,14 @@ import { useCallback, useState } from "react";
 import { Checkbox } from "./ui/Checkbox";
 import { ContributionModal } from "./ContributionModal";
 import { toast } from "sonner";
-import { Items } from "@/types";
-import { wishes } from "@/utils/dummy";
+import { Currency, Items } from "@/types";
 
 interface WishItemGroupProps {
   items: Items;
+  currency: Currency;
 }
 
-export function WishItemGroup({ items }: WishItemGroupProps) {
+export function WishItemGroup({ items, currency }: WishItemGroupProps) {
   const [expandedItems, setExpandedItems] = useState<Set<string | undefined>>(
     new Set([items[0]._id])
   );
@@ -70,7 +70,6 @@ export function WishItemGroup({ items }: WishItemGroupProps) {
 
   const handleContribute = (newContributions: Record<string, number>) => {
     setContributions((prev) => ({ ...prev, ...newContributions }));
-    console.log(newContributions);
     // send this data to backend
     // Update the fundedPercentage of items based on contributions
     // wishes.forEach((item) => {
@@ -93,6 +92,7 @@ export function WishItemGroup({ items }: WishItemGroupProps) {
             isExpanded={expandedItems.has(item._id)}
             onSelect={() => toggleItem(item._id)}
             onExpand={() => toggleExpanded(item._id)}
+            currency={currency}
           />
         );
       })}
@@ -144,9 +144,10 @@ export function WishItemGroup({ items }: WishItemGroupProps) {
       <ContributionModal
         isOpen={isContributionModalOpen}
         onClose={() => setIsContributionModalOpen(false)}
-        selectedItems={wishes.filter((item) => selectedItems.has(item._id))}
+        selectedItems={items.filter((item) => selectedItems.has(item._id))}
         onContribute={handleContribute}
         initialContributions={contributions}
+        currency={currency}
       />
     </div>
   );

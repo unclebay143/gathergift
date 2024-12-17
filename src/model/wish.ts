@@ -36,10 +36,6 @@ const WishSchema: Schema = new Schema(
       type: Number,
       required: true,
     },
-    contributed_amount: {
-      type: Number,
-      default: 0,
-    },
     description: {
       type: String,
       required: true,

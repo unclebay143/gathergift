@@ -240,8 +240,13 @@ export const WishesPage = () => {
               </CardContent>
               <CardFooter className='p-4 bg-gray-50 dark:bg-gray-800/30'>
                 <div className='flex justify-between items-center w-full'>
-                  <Button variant='outline' size='sm'>
-                    View Details
+                  <Button variant='outline' size='sm' asChild>
+                    <Link
+                      target='_blank'
+                      href={`/unclebigbay/wishlists/${wish._id}`}
+                    >
+                      View Details
+                    </Link>
                   </Button>
 
                   <DropdownMenu>

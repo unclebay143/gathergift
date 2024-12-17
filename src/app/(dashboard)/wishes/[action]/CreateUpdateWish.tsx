@@ -35,10 +35,9 @@ export function CreateUpdateWish({ action }: { action: string }) {
       (await axios.post("/api/wishes", data)) as { data: { wishlist: Wish } },
     onSuccess({ data }) {
       toast.success("Wish created successfully.");
-      const wishListId = data.wishlist;
-      void wishListId; // to prevent unused variable
-      // Todo: redirect to wish page itself `/[username]/wishes/wishListId`
-      router.push("/wishes");
+      const wishListId = data.wishlist._id;
+      // Todo: make username dynamic `/[username]/wishes/wishListId`
+      router.push(`/unclebigbay/wishlists/${wishListId}`);
     },
     onError(error) {
       console.log(error);

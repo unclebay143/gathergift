@@ -3,14 +3,16 @@ import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Wishes } from "@/types";
+import { Currency, Items } from "@/types";
+import { MAP_CURRENCIES_TO_SYMBOLS } from "@/const";
 
 interface ContributionModalProps {
   isOpen: boolean;
   onClose: () => void;
-  selectedItems: Wishes;
+  selectedItems: Items;
   onContribute: (contributions: Record<string, number>) => void;
   initialContributions: Record<string, number>;
+  currency: Currency;
 }
 
 export function ContributionModal({
@@ -19,6 +21,7 @@ export function ContributionModal({
   selectedItems,
   onContribute,
   initialContributions,
+  currency,
 }: ContributionModalProps) {
   const [contributions, setContributions] = useState<Record<string, number>>(
     Object.fromEntries(selectedItems.map((item) => [item._id, 0]))
@@ -29,8 +32,8 @@ export function ContributionModal({
       setContributions(() => {
         const newContributions = { ...initialContributions };
         selectedItems.forEach((item) => {
-          if (!(item._id in newContributions)) {
-            newContributions[item._id] = 0;
+          if (!(item._id! in newContributions)) {
+            newContributions[item._id!] = 0;
           }
         });
         // Remove contributions for items that are no longer selected
@@ -80,24 +83,23 @@ export function ContributionModal({
         {selectedItems.map((item) => (
           <div key={item._id} className='mb-4'>
             <Label htmlFor={`contribution-${item._id}`} className='block mb-2'>
-              {item.title} (${item.target_amount.toFixed(2)})
+              {item.name} ({MAP_CURRENCIES_TO_SYMBOLS[currency]}{" "}
+              {item.amount.toFixed(2)})
             </Label>
             <Input
               type='number'
               id={`contribution-${item._id}`}
-              // max={1000} // we can have a settings for this "Receive payment when full percentage reached"
+              // max={1000} // Todo: we can have a settings for this "Receive payment when full percentage reached"
               value={
-                contributions[item._id] === 0
+                contributions[item._id!] === 0
                   ? ""
-                  : contributions[item._id]?.toString() || ""
+                  : contributions[item._id!]?.toString() || ""
               }
-              onChange={(e) => handleInputChange(item._id, e.target.value)}
+              onChange={(e) => handleInputChange(item._id!, e.target.value)}
             />
             <div className='text-sm text-gray-500 mt-1'>
-              {((contributions[item._id] / item.target_amount) * 100).toFixed(
-                2
-              )}
-              % of total amount
+              {((contributions[item._id!] / item.amount) * 100).toFixed(2)}% of
+              total amount
             </div>
           </div>
         ))}
