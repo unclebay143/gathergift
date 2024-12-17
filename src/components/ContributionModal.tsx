@@ -3,7 +3,8 @@ import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Wishes } from "@/types";
+import { Currency, Wishes } from "@/types";
+import { MAP_CURRENCIES_TO_SYMBOLS } from "@/const";
 
 interface ContributionModalProps {
   isOpen: boolean;
@@ -11,6 +12,7 @@ interface ContributionModalProps {
   selectedItems: Wishes;
   onContribute: (contributions: Record<string, number>) => void;
   initialContributions: Record<string, number>;
+  currency: Currency;
 }
 
 export function ContributionModal({
@@ -19,6 +21,7 @@ export function ContributionModal({
   selectedItems,
   onContribute,
   initialContributions,
+  currency,
 }: ContributionModalProps) {
   const [contributions, setContributions] = useState<Record<string, number>>(
     Object.fromEntries(selectedItems.map((item) => [item._id, 0]))
@@ -80,12 +83,13 @@ export function ContributionModal({
         {selectedItems.map((item) => (
           <div key={item._id} className='mb-4'>
             <Label htmlFor={`contribution-${item._id}`} className='block mb-2'>
-              {item.title} (${item.target_amount.toFixed(2)})
+              {item.title} ({MAP_CURRENCIES_TO_SYMBOLS[currency]}{" "}
+              {item.target_amount.toFixed(2)})
             </Label>
             <Input
               type='number'
               id={`contribution-${item._id}`}
-              // max={1000} // we can have a settings for this "Receive payment when full percentage reached"
+              // max={1000} // Todo: we can have a settings for this "Receive payment when full percentage reached"
               value={
                 contributions[item._id] === 0
                   ? ""

@@ -1,5 +1,12 @@
 import { CURRENCIES, WISH_CATEGORIES, WISH_VISIBILITIES } from "@/const";
 
+export type User = {
+  _id: string;
+  photo: string;
+  firstName: string;
+  lastName: string;
+};
+
 export type Item = {
   _id?: string;
   wish?: string;
@@ -15,7 +22,7 @@ export type Categories = (typeof WISH_CATEGORIES)[number];
 
 export type Wish = {
   _id: string;
-  owner: string;
+  owner: User;
   coverImage?: string;
   visibility: (typeof WISH_VISIBILITIES)[number];
   title: string;
@@ -32,3 +39,5 @@ export type Wish = {
 };
 
 export type Wishes = Wish[];
+
+export type Currency = (typeof CURRENCIES)[number];

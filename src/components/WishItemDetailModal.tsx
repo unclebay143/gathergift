@@ -39,11 +39,13 @@ export function WishItemDetailModal({
         }`}
       >
         <h2 className='text-xl font-bold mb-4'>{name}</h2>
-        <img
-          src={image_url}
-          alt={name}
-          className='w-full object-cover rounded-md mb-4'
-        />
+        {image_url && (
+          <img
+            src={image_url}
+            alt={name}
+            className='w-full object-cover rounded-md mb-4'
+          />
+        )}
         <p className='text-gray-700 mb-4'>{description}</p>
         <div className='flex justify-between items-center mb-4'>
           <span className='text-green-600 font-semibold text-lg'>

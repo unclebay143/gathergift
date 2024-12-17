@@ -5,14 +5,15 @@ import { useCallback, useState } from "react";
 import { Checkbox } from "./ui/Checkbox";
 import { ContributionModal } from "./ContributionModal";
 import { toast } from "sonner";
-import { Items } from "@/types";
+import { Currency, Items } from "@/types";
 import { wishes } from "@/utils/dummy";
 
 interface WishItemGroupProps {
   items: Items;
+  currency: Currency;
 }
 
-export function WishItemGroup({ items }: WishItemGroupProps) {
+export function WishItemGroup({ items, currency }: WishItemGroupProps) {
   const [expandedItems, setExpandedItems] = useState<Set<string | undefined>>(
     new Set([items[0]._id])
   );
@@ -93,6 +94,7 @@ export function WishItemGroup({ items }: WishItemGroupProps) {
             isExpanded={expandedItems.has(item._id)}
             onSelect={() => toggleItem(item._id)}
             onExpand={() => toggleExpanded(item._id)}
+            currency={currency}
           />
         );
       })}
@@ -147,6 +149,7 @@ export function WishItemGroup({ items }: WishItemGroupProps) {
         selectedItems={wishes.filter((item) => selectedItems.has(item._id))}
         onContribute={handleContribute}
         initialContributions={contributions}
+        currency={currency}
       />
     </div>
   );

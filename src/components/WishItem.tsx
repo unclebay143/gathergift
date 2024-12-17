@@ -2,8 +2,12 @@ import { useState } from "react";
 import { ChevronDown, ChevronUp, Info } from "lucide-react";
 import { Checkbox } from "./ui/Checkbox";
 import { WishItemDetailModal } from "./WishItemDetailModal";
-import { Item } from "@/types";
-import { calculateProgressPercentage } from "@/lib/utils";
+import { Currency, Item } from "@/types";
+import {
+  calculateProgressPercentage,
+  formatCurrencyWithComma,
+} from "@/lib/utils";
+import { MAP_CURRENCIES_TO_SYMBOLS } from "@/const";
 
 interface WishItemProps {
   item: Item;
@@ -11,6 +15,7 @@ interface WishItemProps {
   isExpanded: boolean;
   onSelect: () => void;
   onExpand: () => void;
+  currency: Currency;
 }
 
 export function WishItem({
@@ -19,6 +24,7 @@ export function WishItem({
   isExpanded,
   onSelect,
   onExpand,
+  currency,
 }: WishItemProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -41,7 +47,8 @@ export function WishItem({
         <div className='flex flex-wrap items-center gap-2 sm:gap-4 justify-between'>
           <div className='flex items-center gap-2 sm:gap-4'>
             <span className='text-green-600 font-semibold text-sm sm:text-base'>
-              ${amount?.toFixed(2)}
+              {MAP_CURRENCIES_TO_SYMBOLS[currency]}
+              {formatCurrencyWithComma(amount)}
             </span>
             <div className='flex items-center'>
               <div className='w-16 sm:w-20 bg-gray-200 rounded-full h-2 mr-2'>
@@ -73,11 +80,13 @@ export function WishItem({
       </div>
       {isExpanded && (
         <div className='mt-2'>
-          <img
-            src={image_url}
-            alt={name}
-            className='w-full h-48 object-cover rounded-md mb-2'
-          />
+          {image_url && (
+            <img
+              src={image_url}
+              alt={name}
+              className='w-full h-48 object-cover rounded-md mb-2'
+            />
+          )}
           <p className='text-gray-700 text-sm'>{description}</p>
         </div>
       )}
