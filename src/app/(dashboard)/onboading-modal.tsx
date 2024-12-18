@@ -32,8 +32,6 @@ export const onboardingFormSchema = z.object({
 export const OnboardingModal = () => {
   const { currentUser } = useAppContext();
   const hasUsername = !!currentUser?.username;
-  console.log(hasUsername);
-  console.log(currentUser);
 
   const [open, setOpen] = useState(true);
   const form = useForm<z.infer<typeof onboardingFormSchema>>({

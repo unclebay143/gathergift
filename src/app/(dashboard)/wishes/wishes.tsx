@@ -54,12 +54,13 @@ import {
   calculateProgressPercentage,
   formatCurrencyWithComma,
 } from "@/lib/utils";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useAppContext, useDashboardLoader } from "@/app/providers";
+import axios, { AxiosResponse } from "axios";
 
 dayjs.extend(relativeTime);
-const queryKey = ["wishes"];
+export const getWishesQueryKey = () => ["wishes"];
 const BASE_URL = "https://gathergift.vercel.app";
 
 export const WishesPage = () => {
@@ -73,16 +74,23 @@ export const WishesPage = () => {
 
   // const [wishes, setWishes] = useState<Wishes>([]);
   const queryClient = useQueryClient();
+  const { mutate: handleArchiveToggle } = useMutation({
+    mutationFn: (id: string) => axios.put(`/api/wishes/${id}/archive`),
+    onError() {
+      toast.error("Failed to archive/unarchive the wish.");
+    },
+    async onSuccess() {
+      toast.success("Wish Archived successfully!");
+      await queryClient.invalidateQueries({ queryKey: getWishesQueryKey() });
+    },
+  });
 
   const { data: wishes, isLoading } = useQuery({
-    queryFn: async () => {
-      const res = await fetch("api/wishes");
-      const data: Wishes = await res.json();
-      const nonArchivedWishes = data.filter((wish) => !wish.isArchived);
-      return nonArchivedWishes as Wishes;
-    },
-    queryKey,
+    queryFn: async (): Promise<AxiosResponse<Wishes>> =>
+      axios.get("api/wishes"),
+    queryKey: getWishesQueryKey(),
     refetchOnWindowFocus: true,
+    select: ({ data }) => data.filter((wish) => !wish.isArchived),
   });
 
   const [
@@ -99,26 +107,6 @@ export const WishesPage = () => {
   //       wish.description.toLowerCase().includes(searchTerm.toLowerCase())) &&
   //     !wish.isArchived
   // );
-
-  const handleArchiveToggle = async (id: string) => {
-    try {
-      const response = await fetch(`/api/wishes/${id}/archive`, {
-        method: "PUT",
-      });
-
-      if (!response.ok) {
-        toast.error("Failed to archive/unarchive the wish.");
-        return;
-      }
-
-      await queryClient.invalidateQueries({ queryKey });
-
-      toast.success("Wish Archived successfully!");
-    } catch (error) {
-      console.error("Error archiving/unarchiving the wish:", error);
-      toast.error("An error occurred while archiving the wish.");
-    }
-  };
 
   useEffect(() => {
     setVisibility(isLoading);

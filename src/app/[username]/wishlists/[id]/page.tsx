@@ -29,7 +29,7 @@ export default async function ChristmasWishlist({
     target_amount,
     contributed_amount,
   } = wish;
-  const { photo, firstName, lastName } = owner;
+  const { photo, firstName, lastName } = owner || {};
 
   const currencySymbol = MAP_CURRENCIES_TO_SYMBOLS[currency];
 
@@ -149,7 +149,7 @@ export default async function ChristmasWishlist({
 
                 <p className='text-zinc-600 text-xs text-center'>
                   Be the first to contribute and leave a message for{" "}
-                  {owner.firstName || owner.lastName || "them"}
+                  {firstName || lastName || "them"}
                 </p>
               </div>
             </section>

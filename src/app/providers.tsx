@@ -1,12 +1,11 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SessionProvider } from "next-auth/react";
 import { create } from "zustand";
-import { LoaderScreen } from "@/components/LoaderScreen";
 import type { User as UserType } from "@/types";
-import { User } from "@/model/users";
+import { AppContext } from "./app-context";
 
 export type DashboardLoaderStore = {
   visibility: boolean;
@@ -14,7 +13,7 @@ export type DashboardLoaderStore = {
 };
 
 export const useDashboardLoader = create<DashboardLoaderStore>((set) => ({
-  visibility: false,
+  visibility: true,
   setVisibility: (visibility: boolean) => set({ visibility }),
 }));
 
@@ -35,17 +34,11 @@ export const AppProvider = ({
   currentUser: UserType;
 }) => {
   const queryClient = new QueryClient();
-  const { visibility } = useDashboardLoader();
-  const { setCurrentUser } = useAppContext();
-
-  useEffect(() => {
-    setCurrentUser(currentUser);
-  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
       <SessionProvider>
-        {visibility && <LoaderScreen />}
+        <AppContext currentUser={currentUser} />
         <main className='flex-grow'>{children}</main>
       </SessionProvider>
     </QueryClientProvider>
