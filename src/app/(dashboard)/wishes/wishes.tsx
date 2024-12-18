@@ -44,25 +44,28 @@ import {
 } from "@/components/ui/dialog";
 
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Wishes } from "@/types";
 import relativeTime from "dayjs/plugin/relativeTime"; // ES 2015
 import dayjs from "dayjs";
-import { LoaderScreen } from "@/components/LoaderScreen";
 import {
   calculateProgressPercentage,
   formatCurrencyWithComma,
 } from "@/lib/utils";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { useAppContext, useDashboardLoader } from "@/app/providers";
 
 dayjs.extend(relativeTime);
 const queryKey = ["wishes"];
 const BASE_URL = "https://gathergift.vercel.app";
 
 export const WishesPage = () => {
+  const { setVisibility } = useDashboardLoader();
+  const { currentUser } = useAppContext();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const toggleModal = () => {
     setIsModalOpen((prev) => !prev);
@@ -108,7 +111,7 @@ export const WishesPage = () => {
         return;
       }
 
-      await queryClient.invalidateQueries({ queryKey: ["wishes"] });
+      await queryClient.invalidateQueries({ queryKey });
 
       toast.success("Wish Archived successfully!");
     } catch (error) {
@@ -117,9 +120,10 @@ export const WishesPage = () => {
     }
   };
 
-  if (isLoading) {
-    return <LoaderScreen />;
-  }
+  useEffect(() => {
+    setVisibility(isLoading);
+  }, [isLoading, setVisibility]);
+
   return (
     <>
       <div className='container w-full mx-auto px-4 py-6 lg:px-8 flex flex-col gap-8'>
@@ -243,7 +247,7 @@ export const WishesPage = () => {
                   <Button variant='outline' size='sm' asChild>
                     <Link
                       target='_blank'
-                      href={`/unclebigbay/wishlists/${wish._id}`}
+                      href={`/${currentUser?.username}/wishlists/${wish._id}`}
                     >
                       View Details
                     </Link>
