@@ -12,8 +12,11 @@ import { Wish } from "@/types";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { toast } from "sonner";
+import { useAppContext } from "@/app/providers";
 
 export function CreateUpdateWish({ action }: { action: string }) {
+  const { currentUser } = useAppContext();
+
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [wishData, setWishData] = useState<Omit<
@@ -37,7 +40,7 @@ export function CreateUpdateWish({ action }: { action: string }) {
       toast.success("Wish created successfully.");
       const wishListId = data.wishlist._id;
       // Todo: make username dynamic `/[username]/wishes/wishListId`
-      router.push(`/unclebigbay/wishlists/${wishListId}`);
+      router.push(`/${currentUser?.username}/wishlists/${wishListId}`);
     },
     onError(error) {
       console.log(error);

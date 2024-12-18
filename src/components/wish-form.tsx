@@ -46,7 +46,7 @@ const ACCEPTED_IMAGE_TYPES = [
 ];
 
 export const wishFormSchema = z.object({
-  coverImage: z.string(),
+  coverImage: z.string().optional(),
   title: z.string().min(1, "Title is required"),
   description: z.string().min(1, "Description is required"),
   currency: z.enum(CURRENCIES),

@@ -6,8 +6,15 @@ import Link from "next/link";
 import React from "react";
 
 export const WishCard = ({ data }: { data: Wish }) => {
-  const { description, coverImage, title, target_amount, items, currency } =
-    data;
+  const {
+    description,
+    coverImage,
+    title,
+    target_amount,
+    items,
+    currency,
+    owner,
+  } = data;
   const coverImageWithAltImg = coverImage ?? items[0]?.image_url;
   return (
     <div className='bg-white rounded-lg shadow-md overflow-hidden w-[300px] transition-transform hover:scale-105'>
@@ -80,7 +87,7 @@ export const WishCard = ({ data }: { data: Wish }) => {
             </div>
           </div>
           <Link
-            href='/unclebigbay/wishlists'
+            href={`/${owner?.username}/wishlists`}
             className='inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 h-10 px-4 py-2 w-full bg-green-600 hover:bg-green-700 text-white'
           >
             <svg
