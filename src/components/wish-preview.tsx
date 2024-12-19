@@ -22,10 +22,19 @@ export function WishPreview({ wishData }: WishPreviewProps) {
   const currencySymbol = MAP_CURRENCIES_TO_SYMBOLS[wishData.currency];
 
   return (
-    <div className='max-w-2xl mx-auto'>
+    <div className='max-w-2xl mx-auto relative'>
       <Card>
         <CardHeader>
           <CardTitle>{wishData.title || "Untitled Wish"}</CardTitle>
+          <div className='absolute inset-0 right-6 top-2 w-full h-fit flex justify-end'>
+            {wishData.coverImage && (
+              <img
+                src={wishData.coverImage}
+                alt={wishData.title}
+                className='w-12 h-12 object-cover rounded-md mr-4'
+              />
+            )}
+          </div>
         </CardHeader>
         <CardContent>
           <p className='text-muted-foreground mb-4'>
@@ -36,6 +45,7 @@ export function WishPreview({ wishData }: WishPreviewProps) {
               ? `Ends ${dayjs(wishData.endDate).fromNow()}`
               : "No end date set"}
           </div>
+
           {wishData.thankYouMessage && (
             // <div className='mt-6 p-6 rounded-lg border bg-zinc-50 shadow-inner'>
             <div className='mt-6 p-6 rounded-lg bg-gradient-to-br from-violet-50 via-purple-50 to-pink-50 dark:from-violet-950/30 dark:via-purple-950/30 dark:to-pink-950/30 border border-purple-100/50 dark:border-purple-900/50 shadow-inner'>

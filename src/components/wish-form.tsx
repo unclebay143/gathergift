@@ -70,7 +70,7 @@ export const wishFormSchema = z.object({
         .max(200, "Item description must be 200 characters or less")
         .optional(),
 
-      image: z.string().optional(),
+      image_url: z.string().optional(),
     })
   ),
 });
@@ -136,14 +136,14 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
 
   const handleImageUpload = useCallback(
     (index: number, imageUrl: string) => {
-      form.setValue(`items.${index}.image`, imageUrl);
+      form.setValue(`items.${index}.image_url`, imageUrl);
     },
     [form]
   );
 
   const handleImageRemove = useCallback(
     (index: number) => {
-      form.setValue(`items.${index}.image`, "");
+      form.setValue(`items.${index}.image_url`, "");
     },
     [form]
   );
@@ -472,7 +472,7 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
               />
               <FormField
                 control={form.control}
-                name={`items.${index}.image`}
+                name={`items.${index}.image_url`}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Item Image</FormLabel>
