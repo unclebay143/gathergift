@@ -26,7 +26,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { ArrowRight, Plus, Trash2, Upload } from "lucide-react";
+import { ArrowRight, Loader, Plus, Trash2, Upload } from "lucide-react";
 import { Wish } from "@/types";
 import {
   WISH_CATEGORIES,
@@ -36,14 +36,13 @@ import {
 } from "@/const";
 import { isValidDate } from "@/lib/utils";
 import Image from "next/image";
-
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-const ACCEPTED_IMAGE_TYPES = [
-  "image/jpeg",
-  "image/jpg",
-  "image/png",
-  "image/webp",
-];
+import { uploadImage } from "@/utils/image-uploader";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./ui/tooltip";
 
 export const wishFormSchema = z.object({
   coverImage: z.string(),
@@ -71,15 +70,7 @@ export const wishFormSchema = z.object({
         .max(200, "Item description must be 200 characters or less")
         .optional(),
 
-      image: z
-        .any()
-        .refine((file) => file instanceof File, "Image is required")
-        .refine((file) => file.size <= MAX_FILE_SIZE, `Max file size is 5MB.`)
-        .refine(
-          (file) => ACCEPTED_IMAGE_TYPES.includes(file.type),
-          "Only .jpg, .jpeg, .png and .webp formats are supported."
-        )
-        .optional(),
+      image: z.string().optional(),
     })
   ),
 });
@@ -101,6 +92,8 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
   const [itemsEnabled, setItemsEnabled] = useState(
     initialData?.itemsEnabled ?? true
   );
+
+  const [isUploadingCoverImage, setIsUploadingCoverImage] = useState(false);
 
   const form = useForm<z.infer<typeof wishFormSchema>>({
     resolver: zodResolver(wishFormSchema),
@@ -142,8 +135,15 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
   }, [category, form]);
 
   const handleImageUpload = useCallback(
-    (index: number, file: File) => {
-      form.setValue(`items.${index}.image`, file);
+    (index: number, imageUrl: string) => {
+      form.setValue(`items.${index}.image`, imageUrl);
+    },
+    [form]
+  );
+
+  const handleImageRemove = useCallback(
+    (index: number) => {
+      form.setValue(`items.${index}.image`, "");
     },
     [form]
   );
@@ -200,34 +200,66 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
                   <Input
                     type='file'
                     accept='image/*'
-                    onChange={(e) => {
-                      form.setValue(
-                        "coverImage",
-                        "https://res.cloudinary.com/dxgkyhqzh/image/upload/v1734459695/nick-stephenson-P-KESVNvA84-unsplash_yawg5k.jpg"
-                      );
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        // Todo: upload to cloudinary using a service
+                    onChange={async (e) => {
+                      try {
+                        setIsUploadingCoverImage(true);
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const result = await uploadImage(file);
+                          const uploadedUrl = result?.[0]?.secure_url;
+                          if (uploadedUrl) {
+                            form.setValue("coverImage", uploadedUrl);
+                            return setIsUploadingCoverImage(false);
+                          }
+                          setIsUploadingCoverImage(false);
+                        }
+                      } catch (error) {
+                        console.log(error);
+                        setIsUploadingCoverImage(false);
                       }
                     }}
                     className='hidden'
                     id='coverImage'
                   />
-                  <label
-                    htmlFor='coverImage'
-                    className='cursor-pointer bg-gray-200 hover:bg-gray-300 p-2 rounded-md'
-                  >
-                    <Upload className='h-5 w-5' />
-                  </label>
-                  {field.value && (
-                    <div className='relative h-10 w-10 ml-2'>
+
+                  {field.value ? (
+                    <div className='group relative h-10 w-10 rounded-md overflow-hidden border'>
+                      <div className='absolute bg-zinc-100/90 animate-pulse inset-0' />
+                      <Tooltip>
+                        <TooltipProvider>
+                          <TooltipTrigger asChild>
+                            <div>
+                              <button
+                                onClick={() => form.setValue("coverImage", "")}
+                                className='invisible w-10 h-10 group-hover:visible absolute bg-black/50 z-20 inset-0 flex items-center justify-center'
+                              >
+                                <Trash2 className='size-3 text-zinc-50' />
+                              </button>
+                            </div>
+                          </TooltipTrigger>
+                          <TooltipContent side='bottom' sideOffset={45}>
+                            Remove image
+                          </TooltipContent>
+                        </TooltipProvider>
+                      </Tooltip>
                       <Image
                         src={field.value}
                         alt='Preview'
-                        className=' object-cover rounded-md'
+                        className='object-cover'
                         fill
                       />
                     </div>
+                  ) : (
+                    <label
+                      htmlFor='coverImage'
+                      className='cursor-pointer bg-gray-200 hover:bg-gray-300 p-2 rounded-md'
+                    >
+                      {isUploadingCoverImage ? (
+                        <Loader className='size-5 animate-spin' />
+                      ) : (
+                        <Upload className='size-5' />
+                      )}
+                    </label>
                   )}
                 </div>
               </FormControl>
@@ -449,27 +481,57 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
                         <Input
                           type='file'
                           accept='image/*'
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) {
-                              handleImageUpload(index, file);
+                          onChange={async (e) => {
+                            try {
+                              const file = e.target.files?.[0];
+                              if (file) {
+                                const result = await uploadImage(file);
+                                const uploadedUrl = result?.[0]?.secure_url;
+                                if (uploadedUrl) {
+                                  return handleImageUpload(index, uploadedUrl);
+                                }
+                              }
+                            } catch (error) {
+                              console.log(error);
                             }
                           }}
                           className='hidden'
                           id={`image-upload-${index}`}
                         />
-                        <label
-                          htmlFor={`image-upload-${index}`}
-                          className='cursor-pointer bg-gray-200 hover:bg-gray-300 p-2 rounded-md'
-                        >
-                          <Upload className='h-5 w-5' />
-                        </label>
-                        {field.value && (
-                          <img
-                            src={URL.createObjectURL(field.value)}
-                            alt='Preview'
-                            className='ml-2 h-10 w-10 object-cover rounded-md'
-                          />
+                        {field.value ? (
+                          <div className='group relative h-10 w-10 rounded-md overflow-hidden border'>
+                            <div className='absolute bg-zinc-100/90 animate-pulse inset-0' />
+                            <Tooltip>
+                              <TooltipProvider>
+                                <TooltipTrigger asChild>
+                                  <div>
+                                    <button
+                                      onClick={() => handleImageRemove(index)}
+                                      className='invisible w-10 h-10 group-hover:visible absolute bg-black/50 z-20 inset-0 flex items-center justify-center'
+                                    >
+                                      <Trash2 className='size-3 text-zinc-50' />
+                                    </button>
+                                  </div>
+                                </TooltipTrigger>
+                                <TooltipContent side='bottom' sideOffset={45}>
+                                  Remove image
+                                </TooltipContent>
+                              </TooltipProvider>
+                            </Tooltip>
+                            <Image
+                              src={field.value}
+                              alt='Preview'
+                              className='object-cover'
+                              fill
+                            />
+                          </div>
+                        ) : (
+                          <label
+                            htmlFor={`image-upload-${index}`}
+                            className='cursor-pointer bg-gray-200 hover:bg-gray-300 p-2 rounded-md'
+                          >
+                            <Upload className='h-5 w-5' />
+                          </label>
                         )}
                       </div>
                     </FormControl>
