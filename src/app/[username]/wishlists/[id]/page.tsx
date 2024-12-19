@@ -29,7 +29,7 @@ export default async function ChristmasWishlist({
     target_amount,
     contributed_amount,
   } = wish;
-  const { photo, firstName, lastName } = owner || {};
+  const { photo } = owner || {};
 
   const currencySymbol = MAP_CURRENCIES_TO_SYMBOLS[currency];
 
@@ -37,6 +37,9 @@ export default async function ChristmasWishlist({
     wish.target_amount,
     wish.contributed_amount
   );
+
+  const itemsSize = items?.length;
+  const hasItems = itemsSize > 0 && !!items[0]?._id; // for case where wishes with no items has contributed_amount
 
   return (
     <PublicLayout>
@@ -54,9 +57,7 @@ export default async function ChristmasWishlist({
                     className='rounded-full aspect-square border-4 border-amber-300 shadow-lg'
                     src={
                       photo ||
-                      `https://api.dicebear.com/9.x/identicon/svg?seed=${
-                        firstName || lastName || "Riley"
-                      }`
+                      `https://api.dicebear.com/9.x/identicon/svg?seed=${username}`
                     }
                   />
                 </div>
@@ -88,9 +89,11 @@ export default async function ChristmasWishlist({
               <h2 className='text-2xl font-semibold text-center text-green-800'>
                 Gift Wishes
               </h2>
-              <div className='space-y-3'>
-                <WishItemGroup items={items} currency={currency} />
-              </div>
+              {hasItems && (
+                <div className='space-y-3'>
+                  <WishItemGroup items={items} currency={currency} />
+                </div>
+              )}
             </section>
             <section className='bg-white rounded-lg shadow-md p-6 space-y-4 max-w-4xl mx-auto'>
               <h2 className='text-2xl font-semibold text-center text-green-800'>
@@ -148,8 +151,7 @@ export default async function ChristmasWishlist({
                 </div> */}
 
                 <p className='text-zinc-600 text-xs text-center'>
-                  Be the first to contribute and leave a message for{" "}
-                  {firstName || lastName || "them"}
+                  Be the first to contribute and leave a message for {username}
                 </p>
               </div>
             </section>

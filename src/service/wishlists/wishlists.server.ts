@@ -19,13 +19,34 @@ export const getPublicWishes = async () => {
           as: "items",
         },
       },
+      {
+        $lookup: {
+          from: "users",
+          localField: "owner",
+          foreignField: "_id",
+          as: "owner",
+          pipeline: [
+            {
+              $project: {
+                _id: 1,
+                username: 1,
+              },
+            },
+          ],
+        },
+      },
+      {
+        $unwind: {
+          path: "$owner",
+        },
+      },
     ]);
+
+    return JSON.parse(JSON.stringify(wishes)) as Wishes;
   } catch (error) {
     console.log(error);
     return [];
   }
-
-  return JSON.parse(JSON.stringify(wishes)) as Wishes;
 };
 
 export const getPublicWish = async (username: string, id: string) => {
@@ -38,11 +59,14 @@ export const getPublicWish = async (username: string, id: string) => {
 
     if (!user) return null;
 
+    const wishId = new mongoose.Types.ObjectId(id);
+    const ownerId = new mongoose.Types.ObjectId(user._id);
+
     const result = await Wish.aggregate([
       {
         $match: {
-          _id: new mongoose.Types.ObjectId(id),
-          owner: new mongoose.Types.ObjectId(user._id),
+          _id: wishId,
+          owner: ownerId,
           visibility: "PUBLIC",
           isArchived: false,
         },
@@ -53,6 +77,17 @@ export const getPublicWish = async (username: string, id: string) => {
           localField: "_id",
           foreignField: "wish",
           as: "items",
+          pipeline: [
+            {
+              $project: {
+                _id: 1,
+                name: 1,
+                description: 1,
+                amount: 1,
+                image_url: 1,
+              },
+            },
+          ],
         },
       },
       {
@@ -76,11 +111,13 @@ export const getPublicWish = async (username: string, id: string) => {
       {
         $unwind: {
           path: "$owner",
+          preserveNullAndEmptyArrays: true,
         },
       },
       {
         $unwind: {
           path: "$items",
+          preserveNullAndEmptyArrays: true,
         },
       },
       {
@@ -114,7 +151,6 @@ export const getPublicWish = async (username: string, id: string) => {
           },
         },
       },
-
       {
         $group: {
           _id: "$_id",
@@ -125,6 +161,11 @@ export const getPublicWish = async (username: string, id: string) => {
           isArchived: { $first: "$isArchived" },
           currency: { $first: "$currency" },
           target_amount: { $first: "$target_amount" },
+          category: { $first: "$category" },
+          status: { $first: "$status" },
+          thankYouMessage: { $first: "$thankYouMessage" },
+          description: { $first: "$description" },
+          coverImage: { $first: "$coverImage" },
         },
       },
       {
@@ -143,7 +184,6 @@ export const getPublicWish = async (username: string, id: string) => {
           as: "total_contributed_amount_data",
         },
       },
-
       {
         $addFields: {
           total_contributed_amount: {
@@ -171,11 +211,16 @@ export const getPublicWish = async (username: string, id: string) => {
           visibility: 1,
           isArchived: 1,
           target_amount: 1,
+          category: 1,
+          status: 1,
+          thankYouMessage: 1,
+          description: 1,
+          coverImage: 1,
         },
       },
-    ]);
+    ]).exec();
 
-    if (result.length === 0) {
+    if (!result || result.length === 0) {
       return null;
     }
 

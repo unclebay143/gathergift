@@ -8,6 +8,7 @@ import {
   formatCurrencyWithComma,
 } from "@/lib/utils";
 import { MAP_CURRENCIES_TO_SYMBOLS } from "@/const";
+import Image from "next/image";
 
 interface WishItemProps {
   item: Item;
@@ -35,8 +36,8 @@ export function WishItem({
 
   return (
     <div className='border rounded-md p-4 mb-4 bg-zinc-50'>
-      <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between'>
-        <div className='flex items-center mb-2 sm:mb-0'>
+      <div className='flex flex-col-reverse gap-2 sm:flex-row sm:items-center sm:justify-between'>
+        <div className='flex items-center'>
           <Checkbox
             checked={isSelected}
             onChange={onSelect}
@@ -81,11 +82,14 @@ export function WishItem({
       {isExpanded && (
         <div className='mt-2'>
           {image_url && (
-            <img
-              src={image_url}
-              alt={name}
-              className='w-full h-48 object-cover rounded-md mb-2'
-            />
+            <div className='relative w-full aspect-[2/1] mb-2'>
+              <Image
+                src={image_url}
+                alt={name}
+                className='object-cover rounded-md'
+                fill
+              />
+            </div>
           )}
           <p className='text-gray-700 text-sm'>{description}</p>
         </div>
