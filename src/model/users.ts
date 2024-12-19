@@ -4,6 +4,9 @@ const ALLOWED_AUTH_PROVIDER = ["google", "credentials"];
 
 const UserSchema: Schema = new Schema(
   {
+    username: {
+      type: String,
+    },
     firstName: {
       type: String,
     },

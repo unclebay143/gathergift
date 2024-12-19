@@ -24,17 +24,16 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import React from "react";
+import React, { useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Wishes } from "@/types";
 import relativeTime from "dayjs/plugin/relativeTime";
 import dayjs from "dayjs";
-import { LoaderScreen } from "@/components/LoaderScreen";
 import {
   calculateProgressPercentage,
   formatCurrencyWithComma,
 } from "@/lib/utils";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
   Tooltip,
@@ -42,12 +41,15 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import axios from "axios";
+import { useDashboardLoader } from "@/app/providers";
 
 dayjs.extend(relativeTime);
 
-const queryKey = ["archive-wishes"];
+const getArchiveWishesQueryKey = () => ["archive-wishes"];
 export const ArchivePage = () => {
   const queryClient = useQueryClient();
+  const { setVisibility } = useDashboardLoader();
 
   const { isLoading, data: wishes } = useQuery({
     queryFn: async () => {
@@ -56,35 +58,28 @@ export const ArchivePage = () => {
       const nonArchivedWishes = data.filter((wish) => wish.isArchived);
       return nonArchivedWishes as Wishes;
     },
-    queryKey,
+    queryKey: getArchiveWishesQueryKey(),
     refetchOnWindowFocus: true,
   });
 
-  const showEmptyState = wishes?.length === 0;
-
-  const handleArchiveToggle = async (id: string) => {
-    try {
-      const response = await fetch(`/api/wishes/${id}/archive`, {
-        method: "PUT",
+  const { mutate: handleArchiveToggle } = useMutation({
+    mutationFn: (id: string) => axios.put(`/api/wishes/${id}/archive`),
+    onError() {
+      toast.error("Failed to archive/unarchive the wish.");
+    },
+    async onSuccess() {
+      toast.success("Wish Archived successfully!");
+      await queryClient.invalidateQueries({
+        queryKey: getArchiveWishesQueryKey(),
       });
+    },
+  });
 
-      if (!response.ok) {
-        toast.error("Failed to unarchive the wish.");
-        return;
-      }
+  useEffect(() => {
+    setVisibility(isLoading);
+  }, [isLoading, setVisibility]);
 
-      await queryClient.invalidateQueries({ queryKey });
-
-      toast.success("Wish unArchived successfully!");
-    } catch (error) {
-      console.error("Error un-archiving the wish:", error);
-      toast.error("An error occurred while un-archiving the wish.");
-    }
-  };
-
-  if (isLoading) {
-    return <LoaderScreen />;
-  }
+  const showEmptyState = wishes?.length === 0;
   return (
     <>
       <div className='container w-full mx-auto px-4 py-6 lg:px-8 flex flex-col gap-8'>

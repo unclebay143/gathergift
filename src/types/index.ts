@@ -5,7 +5,8 @@ export type User = {
   photo: string;
   firstName: string;
   lastName: string;
-};
+  username: string;
+} | null;
 
 export type Item = {
   _id?: string;
