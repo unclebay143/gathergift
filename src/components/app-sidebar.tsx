@@ -1,28 +1,60 @@
 "use client";
 
 import * as React from "react";
-import { GalleryVerticalEnd, Gift } from "lucide-react";
+import {
+  ChartPie,
+  GalleryVerticalEnd,
+  Gift,
+  History,
+  Settings,
+} from "lucide-react";
 
-import { NavProjects } from "@/components/nav-projects";
 import { TeamSwitcher } from "@/components/team-switcher";
 import {
   Sidebar,
   SidebarContent,
   SidebarHeader,
 } from "@/components/ui/sidebar";
+import { NavMain } from "./nav-main";
 
 const data = {
   teams: [
     {
       name: "GatherGift",
       logo: GalleryVerticalEnd,
+      imageUrl: "https://github.com/unclebay143.png",
+      email: "unclebigbaytest@office.com",
     },
   ],
-  projects: [
+  navMain: [
     {
-      name: "Wishes",
-      url: "/wishes",
-      icon: Gift,
+      title: "Overview",
+      url: "/overview",
+      icon: ChartPie,
+      comingSoon: true,
+    },
+    {
+      imageUrl: "https://github.com/unclebay143.png",
+      title: "Default",
+      url: "#",
+      items: [
+        {
+          title: "Wishes",
+          url: "/wishes",
+          icon: Gift,
+        },
+        {
+          title: "Archives",
+          url: "/archives",
+          icon: History,
+        },
+        {
+          title: "Settings",
+          comingSoon: true,
+          url: "#",
+          icon: Settings,
+        },
+      ],
     },
   ],
 };
@@ -31,10 +63,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible='icon' {...props}>
       <SidebarHeader>
-        <TeamSwitcher />
+        <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
       <SidebarContent>
-        <NavProjects projects={data.projects} />
+        <NavMain items={data.navMain} />
       </SidebarContent>
     </Sidebar>
   );

@@ -1,13 +1,11 @@
 "use client";
 
 import * as React from "react";
-import { Archive, LogOut } from "lucide-react";
-
+import { ChevronsUpDown, Gift, LogOut } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -16,54 +14,68 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import Link from "next/link";
 
-export function TeamSwitcher() {
+export function TeamSwitcher({
+  teams,
+}: {
+  teams: {
+    name: string;
+    logo: React.ElementType;
+    plan?: string;
+    imageUrl: string;
+    email: string;
+  }[];
+}) {
   const { isMobile } = useSidebar();
+  const [activeTeam] = React.useState(teams[0]);
 
   return (
     <SidebarMenu>
       <SidebarMenuItem>
         <DropdownMenu>
-          <div className='flex items-center justify-between'>
-            <Link href='/'>
-              <span className='truncate font-semibold'>GatherGift</span>
-            </Link>
-            <DropdownMenuTrigger
-              className='w-fit bg-transparent hover:bg-transparent'
-              asChild
+          <DropdownMenuTrigger
+            // className='w-fit bg-transparent hover:bg-transparent'
+            asChild
+          >
+            <SidebarMenuButton
+              size='lg'
+              className='w-full data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
             >
-              <SidebarMenuButton
-                size='lg'
-                className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
-              >
-                <div className='rounded-full overflow-hidden border-2 border-transparent hover:border-slate-200'>
-                  <img
-                    src='https://api.dicebear.com/9.x/micah/svg?seed=Liam'
-                    width={30}
-                    height={40}
-                  />
-                </div>
-              </SidebarMenuButton>
-            </DropdownMenuTrigger>
-          </div>
+              {activeTeam.imageUrl ? (
+                <>
+                  <div className='flex aspect-square size-8 items-center justify-center rounded-lg overflow-hidden text-sidebar-primary-foreground'>
+                    <img src={activeTeam.imageUrl} width={30} height={40} />
+                  </div>
+                  <div className='grid flex-1 text-left text-sm leading-tight'>
+                    <span className='truncate font-semibold'>
+                      {activeTeam.email}
+                    </span>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className='flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground'>
+                    <Gift className='size-4' />
+                  </div>
+                  <div className='grid flex-1 text-left text-sm leading-tight'>
+                    <span className='truncate font-semibold'>GatherGift</span>
+                  </div>
+                </>
+              )}
+
+              <ChevronsUpDown className='ml-auto' />
+
+              {/* <div className='ml-auto rounded-full overflow-hidden border-2 border-transparent hover:border-slate-200'>
+                <img src={activeTeam.imageUrl} width={30} height={40} />
+              </div> */}
+            </SidebarMenuButton>
+          </DropdownMenuTrigger>
           <DropdownMenuContent
             className='w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg'
             align='start'
             side={isMobile ? "bottom" : "right"}
-            sideOffset={10}
+            sideOffset={8}
           >
-            <DropdownMenuItem className='gap-2 p-2 cursor-pointer' asChild>
-              <Link href='/archives'>
-                <div className='flex size-6 items-center justify-center rounded-md border bg-background'>
-                  <Archive className='size-4' />
-                </div>
-                <div className='font-medium text-muted-foreground'>
-                  Archives
-                </div>
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
             <DropdownMenuItem className='gap-2 p-2 cursor-pointer'>
               <div className='flex size-6 items-center justify-center rounded-md border bg-background'>
                 <LogOut className='size-4' />
