@@ -45,6 +45,7 @@ import {
 } from "./ui/tooltip";
 
 export const wishFormSchema = z.object({
+  _id: z.string().optional(),
   coverImage: z.string().optional(),
   title: z.string().min(1, "Title is required"),
   description: z.string().min(1, "Description is required"),
@@ -77,12 +78,9 @@ export const wishFormSchema = z.object({
 
 type WishFormProps = {
   onSubmit: (
-    data: Omit<WishList, "owner" | "isArchived" | "contributed_amount" | "_id">
+    data: Omit<WishList, "owner" | "isArchived" | "contributed_amount">
   ) => void;
-  initialData?: Omit<
-    WishList,
-    "owner" | "isArchived" | "contributed_amount" | "_id"
-  >;
+  initialData?: Omit<WishList, "owner" | "isArchived" | "contributed_amount">;
 };
 
 export function WishForm({ onSubmit, initialData }: WishFormProps) {
@@ -125,8 +123,13 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
     name: "category",
   });
 
+  const description = useWatch({
+    control: form.control,
+    name: "description",
+  });
+
   useEffect(() => {
-    if (category) {
+    if (category && !description) {
       form.setValue("description", CATEGORY_TAG_LINES[category]);
     }
   }, [category, form]);

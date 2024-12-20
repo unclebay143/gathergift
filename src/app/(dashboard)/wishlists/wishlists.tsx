@@ -254,20 +254,21 @@ export const WishListPage = () => {
                         {wishlist.visibility === "PUBLIC" ? (
                           <>
                             <EyeOff className='mr-2 h-4 w-4' />
-                            Hide
+                            Private
                           </>
                         ) : (
                           <>
                             <Eye className='mr-2 h-4 w-4' />
-                            Show
+                            Public
                           </>
                         )}
                       </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <Edit className='mr-2 h-4 w-4' />
-                        Edit
+                      <DropdownMenuItem asChild>
+                        <Link href={`/wishlists/${wishlist._id}`}>
+                          <Edit className='mr-2 h-4 w-4' />
+                          Edit
+                        </Link>
                       </DropdownMenuItem>
-
                       <DropdownMenuItem
                         onSelect={(e) => {
                           e.preventDefault();
@@ -277,7 +278,6 @@ export const WishListPage = () => {
                         <Share2 className='mr-2 h-4 w-4' />
                         Share
                       </DropdownMenuItem>
-
                       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
                         <DialogContent className='bg-white'>
                           <DialogHeader>
@@ -402,7 +402,7 @@ export const WishListPage = () => {
                       <DropdownMenuSeparator />
                       <DropdownMenuItem
                         className='text-red-600'
-                        onClick={() => handleArchiveToggle(wishlist._id)}
+                        onClick={() => handleArchiveToggle(wishlist._id!)}
                       >
                         <Archive className='mr-2 h-4 w-4' />
                         {wishlist.isArchived ? "Unarchive" : "Archive"}

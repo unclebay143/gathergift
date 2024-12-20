@@ -8,29 +8,25 @@ import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
 
 type WishPreviewProps = {
-  wishData: Omit<
+  wishlistData: Omit<
     WishList,
     "contributed_amount" | "owner" | "isArchived" | "_id"
   >;
 };
 
-export function WishPreview({ wishData }: WishPreviewProps) {
-  // const totalRaised = wishData.items.reduce(
-  //   (sum, item) => sum + (Number(item.price) || 0),
-  //   0
-  // );
-  const currencySymbol = MAP_CURRENCIES_TO_SYMBOLS[wishData.currency];
+export function WishPreview({ wishlistData }: WishPreviewProps) {
+  const currencySymbol = MAP_CURRENCIES_TO_SYMBOLS[wishlistData.currency];
 
   return (
     <div className='max-w-2xl mx-auto relative'>
       <Card>
         <CardHeader>
-          <CardTitle>{wishData.title || "Untitled WishList"}</CardTitle>
+          <CardTitle>{wishlistData.title || "Untitled WishList"}</CardTitle>
           <div className='absolute inset-0 right-6 top-2 w-full h-fit flex justify-end'>
-            {wishData.coverImage && (
+            {wishlistData.coverImage && (
               <img
-                src={wishData.coverImage}
-                alt={wishData.title}
+                src={wishlistData.coverImage}
+                alt={wishlistData.title}
                 className='w-12 h-12 object-cover rounded-md mr-4'
               />
             )}
@@ -38,29 +34,28 @@ export function WishPreview({ wishData }: WishPreviewProps) {
         </CardHeader>
         <CardContent>
           <p className='text-muted-foreground mb-4'>
-            {wishData.description || "No description provided."}
+            {wishlistData.description || "No description provided."}
           </p>
           <div className='text-sm text-muted-foreground'>
-            {wishData.endDate
-              ? `Ends ${dayjs(wishData.endDate).fromNow()}`
+            {wishlistData.endDate
+              ? `Ends ${dayjs(wishlistData.endDate).fromNow()}`
               : "No end date set"}
           </div>
 
-          {wishData.thankYouMessage && (
-            // <div className='mt-6 p-6 rounded-lg border bg-zinc-50 shadow-inner'>
+          {wishlistData.thankYouMessage && (
             <div className='mt-6 p-6 rounded-lg bg-gradient-to-br from-violet-50 via-purple-50 to-pink-50 dark:from-violet-950/30 dark:via-purple-950/30 dark:to-pink-950/30 border border-purple-100/50 dark:border-purple-900/50 shadow-inner'>
               <h3 className='font-semibold mb-2'>Thank You Message</h3>
               <p className='text-sm italic'>
-                &quot;{wishData.thankYouMessage}&quot;
+                &quot;{wishlistData.thankYouMessage}&quot;
               </p>
             </div>
           )}
-          {wishData.itemsEnabled && (
+          {wishlistData.itemsEnabled && (
             <div className='mt-6'>
               <h3 className='font-semibold mb-2'>WishList Items</h3>
-              {wishData.items && wishData.items.length > 0 ? (
+              {wishlistData.items && wishlistData.items.length > 0 ? (
                 <ul className='space-y-4'>
-                  {wishData.items.map((item, index) => (
+                  {wishlistData.items.map((item, index) => (
                     <li key={index} className='flex flex-col'>
                       <div className='flex items-center justify-between'>
                         <div className='flex items-center'>
@@ -98,7 +93,7 @@ export function WishPreview({ wishData }: WishPreviewProps) {
             <span className='font-medium'>Total</span>
             <span className='text-muted-foreground'>
               {currencySymbol}
-              {formatCurrencyWithComma(wishData.target_amount)}
+              {formatCurrencyWithComma(wishlistData.target_amount)}
             </span>
           </div>
         </CardContent>

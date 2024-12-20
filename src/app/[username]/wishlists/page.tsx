@@ -12,8 +12,6 @@ export default async function ChristmasWishlist({
   const wishlists = await getPublicWishlists(username);
   const showWishlists = wishlists.length !== 0;
 
-  console.log(wishlists);
-
   return (
     <PublicLayout>
       <div className='relative overflow-hidden'>

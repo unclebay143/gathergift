@@ -1,7 +1,11 @@
 import connectMongoose from "@/lib/mongodb";
 import { User } from "@/model/users";
 import { WishList } from "@/model/wishList";
-import type { WishList as WishListType, WishLists } from "@/types";
+import type {
+  WishList as WishListType,
+  WishLists,
+  WishlistVisibility,
+} from "@/types";
 import mongoose from "mongoose";
 
 export const getPublicWishlists = async (username?: string) => {
@@ -59,26 +63,35 @@ export const getPublicWishlists = async (username?: string) => {
   }
 };
 
-export const getPublicWish = async (username: string, id: string) => {
+export const getWishlist = async (options: {
+  username?: string; // required to confirm the url is correct /wrongUsername/correctWishId
+  id: string;
+  visibility?: WishlistVisibility;
+  isArchived?: boolean;
+}) => {
   try {
-    if (!username || !id) return null;
+    const { id, visibility, isArchived, username } = options;
+
+    if (!id) return null;
 
     await connectMongoose();
 
-    const user = await User.findOne({ username });
+    let user, ownerId;
+    if (username) {
+      user = await User.findOne({ username });
 
-    if (!user) return null;
+      if (!user) return null;
+      ownerId = new mongoose.Types.ObjectId(user._id);
+    }
 
     const wishlistId = new mongoose.Types.ObjectId(id);
-    const ownerId = new mongoose.Types.ObjectId(user._id);
-
     const result = await WishList.aggregate([
       {
         $match: {
           _id: wishlistId,
-          owner: ownerId,
-          visibility: "PUBLIC",
-          isArchived: false,
+          ...(ownerId && { owner: ownerId }),
+          ...(isArchived && { isArchived }),
+          ...(visibility && { visibility }),
         },
       },
       {

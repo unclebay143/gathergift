@@ -20,12 +20,13 @@ export type Item = {
 export type Items = Item[];
 
 export type Categories = (typeof WISH_CATEGORIES)[number];
+export type WishlistVisibility = (typeof WISH_VISIBILITIES)[number];
 
 export type WishList = {
-  _id: string;
+  _id?: string;
   owner: User;
   coverImage?: string;
-  visibility: (typeof WISH_VISIBILITIES)[number];
+  visibility: WishlistVisibility;
   title: string;
   endDate?: Date;
   description: string;
