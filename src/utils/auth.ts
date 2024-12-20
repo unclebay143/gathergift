@@ -6,7 +6,7 @@ export const handleAuthentication = async ({
   data,
 }: {
   nextUrl?: string;
-  provider: "credentials" | "google";
+  provider: "google";
   data?: { email: string; password: string };
 }) => {
   try {
@@ -14,7 +14,7 @@ export const handleAuthentication = async ({
     const { csrfToken } = await csrfResponse.json();
 
     const response = await signIn(provider, {
-      callbackUrl: nextUrl || `${window.location.origin}/dashboard`,
+      callbackUrl: nextUrl || `${window.location.origin}/wishlists`,
       csrfToken,
       ...data,
       redirect: false,

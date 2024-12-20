@@ -1,4 +1,4 @@
-import connectMongoose from "@/lib/mongodb";
+import connectViaMongoose from "@/lib/mongodb";
 import { GiftIdeas } from "@/model/gitfIdeas";
 import { getDynamicParams } from "@/utils/dynamics";
 import { NextRequest, NextResponse } from "next/server";
@@ -20,7 +20,7 @@ const PUT = async (
       );
     }
 
-    await connectMongoose();
+    await connectViaMongoose();
     const giftIdea = await GiftIdeas.findByIdAndUpdate(
       id,
       {
@@ -61,7 +61,7 @@ const DELETE = async (
       );
     }
 
-    await connectMongoose();
+    await connectViaMongoose();
     await GiftIdeas.findByIdAndDelete(id);
 
     return NextResponse.json(

@@ -1,4 +1,4 @@
-import connectMongoose from "@/lib/mongodb";
+import connectViaMongoose from "@/lib/mongodb";
 import { Contributor } from "@/model/contributors";
 import { WishList } from "@/model/wishList";
 import { NextRequest, NextResponse } from "next/server";
@@ -14,7 +14,7 @@ const POST = async (request: NextRequest) => {
       );
     }
 
-    await connectMongoose();
+    await connectViaMongoose();
 
     const wishlist = await WishList.findOne({ _id: body.wishlist });
     if (!wishlist || wishlist.endDate < Date.now()) {

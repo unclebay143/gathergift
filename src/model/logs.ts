@@ -1,29 +1,26 @@
 import mongoose, { models, Schema } from "mongoose";
 
+const ALLOWED_AUDIT_TYPE = ["onboarding", "system"];
+
 const LogSchema: Schema = new Schema(
   {
     user: {
       type: Schema.Types.ObjectId,
       ref: "User",
-      required: true,
     },
-    action: {
-      type: String,
-      required: true,
-    },
-    details: {
+    title: {
       type: String,
     },
-    key: {
+    description: {
       type: String,
-      required: true,
     },
+    type: { type: String, enum: ALLOWED_AUDIT_TYPE, default: "system" },
   },
   {
     timestamps: true,
   }
 );
 
-const Logs = models.Log || mongoose.model("Log", LogSchema);
+const Log = models.Log || mongoose.model("Log", LogSchema);
 
-export { Logs };
+export { Log };

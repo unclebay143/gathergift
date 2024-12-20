@@ -9,11 +9,14 @@ import type {
 } from "next";
 import { getServerSession, type NextAuthOptions } from "next-auth";
 import { User } from "@/model/users";
-import connectMongoose from "@/lib/mongodb";
+import connectViaMongoose from "@/lib/mongodb";
+import { Log } from "@/model/logs";
+import type { User as UserType } from "@/types";
 
 export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
+      name: "Google",
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
       allowDangerousEmailAccountLinking: true,
@@ -26,7 +29,7 @@ export const authOptions: NextAuthOptions = {
           email: string;
           password: string;
         };
-        await connectMongoose();
+        await connectViaMongoose();
         const user = await User.findOne({ email });
 
         if (!user) {
@@ -56,12 +59,51 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     async session({ session, token }) {
-      session.user = token.user as {
-        last_name?: string | null;
-        email?: string | null;
-        profile_picture?: string | null;
-      };
+      session.user = token.user as UserType;
       return session;
+    },
+
+    async signIn({ profile: userProfile, account }) {
+      await connectViaMongoose();
+      const isGoogleAuthProvider = account?.provider === "google";
+
+      const user = await User.findOne({
+        email: userProfile?.email,
+      });
+
+      const isNewUser = !user;
+
+      if (isNewUser) {
+        let newUserData;
+
+        if (isGoogleAuthProvider) {
+          newUserData = {
+            lastName: userProfile?.name,
+            firstName: userProfile?.given_name,
+            email: userProfile?.email,
+            photo: userProfile?.picture,
+            authProvider: "google",
+          };
+
+          const newUserCreated = await User.create(newUserData);
+          if (newUserCreated) {
+            const userId = newUserCreated._id;
+            await Log.create({
+              type: "onboarding",
+              user: userId,
+              title: "Created an account 🎉",
+            });
+          }
+        }
+
+        return true;
+      }
+
+      await Log.create({
+        user: user._id,
+        title: "Logged in",
+      });
+      return true;
     },
   },
 };

@@ -1,4 +1,4 @@
-import connectMongoose from "@/lib/mongodb";
+import connectViaMongoose from "@/lib/mongodb";
 import { User } from "@/model/users";
 import { getServerSessionWithAuthOptions } from "@/utils/nextAuth.config";
 import { NextRequest, NextResponse } from "next/server";
@@ -23,7 +23,7 @@ export const POST = async (request: NextRequest) => {
       );
     }
 
-    await connectMongoose();
+    await connectViaMongoose();
     const user = await User.findOne({ username });
 
     // * Check for username availability

@@ -1,4 +1,4 @@
-import connectMongoose from "@/lib/mongodb";
+import connectViaMongoose from "@/lib/mongodb";
 import { User } from "@/model/users";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -13,7 +13,7 @@ const POST = async (request: NextRequest) => {
         { status: 400 }
       );
     }
-    await connectMongoose();
+    await connectViaMongoose();
 
     await User.create({
       first_name,

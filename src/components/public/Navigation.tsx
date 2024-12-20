@@ -7,8 +7,8 @@ import { useSession } from "next-auth/react";
 
 export default function Navigation() {
   const session = useSession();
+  const isLoggedIn = !!session.data;
 
-  const isLoggedIn = !!session;
   return (
     <nav className='bg-white shadow-md'>
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-0'>

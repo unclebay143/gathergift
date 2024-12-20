@@ -1,4 +1,4 @@
-import connectMongoose from "@/lib/mongodb";
+import connectViaMongoose from "@/lib/mongodb";
 import { WishList } from "@/model/wishList";
 import { getDynamicParams } from "@/utils/dynamics";
 import { NextRequest, NextResponse } from "next/server";
@@ -14,7 +14,7 @@ const PUT = async (
       return NextResponse.json({ message: "Invalid ID" }, { status: 400 });
     }
 
-    await connectMongoose();
+    await connectViaMongoose();
     const wishList = await WishList.findById(id);
 
     if (!wishList) {

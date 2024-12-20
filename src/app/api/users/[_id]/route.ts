@@ -1,4 +1,4 @@
-import connectMongoose from "@/lib/mongodb";
+import connectViaMongoose from "@/lib/mongodb";
 import { User } from "@/model/users";
 import { getDynamicParams } from "@/utils/dynamics";
 import { getServerSessionWithAuthOptions } from "@/utils/nextAuth.config";
@@ -16,7 +16,7 @@ const GET = async () => {
         { status: 400 }
       );
     }
-    await connectMongoose();
+    await connectViaMongoose();
 
     const getUserProfile = await User.findOne({ email });
 
@@ -49,7 +49,7 @@ const PUT = async (
       );
     }
 
-    await connectMongoose();
+    await connectViaMongoose();
     await User.findByIdAndUpdate(
       id,
       {
