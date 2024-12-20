@@ -14,50 +14,76 @@ import { useAppContext } from "@/app/providers";
 import { WishForm } from "@/components/wishlist-form";
 import { WishPreview } from "@/components/wishlist-preview";
 
-export function CreateUpdateWish({ action }: { action: string }) {
+export function CreateUpdateWish({
+  actionOrWishId,
+  wishlistToEdit,
+}: {
+  actionOrWishId: string;
+  wishlistToEdit: WishList | null;
+}) {
   const { currentUser } = useAppContext();
 
   const router = useRouter();
   const [step, setStep] = useState(1);
-  const [wishData, setWishData] = useState<Omit<
+  const [wishlistData, setWishlistData] = useState<Omit<
     WishList,
-    "contributed_amount" | "owner" | "isArchived" | "_id"
-  > | null>(null);
+    "contributed_amount" | "owner" | "isArchived"
+  > | null>(wishlistToEdit);
 
-  const isCreating = action === "create";
+  const isCreateMode = actionOrWishId === "create";
   const isCreateScreen = step === 1;
   const isPreviewScreen = step === 2;
 
-  const { mutate, isPending } = useMutation({
-    mutationFn: async (
-      data: Omit<
-        WishList,
-        "contributed_amount" | "owner" | "isArchived" | "_id"
-      >
-    ) =>
-      (await axios.post("/api/wishlists", data)) as {
-        data: { wishlist: WishList };
+  const { mutate: createWishList, isPending: isCreatingWishList } = useMutation(
+    {
+      mutationFn: async (
+        data: Omit<WishList, "contributed_amount" | "owner" | "isArchived">
+      ) =>
+        (await axios.post("/api/wishlists", data)) as {
+          data: { wishlist: WishList };
+        },
+      onSuccess({ data }) {
+        toast.success("Wishlist created successfully.");
+        const wishListId = data.wishlist._id;
+        router.push(`/${currentUser?.username}/wishlists/${wishListId}`);
       },
-    onSuccess({ data }) {
-      toast.success("Wishlist created successfully.");
-      const wishListId = data.wishlist._id;
-      // Todo: make username dynamic `/[username]/wishlists/wishListId`
-      router.push(`/${currentUser?.username}/wishlists/${wishListId}`);
-    },
-    onError(error) {
-      console.log(error);
-      toast.error("Error creating wishlist");
-    },
-  });
+      onError(error) {
+        console.log(error);
+        toast.error("Error creating wishlist");
+      },
+    }
+  );
 
+  const { mutate: updateWishList, isPending: isUpdatingWishList } = useMutation(
+    {
+      mutationFn: async (
+        data: Omit<WishList, "contributed_amount" | "owner" | "isArchived">
+      ) =>
+        (await axios.put(`/api/wishlists/${actionOrWishId}`, data)) as {
+          data: { wishlist: WishList };
+        },
+      onSuccess() {
+        toast.success("Wishlist updated.");
+        router.push(`/${currentUser?.username}/wishlists/${actionOrWishId}`);
+      },
+      onError(error) {
+        console.log(error);
+        toast.error("Error updating wishlist");
+      },
+    }
+  );
   const handleSubmit = (
-    data: Omit<WishList, "contributed_amount" | "owner" | "isArchived" | "_id">
+    data: Omit<WishList, "contributed_amount" | "owner" | "isArchived">
   ) => {
-    setWishData(data);
+    setWishlistData(data);
     if (step < 2) {
       setStep(step + 1);
     } else {
-      mutate(data);
+      if (isCreateMode) {
+        createWishList(data);
+      } else {
+        updateWishList({ ...data, _id: wishlistToEdit?._id });
+      }
     }
   };
 
@@ -66,10 +92,10 @@ export function CreateUpdateWish({ action }: { action: string }) {
       <div>
         <div className='space-y-1 mb-6'>
           <h1 className='text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent'>
-            {isCreating ? "Create New Wishlist" : "Update Wishlist"}
+            {isCreateMode ? "Create New Wishlist" : "Update Wishlist"}
           </h1>
           <p className='text-muted-foreground'>
-            {isCreating
+            {isCreateMode
               ? "Create a new wishlist to share with others."
               : "Update your existing wishlist."}
           </p>
@@ -110,11 +136,13 @@ export function CreateUpdateWish({ action }: { action: string }) {
         {isCreateScreen && (
           <WishForm
             onSubmit={handleSubmit}
-            {...(!!wishData ? { initialData: wishData } : {})}
+            {...(!!wishlistData ? { initialData: wishlistData } : {})}
           />
         )}
 
-        {isPreviewScreen && !!wishData && <WishPreview wishData={wishData} />}
+        {isPreviewScreen && !!wishlistData && (
+          <WishPreview wishlistData={wishlistData} />
+        )}
       </div>
       <div className='mt-6 flex justify-between'>
         {step > 1 && (
@@ -123,16 +151,16 @@ export function CreateUpdateWish({ action }: { action: string }) {
           </Button>
         )}
 
-        {isPreviewScreen && !!wishData && (
+        {isPreviewScreen && !!wishlistData && (
           <Button
-            onClick={() => handleSubmit(wishData)}
+            onClick={() => handleSubmit(wishlistData)}
             className='ml-auto'
-            disabled={isPending}
+            disabled={isCreatingWishList || isUpdatingWishList}
           >
-            {isPending ? (
+            {isCreatingWishList || isUpdatingWishList ? (
               "Please wait..."
             ) : (
-              <>{isPreviewScreen ? "Create Wishlist" : "Update Wishlist"}</>
+              <>{isCreateMode ? "Create Wishlist" : "Update Wishlist"}</>
             )}
           </Button>
         )}

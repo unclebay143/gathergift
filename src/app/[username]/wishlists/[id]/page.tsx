@@ -6,7 +6,7 @@ import {
   calculateProgressPercentage,
   formatCurrencyWithComma,
 } from "@/lib/utils";
-import { getPublicWish } from "@/service/wishlists/wishlists.server";
+import { getWishlist } from "@/service/wishlists/wishlists.server";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -16,7 +16,7 @@ export default async function ChristmasWishlist({
   params: Promise<{ id: string; username: string }>;
 }) {
   const { id, username } = await params;
-  const wishlist = await getPublicWish(username, id);
+  const wishlist = await getWishlist({ id, username, visibility: "PUBLIC" });
 
   if (!wishlist) {
     return notFound();
