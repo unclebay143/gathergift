@@ -11,11 +11,11 @@ export default async function middleware(request: NextRequest) {
 
   const isLoggedIn = !!token;
 
-  if (!isLoggedIn && nextUrl.pathname.startsWith("/wishes")) {
+  if (!isLoggedIn && nextUrl.pathname.startsWith("/wishlists")) {
     return NextResponse.redirect(new URL("/onboard", request.url));
   }
 
   if (isLoggedIn && nextUrl.pathname.startsWith("/onboard")) {
-    return NextResponse.redirect(new URL("/wishes", request.url));
+    return NextResponse.redirect(new URL("/wishlists", request.url));
   }
 }

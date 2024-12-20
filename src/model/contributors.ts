@@ -29,9 +29,9 @@ const ContributorSchema: Schema = new Schema(
       type: Number,
       maxLength: 500,
     },
-    wish: {
+    wishlist: {
       type: mongoose.Types.ObjectId,
-      ref: "Wish",
+      ref: "WishList",
       required: true,
     },
     details: [ContributorItemSchema],
@@ -41,7 +41,7 @@ const ContributorSchema: Schema = new Schema(
   }
 );
 
-ContributorSchema.index({ wish: 1 });
+ContributorSchema.index({ wishlist: 1 });
 
 const Contributor =
   models.Contributor || mongoose.model("Contributor", ContributorSchema);

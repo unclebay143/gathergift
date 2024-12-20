@@ -11,13 +11,13 @@ const steps = [
     icon: Share2,
     title: "Share with Others",
     description:
-      "Invite friends and family to view and contribute towards your wishes.",
+      "Invite friends and family to view and contribute towards your wishlists.",
   },
   {
     icon: GiftIcon,
     title: "Receive Your Gifts",
     description:
-      "Watch as your wishes become reality through group contributions.",
+      "Watch as your wishlists become reality through group contributions.",
   },
 ];
 

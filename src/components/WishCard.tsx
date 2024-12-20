@@ -1,11 +1,11 @@
 import { MAP_CURRENCIES_TO_SYMBOLS } from "@/const";
 import { formatCurrencyWithComma } from "@/lib/utils";
-import { Wish } from "@/types";
+import { WishList } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-export const WishCard = ({ data }: { data: Wish }) => {
+export const WishCard = ({ data }: { data: WishList }) => {
   const {
     description,
     coverImage,

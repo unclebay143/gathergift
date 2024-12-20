@@ -39,14 +39,14 @@ export default function ChristmasWishlist() {
                 </svg>
               </div>
               <h1 className='text-4xl font-bold text-red-700'>
-                Unclebigbay&apos;s Christmas Wishes
+                Unclebigbay&apos;s Christmas Wishlists
               </h1>
               <p className='text-xl text-green-700 italic'>
                 Help make this Christmas magical!
               </p>
             </header>
             <div className='space-y-3' id='selections'>
-              {/* Todo: all public wish lists goes here */}
+              {/* Todo: all public wishlist lists goes here */}
             </div>
           </div>
         </div>

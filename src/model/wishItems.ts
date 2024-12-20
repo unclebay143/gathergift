@@ -19,9 +19,9 @@ const WishItemSchema: Schema = new Schema(
       type: Number,
       required: true,
     },
-    wish: {
+    wishlist: {
       type: mongoose.Types.ObjectId,
-      ref: "Wish",
+      ref: "WishList",
       required: true,
     },
   },

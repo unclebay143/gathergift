@@ -6,7 +6,7 @@ import {
 } from "@/const";
 import mongoose, { models, Schema } from "mongoose";
 
-const WishSchema: Schema = new Schema(
+const WishListSchema: Schema = new Schema(
   {
     owner: {
       type: mongoose.Schema.Types.ObjectId,
@@ -63,6 +63,6 @@ const WishSchema: Schema = new Schema(
   }
 );
 
-const Wish = models.Wish || mongoose.model("Wish", WishSchema);
+const WishList = models.WishList || mongoose.model("WishList", WishListSchema);
 
-export { Wish };
+export { WishList };

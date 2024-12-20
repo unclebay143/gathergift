@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MAP_CURRENCIES_TO_SYMBOLS } from "@/const";
 import { formatCurrencyWithComma } from "@/lib/utils";
-import { Wish } from "@/types";
+import { WishList } from "@/types";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 
@@ -9,8 +9,8 @@ dayjs.extend(relativeTime);
 
 type WishPreviewProps = {
   wishData: Omit<
-    Wish,
-    "contributed_amount" | "wish" | "owner" | "isArchived" | "_id"
+    WishList,
+    "contributed_amount" | "owner" | "isArchived" | "_id"
   >;
 };
 
@@ -25,7 +25,7 @@ export function WishPreview({ wishData }: WishPreviewProps) {
     <div className='max-w-2xl mx-auto relative'>
       <Card>
         <CardHeader>
-          <CardTitle>{wishData.title || "Untitled Wish"}</CardTitle>
+          <CardTitle>{wishData.title || "Untitled WishList"}</CardTitle>
           <div className='absolute inset-0 right-6 top-2 w-full h-fit flex justify-end'>
             {wishData.coverImage && (
               <img
@@ -57,7 +57,7 @@ export function WishPreview({ wishData }: WishPreviewProps) {
           )}
           {wishData.itemsEnabled && (
             <div className='mt-6'>
-              <h3 className='font-semibold mb-2'>Wish Items</h3>
+              <h3 className='font-semibold mb-2'>WishList Items</h3>
               {wishData.items && wishData.items.length > 0 ? (
                 <ul className='space-y-4'>
                   {wishData.items.map((item, index) => (

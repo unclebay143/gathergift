@@ -18,7 +18,7 @@ export default function CallToAction() {
           className='mt-8 w-full inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-red-600 bg-white hover:bg-red-50 sm:w-auto'
           asChild
         >
-          <Link href='/wishes'>
+          <Link href='/wishlists'>
             <Gift className='w-5 h-5 mr-2' />
             Create Your Wishlist
           </Link>

@@ -39,8 +39,8 @@ const data = {
       url: "#",
       items: [
         {
-          title: "Wishes",
-          url: "/wishes",
+          title: "Wishlists",
+          url: "/wishlists",
           icon: Gift,
         },
         {

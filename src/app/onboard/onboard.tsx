@@ -55,7 +55,7 @@ export function Onboard() {
     const response = await signIn("credentials", {
       email: data.email,
       password: data.password,
-      callbackUrl: "/wishes",
+      callbackUrl: "/wishlists",
     });
 
     if (response?.ok) {
@@ -87,7 +87,7 @@ export function Onboard() {
         password: variables.password,
       }).then(() => {
         reset();
-        router.push("/wishes");
+        router.push("/wishlists");
       });
     },
     onError(error) {

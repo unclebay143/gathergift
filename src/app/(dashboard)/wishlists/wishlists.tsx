@@ -47,7 +47,7 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Wishes } from "@/types";
+import { WishLists } from "@/types";
 import relativeTime from "dayjs/plugin/relativeTime"; // ES 2015
 import dayjs from "dayjs";
 import {
@@ -60,10 +60,10 @@ import { useAppContext, useDashboardLoader } from "@/app/providers";
 import axios, { AxiosResponse } from "axios";
 
 dayjs.extend(relativeTime);
-export const getWishesQueryKey = () => ["wishes"];
+export const getWishListsQueryKey = () => ["wishlists"];
 const BASE_URL = "https://gathergift.vercel.app";
 
-export const WishesPage = () => {
+export const WishListPage = () => {
   const { setVisibility } = useDashboardLoader();
   const { currentUser } = useAppContext();
 
@@ -72,25 +72,25 @@ export const WishesPage = () => {
     setIsModalOpen((prev) => !prev);
   };
 
-  // const [wishes, setWishes] = useState<Wishes>([]);
+  // const [wishlists, setWishlists] = useState<WishLists>([]);
   const queryClient = useQueryClient();
   const { mutate: handleArchiveToggle } = useMutation({
-    mutationFn: (id: string) => axios.put(`/api/wishes/${id}/archive`),
+    mutationFn: (id: string) => axios.put(`/api/wishlists/${id}/archive`),
     onError() {
-      toast.error("Failed to archive/unarchive the wish.");
+      toast.error("Failed to archive/unarchive the Wishlist.");
     },
     async onSuccess() {
-      toast.success("Wish Archived successfully!");
-      await queryClient.invalidateQueries({ queryKey: getWishesQueryKey() });
+      toast.success("Wishlist archived successfully!");
+      await queryClient.invalidateQueries({ queryKey: getWishListsQueryKey() });
     },
   });
 
-  const { data: wishes, isLoading } = useQuery({
-    queryFn: async (): Promise<AxiosResponse<Wishes>> =>
-      axios.get("api/wishes"),
-    queryKey: getWishesQueryKey(),
+  const { data: wishlists, isLoading } = useQuery({
+    queryFn: async (): Promise<AxiosResponse<WishLists>> =>
+      axios.get("api/wishlists"),
+    queryKey: getWishListsQueryKey(),
     refetchOnWindowFocus: true,
-    select: ({ data }) => data.filter((wish) => !wish.isArchived),
+    select: ({ data }) => data.filter((wishlist) => !wishlist.isArchived),
   });
 
   const [
@@ -99,13 +99,13 @@ export const WishesPage = () => {
   ] = useState(false);
   // const [searchTerm, setSearchTerm] = useState("");
 
-  const showEmptyState = wishes?.length === 0;
+  const showEmptyState = wishlists?.length === 0;
 
-  // const filteredWishes = wishes?.filter(
-  //   (wish) =>
-  //     (wish.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-  //       wish.description.toLowerCase().includes(searchTerm.toLowerCase())) &&
-  //     !wish.isArchived
+  // const filteredWishlists = wishlists?.filter(
+  //   (wishlist) =>
+  //     (wishlist.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //       wishlist.description.toLowerCase().includes(searchTerm.toLowerCase())) &&
+  //     !wishlist.isArchived
   // );
 
   useEffect(() => {
@@ -118,11 +118,11 @@ export const WishesPage = () => {
         <div className='flex flex-col xl:flex-row gap-4 xl:items-center justify-between'>
           <div>
             <h1 className='text-3xl font-bold tracking-tight text-gray-900'>
-              My Wishes
+              My Wishlists
             </h1>
             <p className='text-muted-foreground'>
-              Track and manage your gift wishes?. Create new wishes, set goals,
-              and share with friends and family.
+              Track and manage your gift wishlists?. Create new wishlist, set
+              goals, and share with friends and family.
             </p>
           </div>
           {!showEmptyState && (
@@ -131,16 +131,16 @@ export const WishesPage = () => {
                 <Search className='absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400' />
                 <Input
                   type='text'
-                  placeholder='Search wishes?...'
+                  placeholder='Search wishlists?...'
                   className='pl-8 w-[200px] md:w-[300px]'
                   // value={searchTerm}
                   // onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
               <Button asChild className='bg-black hover:bg-gray-800'>
-                <Link href='/wishes/create'>
+                <Link href='/wishlists/create'>
                   <Plus className='mr-2 h-4 w-4' />
-                  Create new Wish
+                  Create new Wishlist
                 </Link>
               </Button>
             </div>
@@ -153,33 +153,33 @@ export const WishesPage = () => {
               <Gift className='w-12 h-12 text-indigo-600 dark:text-indigo-400' />
             </div>
             <h2 className='text-3xl font-bold text-gray-900 dark:text-white mb-2'>
-              No wishes yet
+              No wishlists yet
             </h2>
             <p className='text-xl text-gray-600 dark:text-gray-400 mb-8'>
-              Create your first wish and start tracking your gift ideas!
+              Create your first wishlist and start tracking your gift ideas!
             </p>
             <Button asChild className='bg-black hover:bg-gray-800'>
-              <Link href='/wishes/create'>
+              <Link href='/wishlists/create'>
                 <Plus className='mr-2 h-4 w-4' />
-                Create new Wish
+                Create new Wishlist
               </Link>
             </Button>
           </div>
         )}
 
         <div className='grid gap-6 md:grid-cols-2 lg:grid-cols-4'>
-          {wishes?.map((wish) => (
+          {wishlists?.map((wishlist) => (
             <Card
-              key={wish._id}
+              key={wishlist._id}
               className='overflow-hidden transition-all duration-300 hover:shadow-xl group dark:bg-gray-800/50 backdrop-blur-sm '
             >
               <CardHeader className='p-0'>
                 <div className='relative'>
                   <div className='h-40'>
-                    {wish.coverImage && (
+                    {wishlist.coverImage && (
                       <img
-                        src={wish.coverImage}
-                        alt={wish.title}
+                        src={wishlist.coverImage}
+                        alt={wishlist.title}
                         className='w-full h-40 object-cover transition-transform duration-300 group-hover:scale-105'
                       />
                     )}
@@ -187,10 +187,10 @@ export const WishesPage = () => {
                   <div className='absolute inset-0 bg-gradient-to-t from-black/60 to-transparent' />
                   <div className='absolute bottom-4 left-4 right-4'>
                     <CardTitle className='text-2xl font-bold text-white mb-1'>
-                      {wish.title}
+                      {wishlist.title}
                     </CardTitle>
                     <CardDescription className='text-gray-200'>
-                      {wish.description}
+                      {wishlist.description}
                     </CardDescription>
                   </div>
                 </div>
@@ -202,31 +202,31 @@ export const WishesPage = () => {
                     className='bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200'
                   >
                     <Gift className='mr-1 h-3 w-3' />
-                    {wish?.items?.length || "0"} items
+                    {wishlist?.items?.length || "0"} items
                   </Badge>
                   <span className='text-sm text-muted-foreground flex items-center'>
                     <Calendar className='inline mr-1 h-3 w-3' />
-                    {dayjs(wish.endDate).fromNow()}
+                    {dayjs(wishlist.endDate).fromNow()}
                   </span>
                 </div>
                 <Progress
                   value={calculateProgressPercentage(
-                    wish.target_amount,
-                    wish.contributed_amount
+                    wishlist.target_amount,
+                    wishlist.contributed_amount
                   )}
                   className='h-2 bg-indigo-100 dark:bg-indigo-950'
                 />
                 <div className='flex justify-between items-center text-sm'>
                   <span className='text-muted-foreground'>
                     {calculateProgressPercentage(
-                      wish.target_amount,
-                      wish.contributed_amount
+                      wishlist.target_amount,
+                      wishlist.contributed_amount
                     )}
-                    % of ${formatCurrencyWithComma(wish.target_amount)}
+                    % of ${formatCurrencyWithComma(wishlist.target_amount)}
                   </span>
                   <span className='font-medium text-green-600 dark:text-green-400'>
                     <DollarSign className='inline mr-1 h-3 w-3' />
-                    {formatCurrencyWithComma(wish.contributed_amount)}
+                    {formatCurrencyWithComma(wishlist.contributed_amount)}
                   </span>
                 </div>
               </CardContent>
@@ -235,7 +235,7 @@ export const WishesPage = () => {
                   <Button variant='outline' size='sm' asChild>
                     <Link
                       target='_blank'
-                      href={`/${currentUser?.username}/wishlists/${wish._id}`}
+                      href={`/${currentUser?.username}/wishlists/${wishlist._id}`}
                     >
                       View Details
                     </Link>
@@ -249,23 +249,23 @@ export const WishesPage = () => {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align='end'>
                       <DropdownMenuItem
-                      // onClick={() => handleToggleVisibility(wish._id)}
+                      // onClick={() => handleToggleVisibility(wishlist._id)}
                       >
-                        {wish.visibility === "PUBLIC" ? (
+                        {wishlist.visibility === "PUBLIC" ? (
                           <>
                             <EyeOff className='mr-2 h-4 w-4' />
-                            Hide Wish
+                            Hide Wishlist
                           </>
                         ) : (
                           <>
                             <Eye className='mr-2 h-4 w-4' />
-                            Show Wish
+                            Show Wishlist
                           </>
                         )}
                       </DropdownMenuItem>
                       <DropdownMenuItem>
                         <Edit className='mr-2 h-4 w-4' />
-                        Edit Wish
+                        Edit Wishlist
                       </DropdownMenuItem>
 
                       <DropdownMenuItem
@@ -275,23 +275,23 @@ export const WishesPage = () => {
                         }}
                       >
                         <Share2 className='mr-2 h-4 w-4' />
-                        Share Wish
+                        Share Wishlist
                       </DropdownMenuItem>
 
                       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
                         <DialogContent className='bg-white'>
                           <DialogHeader>
-                            <DialogTitle>Share This Wish</DialogTitle>
+                            <DialogTitle>Share This Wishlist</DialogTitle>
                             <DialogDescription>
-                              Share your wish with friends and family using the
-                              options below.
+                              Share your wishlist with friends and family using
+                              the options below.
                             </DialogDescription>
                           </DialogHeader>
                           <div className='space-y-4'>
                             <div className='flex gap-2 bg-gray-100 p-2 border shadow-sm rounded-xl'>
                               <Input
                                 type='text'
-                                value={`https://example.com/wishes/${wish._id}`}
+                                value={`https://example.com/wishlists/${wishlist._id}`}
                                 readOnly
                                 className='w-full bg-slate-100 border-none bg-transparent shadow-none'
                               />
@@ -299,7 +299,7 @@ export const WishesPage = () => {
                                 variant='outline'
                                 onClick={() => {
                                   navigator.clipboard.writeText(
-                                    "https://example.com/wish/1234"
+                                    "https://example.com/wishlist/1234"
                                   );
                                   toast.success("Link copied to clipboard!");
                                 }}
@@ -325,7 +325,7 @@ export const WishesPage = () => {
                               {/* WhatsApp */}
                               <a
                                 href={`https://wa.me/?text=${encodeURIComponent(
-                                  `Check out this wish: ${BASE_URL}/wishes/${wish._id}`
+                                  `Check out this wishlist: ${BASE_URL}/wishlists/${wishlist._id}`
                                 )}`}
                                 target='_blank'
                                 rel='noopener'
@@ -339,7 +339,7 @@ export const WishesPage = () => {
                               {/* Facebook */}
                               <a
                                 href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-                                  `${BASE_URL}/wishes/${wish._id}`
+                                  `${BASE_URL}/wishlists/${wishlist._id}`
                                 )}`}
                                 target='_blank'
                                 rel='noopener'
@@ -353,9 +353,9 @@ export const WishesPage = () => {
                               {/* Twitter */}
                               <a
                                 href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(
-                                  `${BASE_URL}/wishes/${wish._id}`
+                                  `${BASE_URL}/wishlists/${wishlist._id}`
                                 )}&text=${encodeURIComponent(
-                                  "Check out this wish!"
+                                  "Check out this wishlist!"
                                 )}`}
                                 target='_blank'
                                 rel='noopener'
@@ -382,9 +382,9 @@ export const WishesPage = () => {
                               {/* mail */}
                               <a
                                 href={`mailto:recipient@example.com?subject=${encodeURIComponent(
-                                  "Check out this wish!"
+                                  "Check out this wishlist!"
                                 )}&body=${encodeURIComponent(
-                                  `Hi there,\n\nI wanted to share this wish with you: ${BASE_URL}/wishes/${wish._id}`
+                                  `Hi there,\n\nI wanted to share this wishlist with you: ${BASE_URL}/wishlists/${wishlist._id}`
                                 )}`}
                                 target='_blank'
                                 rel='noopener'
@@ -402,10 +402,12 @@ export const WishesPage = () => {
                       <DropdownMenuSeparator />
                       <DropdownMenuItem
                         className='text-red-600'
-                        onClick={() => handleArchiveToggle(wish._id)}
+                        onClick={() => handleArchiveToggle(wishlist._id)}
                       >
                         <Archive className='mr-2 h-4 w-4' />
-                        {wish.isArchived ? "Unarchive Wish" : "Archive Wish"}
+                        {wishlist.isArchived
+                          ? "Unarchive Wishlist"
+                          : "Archive Wishlist"}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -415,19 +417,19 @@ export const WishesPage = () => {
           ))}
         </div>
 
-        {isSearchMode && wishes?.length === 0 && (
+        {isSearchMode && wishlists?.length === 0 && (
           <div className='text-center py-24 border border-dashed rounded-lg'>
             <h3 className='text-2xl font-semibold text-gray-600 dark:text-gray-400 mb-2'>
-              No wishes found
+              No wishlist found
             </h3>
             <p className='text-muted-foreground mb-4'>
-              Try adjusting your search or create a new wish.
+              Try adjusting your search or create a new wishlist.
             </p>
 
             <Button asChild className='bg-black hover:bg-gray-800'>
-              <Link href='/wishes/create'>
+              <Link href='/wishlists/create'>
                 <Plus className='mr-2 h-4 w-4' />
-                Create new Wish
+                Create new Wishlist
               </Link>
             </Button>
           </div>

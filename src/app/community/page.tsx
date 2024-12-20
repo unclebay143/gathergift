@@ -1,10 +1,10 @@
 import FeaturedWishlists from "@/components/public/FeaturedWishlists";
 import { PublicLayout } from "../public-layout";
-import { getPublicWishes } from "@/service/wishlists/wishlists.server";
+import { getPublicWishlists } from "@/service/wishlists/wishlists.server";
 
 export default async function CommunityPage() {
-  const wishes = await getPublicWishes();
-  const showWishes = wishes.length !== 0;
+  const wishlists = await getPublicWishlists();
+  const showWishlists = wishlists.length !== 0;
 
   return (
     <PublicLayout>
@@ -22,7 +22,7 @@ export default async function CommunityPage() {
               moments that matter.
             </p>
           </header>
-          {showWishes ? <FeaturedWishlists wishes={wishes} /> : null}
+          {showWishlists ? <FeaturedWishlists wishlists={wishlists} /> : null}
         </div>
       </div>
     </PublicLayout>

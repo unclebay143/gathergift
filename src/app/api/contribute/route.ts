@@ -1,24 +1,27 @@
 import connectMongoose from "@/lib/mongodb";
 import { Contributor } from "@/model/contributors";
-import { Wish } from "@/model/wish";
+import { WishList } from "@/model/wishList";
 import { NextRequest, NextResponse } from "next/server";
 
 const POST = async (request: NextRequest) => {
   try {
     const body = await request.json();
 
-    if (!body.name || !body.wish) {
+    if (!body.name || !body.wishlist) {
       return NextResponse.json(
-        { message: "Missing required fields: name, wish, or details." },
+        { message: "Missing a required field: name, wishlist." },
         { status: 400 }
       );
     }
 
     await connectMongoose();
 
-    const wish = await Wish.findOne({ _id: body.wish });
-    if (!wish || wish.endDate < Date.now()) {
-      return NextResponse.json({ message: "Wish not found." }, { status: 404 });
+    const wishlist = await WishList.findOne({ _id: body.wishlist });
+    if (!wishlist || wishlist.endDate < Date.now()) {
+      return NextResponse.json(
+        { message: "Wishlist not found." },
+        { status: 404 }
+      );
     }
 
     await Contributor.create(body);
