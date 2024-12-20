@@ -72,7 +72,7 @@ export function WishItemGroup({ items, currency }: WishItemGroupProps) {
     setContributions((prev) => ({ ...prev, ...newContributions }));
     // send this data to backend
     // Update the fundedPercentage of items based on contributions
-    // wishes.forEach((item) => {
+    // wishlists.forEach((item) => {
     //   if (newContributions[item._id]) {
     //     const contributionPercentage =
     //       (newContributions[item._id] / item.amount) * 100;

@@ -2,7 +2,7 @@ export const CATEGORY_TAG_LINES = {
   Christmas: "Help make this Christmas magical!",
   Wedding: "Celebrate love with your thoughtful contributions!",
   Convocation: "Honor this milestone with a heartfelt gift!",
-  Birthday: "Make this birthday extra special with your wishes!",
+  Birthday: "Make this birthday extra special with your wishlists!",
   Vacation: "Help turn this dream getaway into reality!",
   BabyShower: "Welcome the little one with your warm blessings!",
   Housewarming: "Contribute to a cozy and happy new home!",

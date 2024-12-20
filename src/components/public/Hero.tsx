@@ -26,7 +26,7 @@ export default function Hero() {
                     className='w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-red-600 hover:bg-red-700 md:py-4 md:text-lg md:px-10'
                     asChild
                   >
-                    <Link href='/wishes'>
+                    <Link href='/wishlists'>
                       <Gift className='w-5 h-5 mr-2' />
                       Create Your Wishlist
                     </Link>

@@ -1,6 +1,19 @@
 import { PublicLayout } from "@/app/public-layout";
+import WishlistsCardGroup from "@/components/public/FeaturedWishlists";
+import { getPublicWishlists } from "@/service/wishlists/wishlists.server";
 
-export default function ChristmasWishlist() {
+export default async function ChristmasWishlist({
+  params,
+}: {
+  params: Promise<{ username: string }>;
+}) {
+  const { username } = await params;
+
+  const wishlists = await getPublicWishlists(username);
+  const showWishlists = wishlists.length !== 0;
+
+  console.log(wishlists);
+
   return (
     <PublicLayout>
       <div className='relative overflow-hidden'>
@@ -39,14 +52,21 @@ export default function ChristmasWishlist() {
                 </svg>
               </div>
               <h1 className='text-4xl font-bold text-red-700'>
-                Unclebigbay&apos;s Christmas Wishes
+                Unclebigbay&apos;s Christmas Wishlists
               </h1>
               <p className='text-xl text-green-700 italic'>
                 Help make this Christmas magical!
               </p>
             </header>
             <div className='space-y-3' id='selections'>
-              {/* Todo: all public wish lists goes here */}
+              {/* Todo: all public wishlist lists goes here */}
+              {showWishlists ? (
+                <WishlistsCardGroup wishlists={wishlists} />
+              ) : (
+                <p className='text-center'>
+                  This user doesn&apos;t have a public wishlist yet.
+                </p>
+              )}
             </div>
           </div>
         </div>

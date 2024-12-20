@@ -7,6 +7,7 @@ import {
   formatCurrencyWithComma,
 } from "@/lib/utils";
 import { getPublicWish } from "@/service/wishlists/wishlists.server";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 export default async function ChristmasWishlist({
@@ -15,9 +16,9 @@ export default async function ChristmasWishlist({
   params: Promise<{ id: string; username: string }>;
 }) {
   const { id, username } = await params;
-  const wish = await getPublicWish(username, id);
+  const wishlist = await getPublicWish(username, id);
 
-  if (!wish) {
+  if (!wishlist) {
     return notFound();
   }
   const {
@@ -28,18 +29,18 @@ export default async function ChristmasWishlist({
     currency,
     target_amount,
     contributed_amount,
-  } = wish;
+  } = wishlist;
   const { photo } = owner || {};
 
   const currencySymbol = MAP_CURRENCIES_TO_SYMBOLS[currency];
 
   const percentageOfContribution = calculateProgressPercentage(
-    wish.target_amount,
-    wish.contributed_amount
+    wishlist.target_amount,
+    wishlist.contributed_amount
   );
 
   const itemsSize = items?.length;
-  const hasItems = itemsSize > 0 && !!items[0]?._id; // for case where wishes with no items has contributed_amount
+  const hasItems = itemsSize > 0 && !!items[0]?._id; // for case where wishlists with no items has contributed_amount
 
   return (
     <PublicLayout>
@@ -48,7 +49,7 @@ export default async function ChristmasWishlist({
           <div className='max-w-4xl mx-auto py-8 space-y-12'>
             <header className='text-center space-y-4'>
               <div className='relative inline-block'>
-                <div className='size-[100px]'>
+                <Link href={`/${username}/wishlists`} className='size-[100px]'>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     alt='User Avatar'
@@ -60,7 +61,7 @@ export default async function ChristmasWishlist({
                       `https://api.dicebear.com/9.x/identicon/svg?seed=${username}`
                     }
                   />
-                </div>
+                </Link>
 
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
@@ -145,7 +146,7 @@ export default async function ChristmasWishlist({
                   <div>
                     <p className='font-semibold text-red-700'>Alice</p>
                     <p className='text-sm text-gray-600'>
-                      Merry Christmas! Hope your wishes come true!
+                      Merry Christmas! Hope your wishlists come true!
                     </p>
                   </div>
                 </div> */}
@@ -263,7 +264,7 @@ export default async function ChristmasWishlist({
                 <path d='M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5' />
               </svg>
               <p className='text-xl font-semibold text-green-800'>
-                Be part of the joy! Help make these wishes come true!
+                Be part of the joy! Help make these wishlists come true!
               </p>
               <p className='text-sm text-gray-600'>
                 © {new Date().getFullYear()} Christmas WishCard. Spread love and

@@ -1,21 +1,31 @@
 import connectMongoose from "@/lib/mongodb";
 import { User } from "@/model/users";
-import { Wish } from "@/model/wish";
-import type { Wish as WishType, Wishes } from "@/types";
+import { WishList } from "@/model/wishList";
+import type { WishList as WishListType, WishLists } from "@/types";
 import mongoose from "mongoose";
 
-export const getPublicWishes = async () => {
-  let wishes;
+export const getPublicWishlists = async (username?: string) => {
+  let wishlists;
   try {
     await connectMongoose();
 
-    wishes = await Wish.aggregate([
-      { $match: { visibility: "PUBLIC", isArchived: false } },
+    const matchStage: Record<string, string | boolean> = {
+      visibility: "PUBLIC",
+      isArchived: false,
+    };
+
+    if (username) {
+      const user = await User.findOne({ username });
+      matchStage.owner = user._id;
+    }
+
+    wishlists = await WishList.aggregate([
+      { $match: matchStage },
       {
         $lookup: {
           from: "wishitems",
           localField: "_id",
-          foreignField: "wish",
+          foreignField: "wishlist",
           as: "items",
         },
       },
@@ -42,7 +52,7 @@ export const getPublicWishes = async () => {
       },
     ]);
 
-    return JSON.parse(JSON.stringify(wishes)) as Wishes;
+    return JSON.parse(JSON.stringify(wishlists)) as WishLists;
   } catch (error) {
     console.log(error);
     return [];
@@ -59,13 +69,13 @@ export const getPublicWish = async (username: string, id: string) => {
 
     if (!user) return null;
 
-    const wishId = new mongoose.Types.ObjectId(id);
+    const wishlistId = new mongoose.Types.ObjectId(id);
     const ownerId = new mongoose.Types.ObjectId(user._id);
 
-    const result = await Wish.aggregate([
+    const result = await WishList.aggregate([
       {
         $match: {
-          _id: wishId,
+          _id: wishlistId,
           owner: ownerId,
           visibility: "PUBLIC",
           isArchived: false,
@@ -75,7 +85,7 @@ export const getPublicWish = async (username: string, id: string) => {
         $lookup: {
           from: "wishitems",
           localField: "_id",
-          foreignField: "wish",
+          foreignField: "wishlist",
           as: "items",
           pipeline: [
             {
@@ -224,9 +234,9 @@ export const getPublicWish = async (username: string, id: string) => {
       return null;
     }
 
-    const wish = result[0];
+    const wishlist = result[0];
 
-    return JSON.parse(JSON.stringify(wish)) as WishType;
+    return JSON.parse(JSON.stringify(wishlist)) as WishListType;
   } catch (error) {
     console.log(error);
     return null;

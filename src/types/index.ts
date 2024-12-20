@@ -10,7 +10,7 @@ export type User = {
 
 export type Item = {
   _id?: string;
-  wish?: string;
+  wishlist?: string;
   name: string;
   description?: string;
   image_url?: string;
@@ -21,7 +21,7 @@ export type Items = Item[];
 
 export type Categories = (typeof WISH_CATEGORIES)[number];
 
-export type Wish = {
+export type WishList = {
   _id: string;
   owner: User;
   coverImage?: string;
@@ -39,6 +39,6 @@ export type Wish = {
   contributed_amount: number;
 };
 
-export type Wishes = Wish[];
+export type WishLists = WishList[];
 
 export type Currency = (typeof CURRENCIES)[number];

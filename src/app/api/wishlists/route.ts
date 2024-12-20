@@ -1,15 +1,15 @@
 import connectMongoose from "@/lib/mongodb";
 import { WishItem } from "@/model/wishItems";
-import { Wish } from "@/model/wish";
+import { WishList } from "@/model/wishList";
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSessionWithAuthOptions } from "@/utils/nextAuth.config";
 import { User } from "@/model/users";
 
 const POST = async (request: NextRequest) => {
   try {
-    const wish = await request.json();
+    const body = await request.json();
 
-    const { title, category, items } = wish;
+    const { title, category, items } = body;
 
     if (!title || !category) {
       return NextResponse.json(
@@ -37,13 +37,13 @@ const POST = async (request: NextRequest) => {
     await connectMongoose();
     const user = await User.findOne({ email: session.user?.email });
 
-    // Separate items from the rest of the wish data
-    const { items: excludeItemsFromWish, ...restOfWish } = wish;
+    // Separate items from the rest of the wishlist data
+    const { items: excludeItemsFromWish, ...restOfWish } = body;
     void excludeItemsFromWish; // prevent ts from erroring unused value
 
     let wishlist;
     try {
-      wishlist = await Wish.create({
+      wishlist = await WishList.create({
         owner: user._id,
         status: "ONGOING",
         ...restOfWish,
@@ -62,7 +62,7 @@ const POST = async (request: NextRequest) => {
     if (Array.isArray(items) && items.length > 0) {
       const itemsToInsert = items.map((item) => ({
         ...item,
-        wish: wishlist._id,
+        wishlist: wishlist._id,
       }));
 
       try {
@@ -113,22 +113,22 @@ const GET = async () => {
       return NextResponse.json({ message: "No user found " }, { status: 404 });
     }
 
-    const wishes = await Wish.aggregate([
+    const wishlists = await WishList.aggregate([
       { $match: { owner: user._id } },
       {
         $lookup: {
           from: "wishitems",
           localField: "_id",
-          foreignField: "wish",
+          foreignField: "wishlist",
           as: "items",
         },
       },
     ]);
 
-    return NextResponse.json(wishes, { status: 200 });
+    return NextResponse.json(wishlists, { status: 200 });
   } catch (error) {
     return NextResponse.json(
-      { message: "Error fetching wishes", error },
+      { message: "Error fetching wishlists", error },
       { status: 500 }
     );
   }

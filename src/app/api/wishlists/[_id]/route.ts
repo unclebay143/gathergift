@@ -1,5 +1,5 @@
 import connectMongoose from "@/lib/mongodb";
-import { Wish } from "@/model/wish";
+import { WishList } from "@/model/wishList";
 import { getDynamicParams } from "@/utils/dynamics";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -17,7 +17,7 @@ const PUT = async (
     }
 
     await connectMongoose();
-    const wishlist = await Wish.findByIdAndUpdate(id, body, { new: true });
+    const wishlist = await WishList.findByIdAndUpdate(id, body, { new: true });
 
     if (!wishlist) {
       return NextResponse.json(
@@ -54,7 +54,7 @@ const DELETE = async (
 
     await connectMongoose();
 
-    const wishlist = await Wish.findByIdAndDelete(id);
+    const wishlist = await WishList.findByIdAndDelete(id);
 
     if (!wishlist) {
       return NextResponse.json(

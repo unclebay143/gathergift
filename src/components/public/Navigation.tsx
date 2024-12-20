@@ -45,7 +45,7 @@ export default function Navigation() {
           <div className='hidden sm:ml-6 sm:flex sm:items-center'>
             {isLoggedIn ? (
               <Button asChild>
-                <Link href='/wishes'>Dashboard</Link>
+                <Link href='/wishlists'>Dashboard</Link>
               </Button>
             ) : (
               <>

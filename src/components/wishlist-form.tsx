@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { ArrowRight, Loader, Plus, Trash2, Upload } from "lucide-react";
-import { Wish } from "@/types";
+import { WishList } from "@/types";
 import {
   WISH_CATEGORIES,
   CATEGORY_TAG_LINES,
@@ -77,14 +77,11 @@ export const wishFormSchema = z.object({
 
 type WishFormProps = {
   onSubmit: (
-    data: Omit<
-      Wish,
-      "wish" | "owner" | "isArchived" | "contributed_amount" | "_id"
-    >
+    data: Omit<WishList, "owner" | "isArchived" | "contributed_amount" | "_id">
   ) => void;
   initialData?: Omit<
-    Wish,
-    "wish" | "owner" | "isArchived" | "contributed_amount" | "_id"
+    WishList,
+    "owner" | "isArchived" | "contributed_amount" | "_id"
   >;
 };
 
@@ -308,7 +305,7 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
               <FormControl>
                 <Input
                   className='bg-zinc-50'
-                  placeholder='My Christmas Wish'
+                  placeholder='My Christmas Wishlist'
                   {...field}
                 />
               </FormControl>
@@ -325,7 +322,7 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
               <FormControl>
                 <Textarea
                   className='bg-zinc-50'
-                  placeholder='Describe your wish...'
+                  placeholder='Describe your wishlist...'
                   {...field}
                 />
               </FormControl>
@@ -376,7 +373,8 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
               <div className='space-y-0.5'>
                 <FormLabel className='text-base'>Enable Items</FormLabel>
                 <FormDescription>
-                  Toggle to enable or disable individual items for this wish.
+                  Toggle to enable or disable individual items for this
+                  wishlist.
                 </FormDescription>
               </div>
               <FormControl>
@@ -398,7 +396,7 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
         />
 
         <div className={itemsEnabled ? "" : "opacity-50 pointer-events-none"}>
-          <h3 className='text-lg font-medium mb-2'>Wish Items</h3>
+          <h3 className='text-lg font-medium mb-2'>Wishlist Items</h3>
           {fields.map((field, index) => (
             <div
               key={field.id}
@@ -461,7 +459,7 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
                     </FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder='Describe how this item will help with your wish...'
+                        placeholder='Describe how this item will help with your wishlist...'
                         className='bg-zinc-50/50'
                         {...field}
                       />
@@ -588,7 +586,7 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
               <FormDescription>
                 {itemsEnabled
                   ? "This amount is automatically calculated from the sum of item prices."
-                  : "Enter the total target amount for your wish."}
+                  : "Enter the total target amount for your wishlist."}
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -652,7 +650,7 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
                   Visibility ({field.value.toLowerCase()})
                 </FormLabel>
                 <FormDescription>
-                  Decide who can view this wish list. Use the toggle to make it
+                  Decide who can view this wishlist. Use the toggle to make it
                   public for everyone or private for personal use.
                 </FormDescription>
               </div>

@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils";
 import React, { useEffect, useState } from "react";
 import { WishCard } from "../WishCard";
-import { Wishes } from "@/types";
+import { WishLists } from "@/types";
 
 export const InfiniteMovingCards = ({
   direction = "left",
@@ -12,7 +12,7 @@ export const InfiniteMovingCards = ({
   className,
   data,
 }: {
-  data: Wishes;
+  data: WishLists;
   direction?: "left" | "right";
   speed?: "fast" | "normal" | "slow";
   pauseOnHover?: boolean;

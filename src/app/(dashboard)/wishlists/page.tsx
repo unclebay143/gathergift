@@ -1,9 +1,9 @@
 import React from "react";
 
-import { WishesPage } from "./wishes";
+import { WishListPage } from "./wishlists";
 
 const Page = () => {
-  return <WishesPage />;
+  return <WishListPage />;
 };
 
 export default Page;

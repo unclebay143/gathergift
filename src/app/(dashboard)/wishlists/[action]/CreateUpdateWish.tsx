@@ -3,16 +3,16 @@
 import { useState } from "react";
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { WishForm } from "@/components/wish-form";
-import { WishPreview } from "@/components/wish-preview";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Wish } from "@/types";
+import { WishList } from "@/types";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { toast } from "sonner";
 import { useAppContext } from "@/app/providers";
+import { WishForm } from "@/components/wishlist-form";
+import { WishPreview } from "@/components/wishlist-preview";
 
 export function CreateUpdateWish({ action }: { action: string }) {
   const { currentUser } = useAppContext();
@@ -20,8 +20,8 @@ export function CreateUpdateWish({ action }: { action: string }) {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [wishData, setWishData] = useState<Omit<
-    Wish,
-    "contributed_amount" | "wish" | "owner" | "isArchived" | "_id"
+    WishList,
+    "contributed_amount" | "owner" | "isArchived" | "_id"
   > | null>(null);
 
   const isCreating = action === "create";
@@ -31,28 +31,27 @@ export function CreateUpdateWish({ action }: { action: string }) {
   const { mutate, isPending } = useMutation({
     mutationFn: async (
       data: Omit<
-        Wish,
-        "contributed_amount" | "wish" | "owner" | "isArchived" | "_id"
+        WishList,
+        "contributed_amount" | "owner" | "isArchived" | "_id"
       >
     ) =>
-      (await axios.post("/api/wishes", data)) as { data: { wishlist: Wish } },
+      (await axios.post("/api/wishlists", data)) as {
+        data: { wishlist: WishList };
+      },
     onSuccess({ data }) {
-      toast.success("Wish created successfully.");
+      toast.success("Wishlist created successfully.");
       const wishListId = data.wishlist._id;
-      // Todo: make username dynamic `/[username]/wishes/wishListId`
+      // Todo: make username dynamic `/[username]/wishlists/wishListId`
       router.push(`/${currentUser?.username}/wishlists/${wishListId}`);
     },
     onError(error) {
       console.log(error);
-      toast.error("Error creating wish");
+      toast.error("Error creating wishlist");
     },
   });
 
   const handleSubmit = (
-    data: Omit<
-      Wish,
-      "contributed_amount" | "wish" | "owner" | "isArchived" | "_id"
-    >
+    data: Omit<WishList, "contributed_amount" | "owner" | "isArchived" | "_id">
   ) => {
     setWishData(data);
     if (step < 2) {
@@ -67,12 +66,12 @@ export function CreateUpdateWish({ action }: { action: string }) {
       <div>
         <div className='space-y-1 mb-6'>
           <h1 className='text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent'>
-            {isCreating ? "Create New Wish" : "Update Wish"}
+            {isCreating ? "Create New Wishlist" : "Update Wishlist"}
           </h1>
           <p className='text-muted-foreground'>
             {isCreating
-              ? "Create a new wish to share with others."
-              : "Update your existing wish."}
+              ? "Create a new wishlist to share with others."
+              : "Update your existing wishlist."}
           </p>
         </div>
         <div className='mb-6'>
@@ -133,7 +132,7 @@ export function CreateUpdateWish({ action }: { action: string }) {
             {isPending ? (
               "Please wait..."
             ) : (
-              <>{isPreviewScreen ? "Create Wish" : "Update Wish"}</>
+              <>{isPreviewScreen ? "Create Wishlist" : "Update Wishlist"}</>
             )}
           </Button>
         )}
