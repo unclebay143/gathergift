@@ -22,7 +22,11 @@ export default async function CommunityPage() {
               moments that matter.
             </p>
           </header>
-          {showWishlists ? <FeaturedWishlists wishlists={wishlists} /> : null}
+          {showWishlists ? (
+            <FeaturedWishlists wishlists={wishlists} />
+          ) : (
+            <p className='text-center'>No public wishlists at the moment..</p>
+          )}
         </div>
       </div>
     </PublicLayout>

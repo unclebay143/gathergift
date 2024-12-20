@@ -7,6 +7,7 @@ import {
   formatCurrencyWithComma,
 } from "@/lib/utils";
 import { getPublicWish } from "@/service/wishlists/wishlists.server";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 export default async function ChristmasWishlist({
@@ -48,7 +49,7 @@ export default async function ChristmasWishlist({
           <div className='max-w-4xl mx-auto py-8 space-y-12'>
             <header className='text-center space-y-4'>
               <div className='relative inline-block'>
-                <div className='size-[100px]'>
+                <Link href={`/${username}/wishlists`} className='size-[100px]'>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     alt='User Avatar'
@@ -60,7 +61,7 @@ export default async function ChristmasWishlist({
                       `https://api.dicebear.com/9.x/identicon/svg?seed=${username}`
                     }
                   />
-                </div>
+                </Link>
 
                 <svg
                   xmlns='http://www.w3.org/2000/svg'

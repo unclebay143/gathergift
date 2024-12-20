@@ -202,9 +202,7 @@ export const ArchivePage = () => {
                         onClick={() => handleArchiveToggle(wishlist._id)}
                       >
                         <Archive className='mr-2 h-4 w-4' />
-                        {wishlist.isArchived
-                          ? "Unarchive Wishlist"
-                          : "Archive Wishlist"}
+                        {wishlist.isArchived ? "Unarchive" : "Archive"}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>

@@ -4,13 +4,23 @@ import { WishList } from "@/model/wishList";
 import type { WishList as WishListType, WishLists } from "@/types";
 import mongoose from "mongoose";
 
-export const getPublicWishlists = async () => {
+export const getPublicWishlists = async (username?: string) => {
   let wishlists;
   try {
     await connectMongoose();
 
+    const matchStage: Record<string, string | boolean> = {
+      visibility: "PUBLIC",
+      isArchived: false,
+    };
+
+    if (username) {
+      const user = await User.findOne({ username });
+      matchStage.owner = user._id;
+    }
+
     wishlists = await WishList.aggregate([
-      { $match: { visibility: "PUBLIC", isArchived: false } },
+      { $match: matchStage },
       {
         $lookup: {
           from: "wishitems",

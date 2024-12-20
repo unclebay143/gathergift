@@ -1,7 +1,7 @@
 import { WishCard } from "../WishCard";
 import { WishLists } from "@/types";
 
-export default function FeaturedWishlists({
+export default function WishlistsCardGroup({
   wishlists,
 }: {
   wishlists: WishLists;

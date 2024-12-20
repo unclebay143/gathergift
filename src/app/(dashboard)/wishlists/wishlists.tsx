@@ -254,18 +254,18 @@ export const WishListPage = () => {
                         {wishlist.visibility === "PUBLIC" ? (
                           <>
                             <EyeOff className='mr-2 h-4 w-4' />
-                            Hide Wishlist
+                            Hide
                           </>
                         ) : (
                           <>
                             <Eye className='mr-2 h-4 w-4' />
-                            Show Wishlist
+                            Show
                           </>
                         )}
                       </DropdownMenuItem>
                       <DropdownMenuItem>
                         <Edit className='mr-2 h-4 w-4' />
-                        Edit Wishlist
+                        Edit
                       </DropdownMenuItem>
 
                       <DropdownMenuItem
@@ -275,7 +275,7 @@ export const WishListPage = () => {
                         }}
                       >
                         <Share2 className='mr-2 h-4 w-4' />
-                        Share Wishlist
+                        Share
                       </DropdownMenuItem>
 
                       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
@@ -405,9 +405,7 @@ export const WishListPage = () => {
                         onClick={() => handleArchiveToggle(wishlist._id)}
                       >
                         <Archive className='mr-2 h-4 w-4' />
-                        {wishlist.isArchived
-                          ? "Unarchive Wishlist"
-                          : "Archive Wishlist"}
+                        {wishlist.isArchived ? "Unarchive" : "Archive"}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
