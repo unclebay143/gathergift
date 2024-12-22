@@ -50,8 +50,7 @@ const data = {
         },
         {
           title: "Settings",
-          comingSoon: true,
-          url: "#",
+          url: "/settings",
           icon: Settings,
         },
       ],
