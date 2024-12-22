@@ -1,4 +1,4 @@
-import connectMongoose from "@/lib/mongodb";
+import connectViaMongoose from "@/lib/mongodb";
 import { Logs } from "@/model/logs";
 import { getDynamicParams } from "@/utils/dynamics";
 import { NextRequest, NextResponse } from "next/server";
@@ -19,7 +19,7 @@ const PUT = async (
       );
     }
 
-    await connectMongoose();
+    await connectViaMongoose();
     await Logs.findByIdAndUpdate(
       id,
       {
@@ -53,7 +53,7 @@ const DELETE = async (
       return NextResponse.json({ message: "Log ID required" }, { status: 400 });
     }
 
-    await connectMongoose();
+    await connectViaMongoose();
     await Logs.findByIdAndDelete(id);
 
     return NextResponse.json(

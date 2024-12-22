@@ -14,6 +14,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { handleLogout } from "@/utils/auth";
 
 export function TeamSwitcher({
   teams,
@@ -76,7 +77,10 @@ export function TeamSwitcher({
             side={isMobile ? "bottom" : "right"}
             sideOffset={8}
           >
-            <DropdownMenuItem className='gap-2 p-2 cursor-pointer'>
+            <DropdownMenuItem
+              className='gap-2 p-2 cursor-pointer'
+              onClick={() => handleLogout()}
+            >
               <div className='flex size-6 items-center justify-center rounded-md border bg-background'>
                 <LogOut className='size-4' />
               </div>

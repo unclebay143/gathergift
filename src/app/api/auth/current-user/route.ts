@@ -1,11 +1,11 @@
-import {  NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { getServerSessionWithAuthOptions } from "@/utils/nextAuth.config";
 import { User } from "@/model/users";
-import connectMongoose from "@/lib/mongodb";
+import connectViaMongoose from "@/lib/mongodb";
 
 const GET = async () => {
   try {
-    await connectMongoose();
+    await connectViaMongoose();
 
     const session = await getServerSessionWithAuthOptions();
 
@@ -24,7 +24,7 @@ const GET = async () => {
   } catch (error) {
     console.error("Error fetching current user: ", error);
     return NextResponse.json(
-      { message: "Failed to fetch current user", error},
+      { message: "Failed to fetch current user", error },
       { status: 500 }
     );
   }

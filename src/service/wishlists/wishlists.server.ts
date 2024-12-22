@@ -1,4 +1,4 @@
-import connectMongoose from "@/lib/mongodb";
+import connectViaMongoose from "@/lib/mongodb";
 import { User } from "@/model/users";
 import { WishList } from "@/model/wishList";
 import type {
@@ -11,7 +11,7 @@ import mongoose from "mongoose";
 export const getPublicWishlists = async (username?: string) => {
   let wishlists;
   try {
-    await connectMongoose();
+    await connectViaMongoose();
 
     const matchStage: Record<string, string | boolean> = {
       visibility: "PUBLIC",
@@ -74,7 +74,7 @@ export const getWishlist = async (options: {
 
     if (!id) return null;
 
-    await connectMongoose();
+    await connectViaMongoose();
 
     let user, ownerId;
     if (username) {

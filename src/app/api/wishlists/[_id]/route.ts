@@ -1,4 +1,4 @@
-import connectMongoose from "@/lib/mongodb";
+import connectViaMongoose from "@/lib/mongodb";
 import { WishItem } from "@/model/wishItems";
 import { WishList } from "@/model/wishList";
 import { getDynamicParams } from "@/utils/dynamics";
@@ -16,7 +16,7 @@ const PUT = async (request: NextRequest) => {
       );
     }
 
-    await connectMongoose();
+    await connectViaMongoose();
 
     const wishlist = await WishList.findByIdAndUpdate(
       wishlistId,
@@ -94,7 +94,7 @@ const DELETE = async (
       );
     }
 
-    await connectMongoose();
+    await connectViaMongoose();
 
     const wishlist = await WishList.findByIdAndDelete(id);
 

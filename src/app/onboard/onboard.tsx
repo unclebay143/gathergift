@@ -9,6 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Suspense, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { LoaderScreen } from "@/components/LoaderScreen";
+import { handleAuthentication } from "@/utils/auth";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -253,9 +254,13 @@ export function Onboard() {
 
                 <div className='mt-6'>
                   <button
+                    onClick={() => {
+                      setIsLoggingIn(true);
+                      return handleAuthentication({ provider: "google" });
+                    }}
                     disabled={isAuthenticating}
                     type='button'
-                    className='w-full flex items-center justify-center gap-3 px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900 transition-colors duration-200'
+                    className='disabled:opacity-40 w-full flex items-center justify-center gap-3 px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900 transition-colors duration-200'
                   >
                     <svg
                       stroke='currentColor'

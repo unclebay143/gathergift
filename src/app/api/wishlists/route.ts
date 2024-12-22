@@ -1,4 +1,4 @@
-import connectMongoose from "@/lib/mongodb";
+import connectViaMongoose from "@/lib/mongodb";
 import { WishItem } from "@/model/wishItems";
 import { WishList } from "@/model/wishList";
 import { NextRequest, NextResponse } from "next/server";
@@ -34,7 +34,7 @@ const POST = async (request: NextRequest) => {
       );
     }
 
-    await connectMongoose();
+    await connectViaMongoose();
     const user = await User.findOne({ email: session.user?.email });
 
     // Separate items from the rest of the wishlist data
@@ -105,7 +105,7 @@ const GET = async () => {
         { status: 400 }
       );
     }
-    await connectMongoose();
+    await connectViaMongoose();
 
     const user = await User.findOne({ email });
 
