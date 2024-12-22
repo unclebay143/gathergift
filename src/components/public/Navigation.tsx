@@ -4,10 +4,13 @@ import Link from "next/link";
 import { Gift } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
+import { cn } from "@/lib/utils";
 
 export default function Navigation() {
   const session = useSession();
   const isLoggedIn = !!session.data;
+
+  const isCheckingSession = session.status === "loading";
 
   return (
     <nav className='bg-white shadow-md'>
@@ -42,7 +45,12 @@ export default function Navigation() {
             </div>
           </div>
 
-          <div className='hidden sm:ml-6 sm:flex sm:items-center'>
+          <div
+            className={cn(
+              "hidden sm:ml-6 sm:flex sm:items-center",
+              isCheckingSession && "!hidden"
+            )}
+          >
             {isLoggedIn ? (
               <Button asChild>
                 <Link href='/wishlists'>Dashboard</Link>

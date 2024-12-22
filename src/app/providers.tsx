@@ -13,8 +13,11 @@ export type DashboardLoaderStore = {
 };
 
 export const useDashboardLoader = create<DashboardLoaderStore>((set) => ({
-  visibility: false,
-  setVisibility: (visibility: boolean) => set({ visibility }),
+  visibility: true,
+  setVisibility: (visibility: boolean) =>
+    setTimeout(() => {
+      set({ visibility });
+    }, 1000),
 }));
 
 export type AppContextStore = {

@@ -226,7 +226,7 @@ export const WishListPage = () => {
                   </span>
                   <span className='font-medium text-green-600 dark:text-green-400'>
                     <DollarSign className='inline mr-1 h-3 w-3' />
-                    {formatCurrencyWithComma(wishlist.contributed_amount)}
+                    {formatCurrencyWithComma(wishlist.contributed_amount) || 0}
                   </span>
                 </div>
               </CardContent>

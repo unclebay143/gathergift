@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import FeaturedWishlists from "@/components/public/FeaturedWishlists";
 import { PublicLayout } from "../public-layout";
 import { getPublicWishlists } from "@/service/wishlists/wishlists.server";

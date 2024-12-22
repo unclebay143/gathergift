@@ -29,7 +29,7 @@ const POST = async (request: NextRequest) => {
 
     if (!session) {
       return NextResponse.json(
-        { message: "Missing required fields: owner, title, or category" },
+        { message: "Session is required" },
         { status: 404 }
       );
     }
@@ -68,7 +68,11 @@ const POST = async (request: NextRequest) => {
       try {
         await WishItem.insertMany(itemsToInsert);
       } catch (err) {
-        console.error("Error creating wishlist items:", err);
+        console.error("Error creating wishlist items:", {
+          error: err,
+          body,
+          userId: user._id,
+        });
         return NextResponse.json(
           {
             message: "Error creating wishlist items",
@@ -97,7 +101,6 @@ const POST = async (request: NextRequest) => {
 const GET = async () => {
   try {
     const session = await getServerSessionWithAuthOptions();
-    const email = session?.user?.email;
 
     if (!session) {
       return NextResponse.json(
@@ -105,6 +108,8 @@ const GET = async () => {
         { status: 400 }
       );
     }
+
+    const email = session?.user?.email;
     await connectViaMongoose();
 
     const user = await User.findOne({ email });

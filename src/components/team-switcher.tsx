@@ -40,12 +40,15 @@ export function TeamSwitcher({
           >
             <SidebarMenuButton
               size='lg'
-              className='w-full data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
+              className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
             >
               {activeTeam.imageUrl ? (
                 <>
-                  <div className='flex aspect-square size-8 items-center justify-center rounded-lg overflow-hidden text-sidebar-primary-foreground'>
-                    <img src={activeTeam.imageUrl} width={30} height={40} />
+                  <div className='flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground'>
+                    <img
+                      src={activeTeam.imageUrl}
+                      className='size-8 rounded-md'
+                    />
                   </div>
                   <div className='grid flex-1 text-left text-sm leading-tight'>
                     <span className='truncate font-semibold'>
@@ -63,9 +66,7 @@ export function TeamSwitcher({
                   </div>
                 </>
               )}
-
               <ChevronsUpDown className='ml-auto' />
-
               {/* <div className='ml-auto rounded-full overflow-hidden border-2 border-transparent hover:border-slate-200'>
                 <img src={activeTeam.imageUrl} width={30} height={40} />
               </div> */}
