@@ -1,12 +1,15 @@
 import { PublicLayout } from "@/app/public-layout";
 import { Progress } from "@/components/progress";
+import { Button } from "@/components/ui/button";
 import { WishItemGroup } from "@/components/WishItemGroup";
 import { MAP_CURRENCIES_TO_SYMBOLS } from "@/const";
 import {
   calculateProgressPercentage,
   formatCurrencyWithComma,
 } from "@/lib/utils";
+import { getCurrentUser } from "@/service/users/user.server";
 import { getWishlist } from "@/service/wishlists/wishlists.server";
+import { Edit } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -16,12 +19,20 @@ export default async function ChristmasWishlist({
   params: Promise<{ id: string; username: string }>;
 }) {
   const { id, username } = await params;
-  const wishlist = await getWishlist({ id, username, visibility: "PUBLIC" });
+
+  const [wishlist, currentUser] = await Promise.all([
+    getWishlist({ id, username, visibility: "PUBLIC" }),
+    getCurrentUser(),
+  ]);
+
+  const canEditWishList = wishlist?.owner?._id === currentUser?._id;
 
   if (!wishlist) {
     return notFound();
   }
+
   const {
+    _id,
     title,
     description,
     items,
@@ -86,10 +97,19 @@ export default async function ChristmasWishlist({
               <h1 className='text-4xl font-bold text-red-700'>{title}</h1>
               <p className='text-xl text-green-700 italic'>{description}</p>
             </header>
-            <section className='space-y-6'>
-              <h2 className='text-2xl font-semibold text-center text-green-800'>
+            <section className='space-y-2'>
+              {/* <h2 className='text-2xl font-semibold text-center text-green-800'>
                 Gift Wishes
-              </h2>
+              </h2> */}
+              {canEditWishList && (
+                <div className='flex justify-end'>
+                  <Button size='sm' variant='outline' asChild>
+                    <Link href={`/wishlists/${_id}`}>
+                      <Edit size='12' />
+                    </Link>
+                  </Button>
+                </div>
+              )}
               {hasItems && (
                 <div className='space-y-3'>
                   <WishItemGroup items={items} currency={currency} />

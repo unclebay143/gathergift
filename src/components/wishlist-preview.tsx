@@ -4,6 +4,8 @@ import { formatCurrencyWithComma } from "@/lib/utils";
 import { WishList } from "@/types";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { ExternalLink } from "lucide-react";
+import Link from "next/link";
 
 dayjs.extend(relativeTime);
 
@@ -66,7 +68,19 @@ export function WishPreview({ wishlistData }: WishPreviewProps) {
                               className='w-12 h-12 object-cover rounded-md mr-4'
                             />
                           )}
-                          <span className='font-medium'>{item.name}</span>
+                          <span className='font-medium flex items-center gap-1'>
+                            {item.name}
+                            {item.externalLink && (
+                              <a
+                                href={item.externalLink}
+                                target='_blank'
+                                rel='noopener'
+                                className='text-zinc-500'
+                              >
+                                <ExternalLink size={12} />
+                              </a>
+                            )}
+                          </span>
                         </div>
                         <span>
                           {item.amount

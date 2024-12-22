@@ -65,6 +65,7 @@ export const wishFormSchema = z.object({
   items: z.array(
     z.object({
       name: z.string().min(1, "Item name is required"),
+      externalLink: z.string().url().optional(),
       amount: z.number().min(0, "Price must be 0 or greater").nullable(),
       description: z
         .string()
@@ -94,6 +95,7 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
     resolver: zodResolver(wishFormSchema),
     defaultValues: {
       ...initialData,
+      coverImage: initialData?.coverImage || "",
       title: initialData?.title || "",
       thankYouMessage: initialData?.thankYouMessage || "",
       visibility: initialData?.visibility || "PUBLIC",
@@ -405,72 +407,6 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
               key={field.id}
               className='flex flex-col gap-4 mb-4 p-4 border rounded-md bg-zinc-50'
             >
-              <div className='flex gap-4'>
-                <FormField
-                  control={form.control}
-                  name={`items.${index}.name`}
-                  render={({ field }) => (
-                    <FormItem className='flex-1'>
-                      <FormLabel>Item Name</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder='Item name'
-                          {...field}
-                          className='bg-zinc-50/50'
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name={`items.${index}.amount`}
-                  render={({ field }) => (
-                    <FormItem className='w-1/3'>
-                      <FormLabel>Price</FormLabel>
-                      <FormControl>
-                        <Input
-                          type='number'
-                          placeholder='Enter price'
-                          className='bg-zinc-50/50'
-                          value={field.value === null ? "" : field.value}
-                          onChange={(e) => {
-                            const value =
-                              e.target.value === ""
-                                ? null
-                                : parseFloat(e.target.value);
-                            form.setValue(`items.${index}.amount`, value, {
-                              shouldValidate: true,
-                            });
-                          }}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <FormField
-                control={form.control}
-                name={`items.${index}.description`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      Item Description{" "}
-                      <span className='text-xs text-zinc-400'>(Optional)</span>
-                    </FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder='Describe how this item will help with your wishlist...'
-                        className='bg-zinc-50/50'
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
               <FormField
                 control={form.control}
                 name={`items.${index}.image_url`}
@@ -540,6 +476,94 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
                   </FormItem>
                 )}
               />
+              <div className='flex gap-4'>
+                <FormField
+                  control={form.control}
+                  name={`items.${index}.name`}
+                  render={({ field }) => (
+                    <FormItem className='flex-1'>
+                      <FormLabel>Item Name</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder='Item name'
+                          {...field}
+                          className='bg-zinc-50/50'
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name={`items.${index}.amount`}
+                  render={({ field }) => (
+                    <FormItem className='w-1/3'>
+                      <FormLabel>Price</FormLabel>
+                      <FormControl>
+                        <Input
+                          type='number'
+                          placeholder='Enter price'
+                          className='bg-zinc-50/50'
+                          value={field.value === null ? "" : field.value}
+                          onChange={(e) => {
+                            const value =
+                              e.target.value === ""
+                                ? null
+                                : parseFloat(e.target.value);
+                            form.setValue(`items.${index}.amount`, value, {
+                              shouldValidate: true,
+                            });
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <FormField
+                control={form.control}
+                name={`items.${index}.description`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      Item Description{" "}
+                      <span className='text-xs text-zinc-400'>(Optional)</span>
+                    </FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder='Describe how this item will help with your wishlist...'
+                        className='bg-zinc-50/50'
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name={`items.${index}.externalLink`}
+                render={({ field }) => (
+                  <FormItem className='flex-1'>
+                    <FormLabel>
+                      Item Link{" "}
+                      <span className='text-xs text-zinc-400'>(Optional)</span>
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder='i.e Amazon, Jumia'
+                        {...field}
+                        className='bg-zinc-50/50'
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
               <div className='flex justify-end'>
                 <Button
                   type='button'
@@ -557,7 +581,14 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
             variant='outline'
             size='sm'
             className='mt-2'
-            onClick={() => append({ name: "", amount: null, description: "" })}
+            onClick={() =>
+              append({
+                name: "",
+                amount: null,
+                description: "",
+                externalLink: "",
+              })
+            }
           >
             <Plus className='mr-2 h-4 w-4' /> Add Item
           </Button>

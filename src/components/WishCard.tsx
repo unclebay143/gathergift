@@ -1,9 +1,13 @@
 import { MAP_CURRENCIES_TO_SYMBOLS } from "@/const";
-import { formatCurrencyWithComma } from "@/lib/utils";
+import {
+  calculateProgressPercentage,
+  formatCurrencyWithComma,
+} from "@/lib/utils";
 import { WishList } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import { Progress } from "./ui/progress";
 
 export const WishCard = ({ data }: { data: WishList }) => {
   const {
@@ -11,6 +15,7 @@ export const WishCard = ({ data }: { data: WishList }) => {
     coverImage,
     title,
     target_amount,
+    contributed_amount,
     items,
     currency,
     owner,
@@ -63,28 +68,21 @@ export const WishCard = ({ data }: { data: WishList }) => {
             </span>
           </div> */}
           <div className='space-y-2'>
-            <div
-              aria-valuemax={100}
-              aria-valuemin={0}
-              role='progressbar'
-              data-state='indeterminate'
-              data-max={100}
-              className='relative w-full overflow-hidden rounded-full bg-secondary h-2'
-            >
-              <div
-                data-state='indeterminate'
-                data-max={100}
-                className='h-full w-full flex-1 bg-primary transition-all'
-                style={{ transform: "translateX(-25%)" }}
-              />
-            </div>
+            <Progress
+              value={calculateProgressPercentage(
+                target_amount,
+                contributed_amount
+              )}
+              className='h-2  bg-secondary'
+            />
             <div className='flex justify-between'>
               <p className='text-xs text-right text-zinc-500'>
                 {MAP_CURRENCIES_TO_SYMBOLS[currency]}
                 {formatCurrencyWithComma(target_amount)}
               </p>
               <p className='text-xs text-right text-zinc-500'>
-                75% funded for 4 items
+                {calculateProgressPercentage(target_amount, contributed_amount)}
+                % funded for {items.length} items
               </p>
             </div>
           </div>
@@ -109,7 +107,7 @@ export const WishCard = ({ data }: { data: WishList }) => {
               <path d='M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7' />
               <path d='M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5' />
             </svg>
-            Support This Gift
+            Support Wishlist
           </Link>
         </div>
       </div>

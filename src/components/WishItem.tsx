@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronDown, ChevronUp, Info } from "lucide-react";
+import { ChevronDown, ChevronUp, ExternalLink, Info } from "lucide-react";
 import { Checkbox } from "./ui/Checkbox";
 import { WishItemDetailModal } from "./WishItemDetailModal";
 import { Currency, Item } from "@/types";
@@ -9,6 +9,7 @@ import {
 } from "@/lib/utils";
 import { MAP_CURRENCIES_TO_SYMBOLS } from "@/const";
 import Image from "next/image";
+import { Button } from "./ui/button";
 
 interface WishItemProps {
   item: Item;
@@ -29,8 +30,15 @@ export function WishItem({
 }: WishItemProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { _id, name, description, image_url, amount, contributed_amount } =
-    item;
+  const {
+    _id,
+    name,
+    description,
+    image_url,
+    amount,
+    contributed_amount,
+    externalLink,
+  } = item;
 
   const progress = calculateProgressPercentage(amount, contributed_amount);
 
@@ -92,6 +100,18 @@ export function WishItem({
             </div>
           )}
           <p className='text-gray-700 text-sm'>{description}</p>
+          {externalLink && (
+            <a
+              href={externalLink}
+              target='_blank'
+              className='mt-3 w-full flex justify-end'
+            >
+              <Button size='sm' variant='outline'>
+                View on Shopping Site
+                <ExternalLink size='12' />
+              </Button>
+            </a>
+          )}
         </div>
       )}
       <WishItemDetailModal

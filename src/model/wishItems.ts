@@ -12,6 +12,9 @@ const WishItemSchema: Schema = new Schema(
     description: {
       type: String,
     },
+    externalLink: {
+      type: String,
+    },
     image_url: {
       type: String,
     },
