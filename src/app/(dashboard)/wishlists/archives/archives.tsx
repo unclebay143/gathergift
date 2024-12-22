@@ -49,9 +49,9 @@ const getArchiveWishlistsQueryKey = () => ["archive-wishlists"];
 export const ArchivePage = () => {
   const queryClient = useQueryClient();
 
-  const { isLoading, data: wishlists } = useQuery({
+  const { data: wishlists } = useQuery({
     queryFn: async () => {
-      const res = await fetch("api/wishlists");
+      const res = await fetch("/api/wishlists");
       const data: WishLists = await res.json();
       const nonArchivedWishlists = data.filter(
         (wishlist) => wishlist.isArchived
@@ -76,6 +76,7 @@ export const ArchivePage = () => {
   });
 
   const showEmptyState = wishlists?.length === 0;
+  console.log({ wishlists });
   return (
     <>
       <div className='container w-full mx-auto px-4 py-6 lg:px-8 flex flex-col gap-8'>
