@@ -13,7 +13,7 @@ export const getCurrentUser = async () => {
 
     const user = await User.findOne({
       email: session.user?.email,
-    }).select("username photo");
+    }).select("username photo email firstName lastName");
 
     if (!user) {
       return null;
