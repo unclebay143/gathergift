@@ -5,7 +5,6 @@ import { WishList } from "@/types";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { ExternalLink } from "lucide-react";
-import Link from "next/link";
 
 dayjs.extend(relativeTime);
 
