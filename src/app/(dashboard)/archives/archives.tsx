@@ -42,14 +42,12 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import axios from "axios";
-import { useDashboardLoader } from "@/app/providers";
 
 dayjs.extend(relativeTime);
 
 const getArchiveWishlistsQueryKey = () => ["archive-wishlists"];
 export const ArchivePage = () => {
   const queryClient = useQueryClient();
-  const { setVisibility } = useDashboardLoader();
 
   const { isLoading, data: wishlists } = useQuery({
     queryFn: async () => {
@@ -76,10 +74,6 @@ export const ArchivePage = () => {
       });
     },
   });
-
-  useEffect(() => {
-    setVisibility(isLoading);
-  }, [isLoading, setVisibility]);
 
   const showEmptyState = wishlists?.length === 0;
   return (

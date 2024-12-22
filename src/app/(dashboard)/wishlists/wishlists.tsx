@@ -64,7 +64,6 @@ export const getWishListsQueryKey = () => ["wishlists"];
 const BASE_URL = "https://gathergift.vercel.app";
 
 export const WishListPage = () => {
-  const { setVisibility } = useDashboardLoader();
   const { currentUser } = useAppContext();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -107,10 +106,6 @@ export const WishListPage = () => {
   //       wishlist.description.toLowerCase().includes(searchTerm.toLowerCase())) &&
   //     !wishlist.isArchived
   // );
-
-  useEffect(() => {
-    setVisibility(isLoading);
-  }, [isLoading, setVisibility]);
 
   return (
     <>

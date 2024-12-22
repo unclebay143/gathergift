@@ -9,6 +9,7 @@ import React from "react";
 import { Separator } from "@/components/ui/separator";
 import { DashboardBreadCrumb } from "./dashboard-breadcrumb";
 import { OnboardingModal } from "./onboading-modal";
+import { DashboardContext } from "./dashboard-context";
 
 export default async function DashboardLayout({
   children,
@@ -18,6 +19,7 @@ export default async function DashboardLayout({
   return (
     <SidebarProvider>
       <AppSidebar />
+      <DashboardContext />
       <OnboardingModal />
       <SidebarInset>
         <div className='min-h-screen bg-zinc-50'>

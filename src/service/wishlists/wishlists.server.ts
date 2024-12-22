@@ -109,6 +109,7 @@ export const getWishlist = async (options: {
                 amount: 1,
                 image_url: 1,
                 externalLink: 1,
+                category: 1,
               },
             },
           ],
