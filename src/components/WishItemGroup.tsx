@@ -97,17 +97,19 @@ export function WishItemGroup({ items, currency }: WishItemGroupProps) {
         );
       })}
 
-      <div className='border rounded-md p-4 mb-4 bg-zinc-100'>
-        <Checkbox
-          checked={allSelected}
-          onChange={() => {
-            const allIds = items.map((item) => item._id);
-            toggleAllItems(allIds);
-          }}
-          id={`checkbox-all}`}
-          label={"Select all"}
-        />
-      </div>
+      {items.length > 1 && (
+        <div className='border rounded-md p-4 mb-4 bg-zinc-100'>
+          <Checkbox
+            checked={allSelected}
+            onChange={() => {
+              const allIds = items.map((item) => item._id);
+              toggleAllItems(allIds);
+            }}
+            id={`checkbox-all}`}
+            label={"Select all"}
+          />
+        </div>
+      )}
 
       <div className='flex items-center justify-center'>
         <button

@@ -1,5 +1,5 @@
 import connectViaMongoose from "@/lib/mongodb";
-import { Logs } from "@/model/logs";
+import { Log } from "@/model/logs";
 import { getDynamicParams } from "@/utils/dynamics";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -20,7 +20,7 @@ const PUT = async (
     }
 
     await connectViaMongoose();
-    await Logs.findByIdAndUpdate(
+    await Log.findByIdAndUpdate(
       id,
       {
         user_id,
@@ -54,7 +54,7 @@ const DELETE = async (
     }
 
     await connectViaMongoose();
-    await Logs.findByIdAndDelete(id);
+    await Log.findByIdAndDelete(id);
 
     return NextResponse.json(
       { message: "Log deleted successfully" },

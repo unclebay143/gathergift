@@ -64,7 +64,6 @@ export const getWishListsQueryKey = () => ["wishlists"];
 const BASE_URL = "https://gathergift.vercel.app";
 
 export const WishListPage = () => {
-  const { setVisibility } = useDashboardLoader();
   const { currentUser } = useAppContext();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -107,10 +106,6 @@ export const WishListPage = () => {
   //       wishlist.description.toLowerCase().includes(searchTerm.toLowerCase())) &&
   //     !wishlist.isArchived
   // );
-
-  useEffect(() => {
-    setVisibility(isLoading);
-  }, [isLoading, setVisibility]);
 
   return (
     <>
@@ -226,7 +221,7 @@ export const WishListPage = () => {
                   </span>
                   <span className='font-medium text-green-600 dark:text-green-400'>
                     <DollarSign className='inline mr-1 h-3 w-3' />
-                    {formatCurrencyWithComma(wishlist.contributed_amount)}
+                    {formatCurrencyWithComma(wishlist.contributed_amount) || 0}
                   </span>
                 </div>
               </CardContent>

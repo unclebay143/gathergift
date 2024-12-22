@@ -42,14 +42,12 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import axios from "axios";
-import { useDashboardLoader } from "@/app/providers";
 
 dayjs.extend(relativeTime);
 
 const getArchiveWishlistsQueryKey = () => ["archive-wishlists"];
 export const ArchivePage = () => {
   const queryClient = useQueryClient();
-  const { setVisibility } = useDashboardLoader();
 
   const { isLoading, data: wishlists } = useQuery({
     queryFn: async () => {
@@ -76,10 +74,6 @@ export const ArchivePage = () => {
       });
     },
   });
-
-  useEffect(() => {
-    setVisibility(isLoading);
-  }, [isLoading, setVisibility]);
 
   const showEmptyState = wishlists?.length === 0;
   return (
@@ -169,7 +163,7 @@ export const ArchivePage = () => {
                   </span>
                   <span className='font-medium text-green-600 dark:text-green-400'>
                     <DollarSign className='inline mr-1 h-3 w-3' />
-                    {formatCurrencyWithComma(wishlist.contributed_amount)}
+                    {formatCurrencyWithComma(wishlist.contributed_amount) || 0}
                   </span>
                 </div>
               </CardContent>

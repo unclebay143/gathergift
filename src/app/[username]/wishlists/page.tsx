@@ -16,7 +16,7 @@ export default async function ChristmasWishlist({
     <PublicLayout>
       <div className='relative overflow-hidden'>
         <div className='min-h-screen px-4 bg-gradient-to-b from-red-50 to-green-50 text-gray-800'>
-          <div className='max-w-4xl mx-auto py-8 space-y-12'>
+          <div className='max-w-7xl mx-auto py-8 space-y-12'>
             <header className='text-center space-y-4'>
               <div className='relative inline-block'>
                 <div className='size-[100px]'>

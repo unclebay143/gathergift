@@ -1,9 +1,14 @@
 import { MAP_CURRENCIES_TO_SYMBOLS } from "@/const";
-import { formatCurrencyWithComma } from "@/lib/utils";
+import {
+  calculateProgressPercentage,
+  formatCurrencyWithComma,
+} from "@/lib/utils";
 import { WishList } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import { Progress } from "./ui/progress";
+import { Cake, Church, Gift, LucideIcon } from "lucide-react";
 
 export const WishCard = ({ data }: { data: WishList }) => {
   const {
@@ -11,12 +16,25 @@ export const WishCard = ({ data }: { data: WishList }) => {
     coverImage,
     title,
     target_amount,
+    contributed_amount,
     items,
     currency,
     owner,
+    category,
     _id,
   } = data;
   const coverImageWithAltImg = coverImage ?? items[0]?.image_url;
+
+  const MAP_CATEGORY_TO_ICONS: {
+    [key: string]: LucideIcon;
+  } = {
+    birthday: Cake,
+    generic: Gift,
+    wedding: Church,
+  };
+
+  const CategoryIcon =
+    category && MAP_CATEGORY_TO_ICONS[category.toLowerCase()];
 
   return (
     <div className='bg-white rounded-lg shadow-md overflow-hidden w-[300px] transition-transform hover:scale-105'>
@@ -29,22 +47,13 @@ export const WishCard = ({ data }: { data: WishList }) => {
             alt={title}
           />
         )}
-        <div className='absolute top-2 right-2'>
-          <svg
-            xmlns='http://www.w3.org/2000/svg'
-            width={24}
-            height={24}
-            viewBox='0 0 24 24'
-            fill='none'
-            stroke='currentColor'
-            strokeWidth={2}
-            strokeLinecap='round'
-            strokeLinejoin='round'
-            className='lucide lucide-star text-amber-400'
-          >
-            <polygon points='12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2' />
-          </svg>
-        </div>
+
+        <div className='absolute inset-0 bg-gradient-to-t from-black/60 to-transparent' />
+        {CategoryIcon && (
+          <div className='absolute top-2 right-2 z-50'>
+            <CategoryIcon className='text-red-400' />
+          </div>
+        )}
       </div>
       <div className='p-4 flex flex-col justify-between h-[208px] w-[300px]'>
         <div className='space-y-2'>
@@ -63,28 +72,21 @@ export const WishCard = ({ data }: { data: WishList }) => {
             </span>
           </div> */}
           <div className='space-y-2'>
-            <div
-              aria-valuemax={100}
-              aria-valuemin={0}
-              role='progressbar'
-              data-state='indeterminate'
-              data-max={100}
-              className='relative w-full overflow-hidden rounded-full bg-secondary h-2'
-            >
-              <div
-                data-state='indeterminate'
-                data-max={100}
-                className='h-full w-full flex-1 bg-primary transition-all'
-                style={{ transform: "translateX(-25%)" }}
-              />
-            </div>
+            <Progress
+              value={calculateProgressPercentage(
+                target_amount,
+                contributed_amount
+              )}
+              className='h-2  bg-secondary'
+            />
             <div className='flex justify-between'>
               <p className='text-xs text-right text-zinc-500'>
                 {MAP_CURRENCIES_TO_SYMBOLS[currency]}
                 {formatCurrencyWithComma(target_amount)}
               </p>
               <p className='text-xs text-right text-zinc-500'>
-                75% funded for 4 items
+                {calculateProgressPercentage(target_amount, contributed_amount)}
+                % funded for {items.length} items
               </p>
             </div>
           </div>
@@ -109,7 +111,7 @@ export const WishCard = ({ data }: { data: WishList }) => {
               <path d='M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7' />
               <path d='M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5' />
             </svg>
-            Support This Gift
+            Support Wishlist
           </Link>
         </div>
       </div>

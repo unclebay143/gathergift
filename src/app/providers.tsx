@@ -13,7 +13,7 @@ export type DashboardLoaderStore = {
 };
 
 export const useDashboardLoader = create<DashboardLoaderStore>((set) => ({
-  visibility: false,
+  visibility: true,
   setVisibility: (visibility: boolean) => set({ visibility }),
 }));
 

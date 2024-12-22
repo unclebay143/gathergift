@@ -1,11 +1,10 @@
 import mongoose from "mongoose";
 
 const connectViaMongoose = async () => {
-  try {
-    await mongoose.connect(process.env.MONGODB_URI!);
-  } catch (error) {
-    console.error(error);
+  if (mongoose.connection.readyState === 1) {
+    return; // Already connected
   }
+  return mongoose.connect(process.env.MONGODB_URI!);
 };
 
 export default connectViaMongoose;

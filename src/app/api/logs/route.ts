@@ -1,5 +1,5 @@
 import connectViaMongoose from "@/lib/mongodb";
-import { Logs } from "@/model/logs";
+import { Log } from "@/model/logs";
 import { NextRequest, NextResponse } from "next/server";
 
 const POST = async (request: NextRequest) => {
@@ -16,7 +16,7 @@ const POST = async (request: NextRequest) => {
 
     await connectViaMongoose();
 
-    const log = await Logs.create({ user_id, key, action, details });
+    const log = await Log.create({ user_id, key, action, details });
 
     return NextResponse.json(
       { message: "Log created successfully", log },
