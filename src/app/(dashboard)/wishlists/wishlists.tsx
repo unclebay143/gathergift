@@ -56,7 +56,7 @@ import {
 } from "@/lib/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { useAppContext, useDashboardLoader } from "@/app/providers";
+import { useAppContext } from "@/app/providers";
 import axios, { AxiosResponse } from "axios";
 
 dayjs.extend(relativeTime);
@@ -65,14 +65,16 @@ const BASE_URL = "https://gathergift.vercel.app";
 
 export const WishListPage = () => {
   const { currentUser } = useAppContext();
+  const queryClient = useQueryClient();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [wishlistsState, setWishlistsState] = useState<WishLists | undefined>();
+
   const toggleModal = () => {
     setIsModalOpen((prev) => !prev);
   };
 
-  // const [wishlists, setWishlists] = useState<WishLists>([]);
-  const queryClient = useQueryClient();
   const { mutate: handleArchiveToggle } = useMutation({
     mutationFn: (id: string) => axios.put(`/api/wishlists/${id}/archive`),
     onError() {
@@ -84,7 +86,7 @@ export const WishListPage = () => {
     },
   });
 
-  const { data: wishlists, isLoading } = useQuery({
+  const { data: wishlists } = useQuery({
     queryFn: async (): Promise<AxiosResponse<WishLists>> =>
       axios.get("api/wishlists"),
     queryKey: getWishListsQueryKey(),
@@ -92,21 +94,21 @@ export const WishListPage = () => {
     select: ({ data }) => data.filter((wishlist) => !wishlist.isArchived),
   });
 
-  const [
-    isSearchMode,
-    // setIsSearchMode
-  ] = useState(false);
-  // const [searchTerm, setSearchTerm] = useState("");
+  const filteredWishes = wishlistsState?.filter(
+    (wishlist) =>
+      (wishlist.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        wishlist.description
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase())) &&
+      !wishlist.isArchived
+  );
+
+  useEffect(() => {
+    if (wishlists) setWishlistsState(wishlists);
+  }, [wishlists]);
 
   const showEmptyState = wishlists?.length === 0;
-
-  // const filteredWishlists = wishlists?.filter(
-  //   (wishlist) =>
-  //     (wishlist.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-  //       wishlist.description.toLowerCase().includes(searchTerm.toLowerCase())) &&
-  //     !wishlist.isArchived
-  // );
-
+  const showEmptySearchResult = !!searchTerm && filteredWishes?.length === 0;
   return (
     <>
       <div className='container w-full mx-auto px-4 py-6 lg:px-8 flex flex-col gap-8'>
@@ -121,15 +123,15 @@ export const WishListPage = () => {
             </p>
           </div>
           {!showEmptyState && (
-            <div className='flex items-center gap-4 w-full justify-between xl:justify-end xl:w-auto'>
+            <div className='flex flex-wrap items-center gap-4 w-full justify-between xl:justify-end xl:w-auto'>
               <div className='relative'>
                 <Search className='absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400' />
                 <Input
                   type='text'
                   placeholder='Search wishlists?...'
                   className='pl-8 w-[200px] md:w-[300px]'
-                  // value={searchTerm}
-                  // onChange={(e) => setSearchTerm(e.target.value)}
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
               <Button asChild className='bg-black hover:bg-gray-800'>
@@ -163,7 +165,7 @@ export const WishListPage = () => {
         )}
 
         <div className='grid gap-6 md:grid-cols-2 lg:grid-cols-4'>
-          {wishlists?.map((wishlist) => (
+          {filteredWishes?.map((wishlist) => (
             <Card
               key={wishlist._id}
               className='overflow-hidden transition-all duration-300 hover:shadow-xl group dark:bg-gray-800/50 backdrop-blur-sm '
@@ -410,7 +412,7 @@ export const WishListPage = () => {
           ))}
         </div>
 
-        {isSearchMode && wishlists?.length === 0 && (
+        {showEmptySearchResult && (
           <div className='text-center py-24 border border-dashed rounded-lg'>
             <h3 className='text-2xl font-semibold text-gray-600 dark:text-gray-400 mb-2'>
               No wishlist found
@@ -420,9 +422,9 @@ export const WishListPage = () => {
             </p>
 
             <Button asChild className='bg-black hover:bg-gray-800'>
-              <Link href='/wishlists/create'>
-                <Plus className='mr-2 h-4 w-4' />
-                Create new Wishlist
+              <Link href='/wishlists/archives'>
+                <Archive className='mr-2 h-4 w-4' />
+                Check archives
               </Link>
             </Button>
           </div>
