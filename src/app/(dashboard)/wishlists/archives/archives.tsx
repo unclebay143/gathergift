@@ -17,6 +17,7 @@ import {
   ChevronDown,
   DollarSign,
   Gift,
+  Loader,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -49,7 +50,11 @@ const getArchiveWishlistsQueryKey = () => ["archive-wishlists"];
 export const ArchivePage = () => {
   const queryClient = useQueryClient();
 
-  const { data: wishlists } = useQuery({
+  const {
+    data: wishlists,
+    isLoading,
+    isFetching,
+  } = useQuery({
     queryFn: async () => {
       const res = await fetch("/api/wishlists");
       const data: WishLists = await res.json();
@@ -75,8 +80,10 @@ export const ArchivePage = () => {
     },
   });
 
-  const showEmptyState = wishlists?.length === 0;
-  console.log({ wishlists });
+  const hasNoWishlist = wishlists?.length === 0;
+  const showInitialLoader = (isLoading || isFetching) && hasNoWishlist;
+  const showEmptyState = !showInitialLoader && hasNoWishlist;
+
   return (
     <>
       <div className='container w-full mx-auto px-4 py-6 lg:px-8 flex flex-col gap-8'>
@@ -105,11 +112,17 @@ export const ArchivePage = () => {
           </div>
         )}
 
+        {showInitialLoader && (
+          <div className='w-full max-h-[40vh] aspect-video rounded-xl bg-muted animate-pulse flex justify-center items-center'>
+            <Loader className='animate-spin text-zinc-500' />
+          </div>
+        )}
+
         <div className='grid gap-6 md:grid-cols-2 lg:grid-cols-4'>
           {wishlists?.map((wishlist) => (
             <Card
               key={wishlist._id}
-              className='overflow-hidden transition-all duration-300 hover:shadow-xl group dark:bg-gray-800/50 backdrop-blur-sm '
+              className='overflow-hidden transition-all duration-300 hover:shadow-xl group dark:bg-gray-800/50 backdrop-blur-sm min-w-[300px]'
             >
               <CardHeader className='p-0'>
                 <div className='relative'>

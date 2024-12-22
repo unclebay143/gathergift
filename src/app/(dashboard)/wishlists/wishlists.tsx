@@ -21,6 +21,7 @@ import {
   FacebookIcon,
   Gift,
   InstagramIcon,
+  Loader,
   Mail,
   MessageCircleMore,
   Plus,
@@ -86,7 +87,11 @@ export const WishListPage = () => {
     },
   });
 
-  const { data: wishlists } = useQuery({
+  const {
+    data: wishlists,
+    isLoading,
+    isFetching,
+  } = useQuery({
     queryFn: async (): Promise<AxiosResponse<WishLists>> =>
       axios.get("api/wishlists"),
     queryKey: getWishListsQueryKey(),
@@ -107,8 +112,13 @@ export const WishListPage = () => {
     if (wishlists) setWishlistsState(wishlists);
   }, [wishlists]);
 
-  const showEmptyState = wishlists?.length === 0;
   const showEmptySearchResult = !!searchTerm && filteredWishes?.length === 0;
+
+  const hasNoWishlist = wishlists?.length === 0;
+  const showInitialLoader = (isLoading || isFetching) && hasNoWishlist;
+  const showEmptyState = !showInitialLoader && hasNoWishlist;
+  const showSearchBar = !showEmptyState && !showInitialLoader;
+
   return (
     <>
       <div className='container w-full mx-auto px-4 py-6 lg:px-8 flex flex-col gap-8'>
@@ -122,25 +132,14 @@ export const WishListPage = () => {
               goals, and share with friends and family.
             </p>
           </div>
-          {!showEmptyState && (
-            <div className='flex flex-wrap items-center gap-4 w-full justify-between xl:justify-end xl:w-auto'>
-              <div className='relative'>
-                <Search className='absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400' />
-                <Input
-                  type='text'
-                  placeholder='Search wishlists?...'
-                  className='pl-8 w-[200px] md:w-[300px]'
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-              </div>
-              <Button asChild className='bg-black hover:bg-gray-800'>
-                <Link href='/wishlists/create'>
-                  <Plus className='mr-2 h-4 w-4' />
-                  Create new Wishlist
-                </Link>
-              </Button>
-            </div>
+
+          {showSearchBar && (
+            <Button asChild className='bg-black hover:bg-gray-800'>
+              <Link href='/wishlists/create'>
+                <Plus className='mr-2 h-4 w-4' />
+                Create new Wishlist
+              </Link>
+            </Button>
           )}
         </div>
 
@@ -164,11 +163,30 @@ export const WishListPage = () => {
           </div>
         )}
 
+        {showInitialLoader && (
+          <div className='w-full max-h-[45vh] aspect-video rounded-xl bg-muted animate-pulse flex justify-center items-center'>
+            <Loader className='animate-spin text-zinc-500' />
+          </div>
+        )}
+
+        {showSearchBar && (
+          <div className='relative'>
+            <Search className='absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400' />
+            <Input
+              type='text'
+              placeholder='Search wishlists?...'
+              className='pl-8 w-[300px]'
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+        )}
+
         <div className='grid gap-6 md:grid-cols-2 lg:grid-cols-4'>
           {filteredWishes?.map((wishlist) => (
             <Card
               key={wishlist._id}
-              className='overflow-hidden transition-all duration-300 hover:shadow-xl group dark:bg-gray-800/50 backdrop-blur-sm '
+              className='overflow-hidden transition-all duration-300 hover:shadow-xl group dark:bg-gray-800/50 backdrop-blur-sm min-w-[300px]'
             >
               <CardHeader className='p-0'>
                 <div className='relative'>
@@ -193,7 +211,7 @@ export const WishListPage = () => {
                 </div>
               </CardHeader>
               <CardContent className='p-4 space-y-4'>
-                <div className='flex justify-between items-center'>
+                <div className='flex flex-wrap gap-2 justify-between items-center'>
                   <Badge
                     variant='secondary'
                     className='bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200'

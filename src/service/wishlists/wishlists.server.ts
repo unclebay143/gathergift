@@ -6,7 +6,7 @@ import type {
   WishLists,
   WishlistVisibility,
 } from "@/types";
-import mongoose from "mongoose";
+import mongoose, { isObjectIdOrHexString } from "mongoose";
 
 export const getPublicWishlists = async (username?: string) => {
   let wishlists;
@@ -71,8 +71,7 @@ export const getWishlist = async (options: {
 }) => {
   try {
     const { id, visibility, isArchived, username } = options;
-
-    if (!id) return null;
+    if (!id || !isObjectIdOrHexString(id)) return null;
 
     await connectViaMongoose();
 
