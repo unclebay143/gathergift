@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ChevronDown, ChevronUp, ExternalLink, Info } from "lucide-react";
 import { Checkbox } from "./ui/Checkbox";
 import { WishItemDetailModal } from "./WishItemDetailModal";
-import { Currency, Item } from "@/types";
+import type { Currency, Item } from "@/types";
 import {
   calculateProgressPercentage,
   formatCurrencyWithComma,

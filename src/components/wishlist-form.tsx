@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { ArrowRight, Loader, Plus, Trash2, Upload } from "lucide-react";
-import { WishList } from "@/types";
+import type { WishList } from "@/types";
 import {
   WISH_CATEGORIES,
   CATEGORY_TAG_LINES,

@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MAP_CURRENCIES_TO_SYMBOLS } from "@/const";
 import { formatCurrencyWithComma } from "@/lib/utils";
-import { WishList } from "@/types";
+import type { WishList } from "@/types";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { ExternalLink } from "lucide-react";

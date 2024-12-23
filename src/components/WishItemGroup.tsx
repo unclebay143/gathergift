@@ -5,23 +5,21 @@ import { useCallback, useState } from "react";
 import { Checkbox } from "./ui/Checkbox";
 import { ContributionModal } from "./ContributionModal";
 import { toast } from "sonner";
-import { Currency, Items } from "@/types";
+import type { Currency, Items } from "@/types";
 
 interface WishItemGroupProps {
   items: Items;
   currency: Currency;
   hasItems: boolean;
-  target_amount: number;
 }
 
 export function WishItemGroup({
   items,
   currency,
   hasItems,
-  target_amount,
 }: WishItemGroupProps) {
   const [expandedItems, setExpandedItems] = useState<Set<string | undefined>>(
-    new Set([items[0]._id])
+    new Set([items[0]?._id])
   );
   const [isContributionModalOpen, setIsContributionModalOpen] = useState(false);
   const [contributions, setContributions] = useState<Record<string, number>>(
@@ -75,8 +73,12 @@ export function WishItemGroup({
     });
   };
 
-  const handleContribute = (newContributions: Record<string, number>) => {
+  const handleContribute = (
+    newContributions: Record<string, number>,
+    message?: string
+  ) => {
     setContributions((prev) => ({ ...prev, ...newContributions }));
+    console.log(message);
     // send this data to backend
     // Update the fundedPercentage of items based on contributions
     // wishlists.forEach((item) => {

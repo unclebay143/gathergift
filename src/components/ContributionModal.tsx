@@ -3,7 +3,7 @@ import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Currency, Items } from "@/types";
+import type { Currency, Items } from "@/types";
 import { MAP_CURRENCIES_TO_SYMBOLS } from "@/const";
 import { Textarea } from "./ui/textarea";
 import { cn } from "@/lib/utils";
@@ -43,7 +43,10 @@ interface ContributionModalProps {
   isOpen: boolean;
   onClose: () => void;
   selectedItems: Items;
-  onContribute: (contributions: Record<string, number>) => void;
+  onContribute: (
+    contributions: Record<string, number>,
+    message?: string
+  ) => void;
   initialContributions: Record<string, number>;
   currency: Currency;
 }
@@ -92,7 +95,7 @@ export function ContributionModal({
       },
       {} as Record<string, number>
     );
-    onContribute(nonZeroContributions);
+    onContribute(nonZeroContributions, message);
     onClose();
   };
 
@@ -144,7 +147,7 @@ export function ContributionModal({
                     }
                   />
                   <div className='text-sm text-gray-500 mt-1'>
-                    {((contributions[item._id!] / item.amount) * 100).toFixed(
+                    {((contributions[item._id!]! / item.amount) * 100).toFixed(
                       2
                     )}
                     % of total amount

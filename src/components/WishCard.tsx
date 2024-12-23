@@ -3,12 +3,12 @@ import {
   calculateProgressPercentage,
   formatCurrencyWithComma,
 } from "@/lib/utils";
-import { WishList } from "@/types";
+import type { WishList } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { Progress } from "./ui/progress";
-import { Cake, Church, Gift, LucideIcon } from "lucide-react";
+import { Cake, Church, Gift, type LucideIcon } from "lucide-react";
 
 export const WishCard = ({ data }: { data: WishList }) => {
   const {

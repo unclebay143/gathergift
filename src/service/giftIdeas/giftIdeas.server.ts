@@ -1,5 +1,5 @@
 import connectViaMongoose from "@/lib/mongodb";
-import { GiftIdeas } from "@/model/gitfIdeas";
+import { GiftIdeas } from "@/model/giftIdeas";
 
 export const getAllGiftIdea = async () => {
   try {

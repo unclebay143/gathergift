@@ -27,6 +27,8 @@ export function SingleWishlistPage({
   wishlist: WishList;
   username: string;
 }) {
+  const [isOutRightContributionModalOpen, setIsOutRightContributionModalOpen] =
+    useState(false);
   const canEditWishList = wishlist?.owner?._id === currentUser?._id;
 
   if (!wishlist) {
@@ -54,9 +56,6 @@ export function SingleWishlistPage({
 
   const itemsSize = items?.length;
   const hasItems = itemsSize > 0 && !!items[0]?._id; // for case where wishlists with no items has contributed_amount
-
-  const [isOutRightContributionModalOpen, setIsOutRightContributionModalOpen] =
-    useState(false);
 
   return (
     <PublicLayout>
@@ -127,7 +126,6 @@ export function SingleWishlistPage({
                     items={items}
                     currency={currency}
                     hasItems={hasItems}
-                    target_amount={target_amount}
                   />
                 </div>
               )}

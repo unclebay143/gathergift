@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { X } from "lucide-react";
-import { Item } from "@/types";
+import type { Item } from "@/types";
 import { calculateProgressPercentage } from "@/lib/utils";
 
 interface WishItemDetailModalProps {

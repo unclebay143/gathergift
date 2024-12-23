@@ -25,7 +25,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import React, { useEffect } from "react";
+import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { WishLists } from "@/types";
 import relativeTime from "dayjs/plugin/relativeTime";

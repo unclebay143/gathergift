@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useAppContext } from "./providers";
-import { User } from "@/types";
+import type { User } from "@/types";
 
 type Props = {
   currentUser: User;
