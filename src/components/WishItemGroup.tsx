@@ -10,9 +10,16 @@ import { Currency, Items } from "@/types";
 interface WishItemGroupProps {
   items: Items;
   currency: Currency;
+  hasItems: boolean;
+  target_amount: number;
 }
 
-export function WishItemGroup({ items, currency }: WishItemGroupProps) {
+export function WishItemGroup({
+  items,
+  currency,
+  hasItems,
+  target_amount,
+}: WishItemGroupProps) {
   const [expandedItems, setExpandedItems] = useState<Set<string | undefined>>(
     new Set([items[0]._id])
   );
@@ -83,19 +90,20 @@ export function WishItemGroup({ items, currency }: WishItemGroupProps) {
 
   return (
     <div className='mb-4 space-y-3 w-full'>
-      {items.map((item) => {
-        return (
-          <WishItem
-            key={item._id}
-            item={item}
-            isSelected={selectedItems.has(item._id)}
-            isExpanded={expandedItems.has(item._id)}
-            onSelect={() => toggleItem(item._id)}
-            onExpand={() => toggleExpanded(item._id)}
-            currency={currency}
-          />
-        );
-      })}
+      {hasItems &&
+        items.map((item) => {
+          return (
+            <WishItem
+              key={item._id}
+              item={item}
+              isSelected={selectedItems.has(item._id)}
+              isExpanded={expandedItems.has(item._id)}
+              onSelect={() => toggleItem(item._id)}
+              onExpand={() => toggleExpanded(item._id)}
+              currency={currency}
+            />
+          );
+        })}
 
       {items.length > 1 && (
         <div className='border rounded-md p-4 mb-4 bg-zinc-100'>
@@ -114,7 +122,7 @@ export function WishItemGroup({ items, currency }: WishItemGroupProps) {
       <div className='flex items-center justify-center'>
         <button
           onClick={() => {
-            if (selectedItems.size === 0) {
+            if (hasItems && selectedItems.size === 0) {
               toast.info("Please select at least 1 gift to contribute.");
               return;
             }
@@ -139,7 +147,9 @@ export function WishItemGroup({ items, currency }: WishItemGroupProps) {
             <path d='M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7' />
             <path d='M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5' />
           </svg>
-          Contribute to selected gifts
+          {hasItems
+            ? "Contribute to Selected Wishes"
+            : "Contribute to Wishlist"}
         </button>
       </div>
 

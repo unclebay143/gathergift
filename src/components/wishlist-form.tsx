@@ -65,7 +65,7 @@ export const wishFormSchema = z.object({
   items: z.array(
     z.object({
       name: z.string().min(1, "Item name is required"),
-      externalLink: z.string().url().optional(),
+      externalLink: z.string().url().or(z.literal("")),
       amount: z.number().min(0, "Price must be 0 or greater").nullable(),
       description: z
         .string()
@@ -181,6 +181,8 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
     };
     onSubmit(formattedData);
   });
+
+  console.log(form.formState.errors);
 
   useEffect(() => {
     if (typeof endDate === "string" && !isValidDate(endDate)) {

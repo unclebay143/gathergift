@@ -314,7 +314,7 @@ export const WishListPage = () => {
                                 variant='outline'
                                 onClick={() => {
                                   navigator.clipboard.writeText(
-                                    "https://example.com/wishlist/1234"
+                                    `https://gathergift.vercel.app/${wishlist.owner?.username}/wishlists/${wishlist._id}`
                                   );
                                   toast.success("Link copied to clipboard!");
                                 }}
