@@ -57,6 +57,8 @@ const WishListSchema: Schema = new Schema(
     },
     itemsEnabled: { type: Boolean, required: true },
     endDate: { type: Date },
+    flutterwave_account_reference: { type: String, required: true },
+    flutterwave_barter_id: { type: String, required: true },
   },
   {
     timestamps: true,

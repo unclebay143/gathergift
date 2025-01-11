@@ -5,9 +5,9 @@ import { NextRequest, NextResponse } from "next/server";
 const POST = async (request: NextRequest) => {
   try {
     const body = await request.json();
-    const { first_name, last_name, password, email, profile_picture } = body;
+    const { firstName, lastName, password, email, photo } = body;
 
-    if (!first_name || !last_name || !password || !email || !profile_picture) {
+    if (!firstName || !lastName || !password || !email || !photo) {
       return NextResponse.json(
         { message: "Missing fields required" },
         { status: 400 }
@@ -16,11 +16,11 @@ const POST = async (request: NextRequest) => {
     await connectViaMongoose();
 
     await User.create({
-      first_name,
-      last_name,
+      firstName,
+      lastName,
       password,
       email,
-      profile_picture,
+      photo,
     });
 
     return NextResponse.json(

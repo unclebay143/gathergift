@@ -87,6 +87,17 @@ export const WishListPage = () => {
     },
   });
 
+  const { mutate: handleVisibilityToggle } = useMutation({
+    mutationFn: (id: string) => axios.put(`/api/wishlists/${id}/visibility`),
+    onError() {
+      toast.error("Failed to update Wishlist visibility.");
+    },
+    async onSuccess() {
+      toast.success("Wishlist visibility updated.");
+      await queryClient.invalidateQueries({ queryKey: getWishListsQueryKey() });
+    },
+  });
+
   const {
     data: wishlists,
     isLoading,
@@ -264,7 +275,7 @@ export const WishListPage = () => {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align='end'>
                       <DropdownMenuItem
-                      // onClick={() => handleToggleVisibility(wishlist._id)}
+                        onClick={() => handleVisibilityToggle(wishlist._id!)}
                       >
                         {wishlist.visibility === "PUBLIC" ? (
                           <>
@@ -303,22 +314,21 @@ export const WishListPage = () => {
                             </DialogDescription>
                           </DialogHeader>
                           <div className='space-y-4'>
-                            <div className='flex gap-2 bg-gray-100 p-2 border shadow-sm rounded-xl'>
+                            <div className='flex gap-2 bg-gray-50 p-2 border shadow-sm rounded-xl'>
                               <Input
                                 type='text'
-                                value={`https://example.com/wishlists/${wishlist._id}`}
+                                value={`${BASE_URL}/${currentUser?.username}/wishlists/${wishlist._id}`}
                                 readOnly
-                                className='w-full bg-slate-100 border-none bg-transparent shadow-none'
+                                className='w-full bg-slate-100 border-none bg-transparent shadow-none focus-visible:ring-0!'
                               />
                               <Button
                                 variant='outline'
                                 onClick={() => {
                                   navigator.clipboard.writeText(
-                                    `https://gathergift.vercel.app/${wishlist.owner?.username}/wishlists/${wishlist._id}`
+                                    `${BASE_URL}/${currentUser?.username}/wishlists/${wishlist._id}`
                                   );
                                   toast.success("Link copied to clipboard!");
                                 }}
-                                className='bg-yellow-500 w-28 text-white hover:bg-yellow-600 hover:text-white'
                               >
                                 <Share2 />
                                 Copy Link

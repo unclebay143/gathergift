@@ -13,6 +13,9 @@ import { toast } from "sonner";
 import { useAppContext } from "@/app/providers";
 import { WishForm } from "@/components/wishlist-form";
 import { WishPreview } from "@/components/wishlist-preview";
+import Link from "next/link";
+import { createFlutterSubAccount } from "@/service/flutterwave/sub-account.client";
+import { CURRENCIES } from "@/const";
 
 export function CreateUpdateWish({
   actionOrWishId,
@@ -38,10 +41,29 @@ export function CreateUpdateWish({
     {
       mutationFn: async (
         data: Omit<WishList, "contributed_amount" | "owner" | "isArchived">
-      ) =>
-        (await axios.post("/api/wishlists", data)) as {
+      ) => {
+        const MapCurrencyToFlutterwaveCountry: {
+          [key in (typeof CURRENCIES)[number]]: "NG" | "US";
+        } = {
+          NGN: "NG",
+          USD: "US",
+        };
+
+        const { data: subAccountData } = await createFlutterSubAccount({
+          account_name: `${currentUser?.lastName} ${currentUser?.firstName}`,
+          country: MapCurrencyToFlutterwaveCountry[data.currency],
+          email: currentUser!.email,
+          mobilenumber: currentUser!.phone,
+        });
+
+        return (await axios.post("/api/wishlists", {
+          ...data,
+          flutterwave_account_reference: subAccountData.account_reference,
+          flutterwave_barter_id: subAccountData.barter_id,
+        })) as {
           data: { wishlist: WishList };
-        },
+        };
+      },
       onSuccess({ data }) {
         toast.success("Wishlist created successfully.");
         const wishListId = data.wishlist._id;
@@ -63,8 +85,18 @@ export function CreateUpdateWish({
           data: { wishlist: WishList };
         },
       onSuccess() {
-        toast.success("Wishlist updated.");
-        router.push(`/${currentUser?.username}/wishlists/${actionOrWishId}`);
+        toast.success(
+          <>
+            Wishlist updated.
+            <Link
+              href={`currentUser?.username}/wishlists/${actionOrWishId}`}
+              rel='stylesheet'
+            >
+              Open Wishlist
+            </Link>
+          </>
+        );
+        // router.push(`/${currentUser?.username}/wishlists/${actionOrWishId}`);
       },
       onError(error) {
         console.log(error);
@@ -72,7 +104,7 @@ export function CreateUpdateWish({
       },
     }
   );
-  const handleSubmit = (
+  const handleSubmit = async (
     data: Omit<WishList, "contributed_amount" | "owner" | "isArchived">
   ) => {
     setWishlistData(data);

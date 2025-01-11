@@ -17,7 +17,7 @@ const GET = async () => {
     }
 
     const user = await User.findOne({ email: session.user.email }).select(
-      "first_name last_name email profile_picture"
+      "firstName lastName email photo phone"
     );
 
     return NextResponse.json(user, { status: 200 });

@@ -30,12 +30,12 @@ export const WISH_VISIBILITIES = ["PUBLIC", "PRIVATE"] as const;
 export const CURRENCIES = [
   "USD",
   "NGN",
-  "GBP",
-  "EUR",
-  "CAD",
-  "GMD",
-  "GHS",
-  "KES",
+  // "GBP",
+  // "EUR",
+  // "CAD",
+  // "GMD",
+  // "GHS",
+  // "KES",
 ] as const;
 
 export const MAP_CURRENCIES_TO_SYMBOLS: {
@@ -43,10 +43,10 @@ export const MAP_CURRENCIES_TO_SYMBOLS: {
 } = {
   USD: "$",
   NGN: "₦",
-  GBP: "£",
-  EUR: "€",
-  CAD: "C$",
-  GMD: "D",
-  GHS: "₵",
-  KES: "Ksh",
+  // GBP: "£",
+  // EUR: "€",
+  // CAD: "C$",
+  // GMD: "D",
+  // GHS: "₵",
+  // KES: "Ksh",
 };

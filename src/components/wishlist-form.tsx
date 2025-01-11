@@ -85,9 +85,10 @@ type WishFormProps = {
 };
 
 export function WishForm({ onSubmit, initialData }: WishFormProps) {
-  const [itemsEnabled, setItemsEnabled] = useState(
-    initialData?.itemsEnabled ?? true
-  );
+  const hasItems =
+    (initialData?.items.length || 0) > 0 && !!initialData?.items[0]?._id; // for case where wishlists with no items has contributed_amount
+
+  const [itemsEnabled, setItemsEnabled] = useState(hasItems);
 
   const [isUploadingCoverImage, setIsUploadingCoverImage] = useState(false);
 
@@ -99,8 +100,7 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
       title: initialData?.title || "",
       thankYouMessage: initialData?.thankYouMessage || "",
       visibility: initialData?.visibility || "PUBLIC",
-      itemsEnabled: initialData?.itemsEnabled ?? true,
-      items: initialData?.items || [],
+      items: itemsEnabled ? initialData?.items : [],
       target_amount: initialData?.target_amount ?? null,
     },
   });
@@ -181,8 +181,6 @@ export function WishForm({ onSubmit, initialData }: WishFormProps) {
     };
     onSubmit(formattedData);
   });
-
-  console.log(form.formState.errors);
 
   useEffect(() => {
     if (typeof endDate === "string" && !isValidDate(endDate)) {
