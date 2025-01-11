@@ -7,6 +7,7 @@ export type User = {
   lastName: string;
   username: string;
   email: string;
+  phone: string;
 } | null;
 
 export type Item = {

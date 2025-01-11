@@ -4,6 +4,7 @@ import React from "react";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -21,6 +22,7 @@ export const wishFormSchema = z.object({
   username: z.string().optional(),
   firstName: z.string().optional(),
   lastName: z.string().optional(),
+  phone: z.string(),
 });
 
 export const SettingsDashboard = ({ initialData }: Props) => {
@@ -42,32 +44,19 @@ export const SettingsDashboard = ({ initialData }: Props) => {
           <h1 className='text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent'>
             Profile data
           </h1>
-          {/* <p className='text-muted-foreground'>
+          <p className='text-muted-foreground'>
             Update your existing wishlist.
-          </p> */}
+          </p>
         </div>
         <Form {...form}>
           <form onSubmit={handleSubmit} className='space-y-8'>
             <FormField
-              name='username'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Username</FormLabel>
-                  <FormControl>
-                    <Input disabled className='bg-zinc-50' {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            {/* <FormField
               name='firstName'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>First name</FormLabel>
                   <FormControl>
                     <Input
-                      disabled
                       className='bg-zinc-50'
                       placeholder='i.e Alon'
                       {...field}
@@ -84,7 +73,6 @@ export const SettingsDashboard = ({ initialData }: Props) => {
                   <FormLabel>Last name</FormLabel>
                   <FormControl>
                     <Input
-                      disabled
                       className='bg-zinc-50'
                       placeholder='i.e Musk'
                       {...field}
@@ -93,7 +81,43 @@ export const SettingsDashboard = ({ initialData }: Props) => {
                   <FormMessage />
                 </FormItem>
               )}
-            /> */}
+            />
+
+            <FormField
+              name='phone'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Mobile number</FormLabel>
+                  <FormDescription>
+                    Our payment providers need this for contact regarding
+                    contributions. It defaults to &apos;010101010&apos; if left
+                    blank and can be updated in your settings anytime.
+                  </FormDescription>
+
+                  <FormControl>
+                    <Input
+                      className='bg-zinc-50'
+                      placeholder='i.e +23480XXXXXXXX'
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              name='username'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Username</FormLabel>
+                  <FormControl>
+                    <Input disabled className='bg-zinc-50' {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               name='email'
               render={({ field }) => (
@@ -103,7 +127,7 @@ export const SettingsDashboard = ({ initialData }: Props) => {
                     <Input
                       disabled
                       className='bg-zinc-50'
-                      placeholder='My Christmas Wishlist'
+                      placeholder='johndoe@gmail.com'
                       {...field}
                     />
                   </FormControl>

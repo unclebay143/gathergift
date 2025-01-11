@@ -1,3 +1,4 @@
+import { WISH_VISIBILITIES } from "@/const";
 import mongoose, { models, Schema } from "mongoose";
 
 const WishItemSchema: Schema = new Schema(
@@ -26,6 +27,11 @@ const WishItemSchema: Schema = new Schema(
       type: mongoose.Types.ObjectId,
       ref: "WishList",
       required: true,
+    },
+    visibility: {
+      type: String,
+      enum: WISH_VISIBILITIES,
+      default: "PUBLIC",
     },
   },
   {

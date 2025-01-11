@@ -6,11 +6,18 @@ import { NextRequest, NextResponse } from "next/server";
 export const POST = async (request: NextRequest) => {
   try {
     const body = await request.json();
-    const { username } = body;
+    const { username, phone, firstName, lastName } = body;
 
     if (!username) {
       return NextResponse.json(
         { message: "Username cannot be empty." },
+        { status: 404 }
+      );
+    }
+
+    if (!firstName || !lastName) {
+      return NextResponse.json(
+        { message: "First and last name cannot be empty." },
         { status: 404 }
       );
     }
@@ -40,7 +47,7 @@ export const POST = async (request: NextRequest) => {
         email: session.user?.email,
         username: { $exists: false },
       },
-      { $set: { username } },
+      { $set: { username, phone, firstName, lastName } },
       { returnDocument: "after", upsert: false }
     );
 

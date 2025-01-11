@@ -25,6 +25,9 @@ const UserSchema: Schema = new Schema(
       type: String,
       default: null,
     },
+    phone: {
+      type: String,
+    },
     authProvider: {
       type: String,
       enum: ALLOWED_AUTH_PROVIDER,
